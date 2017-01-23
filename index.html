@@ -1,0 +1,51 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="newComplaint.css">
+  <script src="jquery-3.1.1.min.js"></script>
+  <script src="newComplaint.js"></script>
+</head>
+<body>
+<form action="submitCaseData.php" method="POST" enctype="multipart/form-data">
+  <div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
+  <h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input type="file" name="caseScan" required></input>
+  </div>
+  <table style="float: left;">
+    <tr>
+      <td>Plaintiff</td>
+      <td><input type="text" name="plaintiff-1" data-repro="false" required></input></td>
+    </tr>
+    <tr>
+      <td>Defendant</td>
+      <td><input type="text" name="defendant-1" data-repro="false" required></input></td>
+    </tr>
+    <tr>      
+      <td>Witness</td>
+      <td><input type="text" name="witness-1" data-repro="false"></input></td>
+    </tr>
+    <tr>
+      <td>What happened</td>
+      <td><textarea name="whatHappened" required></textarea></td>
+    </tr>
+    <tr>
+      <td style="border: none; text-align: left; padding-left: 0px;"><input type="submit"></input></td>
+    </tr>
+  </table>
+<table>    
+  <tr>
+    <td>Date of Incident</td>
+    <td><input type="text" name="date-1" data-repro="false" required></input></td>
+  </tr>
+  <tr>      
+    <td>Time of Incident</td>
+    <td><input type="text" name="time-1" data-repro="false" required></input></td>
+  </tr>
+  <tr>
+    <td>Location</td>
+    <td><input type="text" name="location-1" data-repro="false" required></input></td>
+  </tr>
+<tr>
+  <td>Charge</td><td><input type="text" name="charge-1" data-repro="false" required></input></td>
+</tr>
+</table>
+</form>
+</body>
