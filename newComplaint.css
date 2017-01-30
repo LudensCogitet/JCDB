@@ -18,5 +18,9 @@ textarea{
   margin-bottom: 4px;
   width: 300px;
   max-width: 300px;
-  height: 202px;
+  height: 208px;
+}
+
+.charge{
+	width: 150px;
 }

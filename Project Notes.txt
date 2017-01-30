@@ -1,3 +1,42 @@
+Double entry system:
+1. History of the case
+2. Current state of the case
+
+Case History table:
+1. 	prefix			}
+						-Case number
+2. 	caseNumber		}
+3.	complaint form scan
+4.	Digital copy of case info:
+	1. 	plaintiff(s)
+	2. 	defendant(s)
+	3. 	witness(es)
+	4. 	dateOfIncident
+	5. 	timeOfIncident
+	6. 	location
+	7. 	charge(s)
+	8.	whatHappened
+5.	status(pndg, apld, hldg, clsd)
+6.	hearingDate(yyyy/mm/dd)
+7.	hearingNotes 
+8.	verdict(ng, g, ni, md, wd)
+9.	sentence
+
+Case state table:
+
+1.	prefix			}
+					 -Case number
+2.	caseNumber		}
+3.	plaintiff(s)
+4.	defendant(one only)
+5.	witness(es)
+6.	charge(one only)
+7.	status(pndg, apld, hldg, clsd)
+8.	hearingDate(yyyy/mm/dd)
+9.	verdict(ng, g, ni, md, wd)
+10	sentence
+11. sentenceStatus(impsd, cmpl, mrgd)
+
 -Main website-
 1. Button (link to enter new case page (opens in new window)
 2. View of entered cases (sorted by pndg, and case number)
@@ -8,15 +47,24 @@
 3. Fields for all aspects of a JC case
 
 
--JC Database entry-
-1. prefix
-2. case_number
+Info to be stored
+1. prefix			}
+					 -Case number
+2. caseNumber		}
 3. plaintiff(s)
 4. defendant(one only)
 5. witness(es)
 6. charge(one only)
 7. status(pndg, apld, hldg, clsd)
-8. hearing_date(yyyy/mm/dd)
+8. hearingDate(yyyy/mm/dd)
 9. verdict(ng, g, ni, md, wd)
 10.sentence
-11.sentence_status(impsd, cmpl, mrgd)
+11.sentenceStatus(impsd, cmpl, mrgd)
+
+
+-JC complaint form DB entry-
+1. prefix
+2. caseNumber
+3. scanFilePath
+4. whatHappened
+5. hearingNotes

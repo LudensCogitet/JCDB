@@ -3,10 +3,19 @@
 </head>
 <body>
 <?php
-  if($_SERVER['REQUEST_METHOD'] === "POST"){
-	move_uploaded_file($_FILES['caseScan']['tmp_name'],"images/new.jpg");
-	echo "<img src='images/new.jpg' style='width:100%;'>";
-  }
+include 'ComplaintFormData.php';
+
+if($_SERVER['REQUEST_METHOD'] === "POST"){
+	$newForm = new ComplaintFormData();
+	
+	foreach(ComplaintFormData::$multiFields as $field){
+		echo "<h4>".$field."</h4>";
+		$contents = $newForm->getData($field);
+		foreach($contents as $content){
+			echo $content."<br>";
+		}
+	}
+}
 ?>
 </body>
 </html>
