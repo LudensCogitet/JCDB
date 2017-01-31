@@ -5,19 +5,23 @@ function sanitize($var){
 	return $var;
 }
 
+$prefix = Date('Y');
+$dbConn = new mysqli($_SERVER['SERVER_ADDR'],"root");
+
 class ComplaintFormData{
-	public static $multiFields = ["plaintiff","defendant","witness","charge","date","time","location"];
-	private $data = ["prefix"		=> -1,
-					 "caseNumber"	=> -1,
-					 "plaintiff" 	=> [],
-					 "defendant" 	=> [],
-					 "witness" 	 	=> [],
-					 "charge"	 	=> [],
-					 "sectionNumber"=> [],
-					 "date"		 	=> [],
-					 "time"		 	=> [],
-					 "location"  	=> [],
-					 "whatHappened" => []];
+	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location"];
+	private $data = ["formScan"		  => "",
+					 "prefix"		  => -1,
+					 "caseNumber"	  => -1,
+					 "plaintiff" 	  => [],
+					 "defendant" 	  => [],
+					 "witness" 	 	  => [],
+					 "charge"	 	  => [],
+					 "sectionNumber"  => [],
+					 "dateOfIncident" => [],
+					 "timeOfIncident" => [],
+					 "location"  	  => [],
+					 "whatHappened"   => ""];
 	
 	public function addData($field, $entry){
 		if(!array_key_exists($field, $this->data)){
@@ -39,17 +43,22 @@ class ComplaintFormData{
 		}
 	}
 
-	function __construct(){
-		if($_POST['newComplaint']){
-		foreach(self::$multiFields as $field){
-		  $num = 1;
-		  while(isset($_POST[$field.'-'.$num])){
-		    $this->addData($field,$_POST[$field.'-'.$num]);
-		    $num++;
+	function __construct($caseNum = null){
+		global $prefix;
+		global $dbConn;
+		
+		if($caseNum == null){
+		  if($_POST['newComplaint']){
+			
+		    foreach(self::$multiFields as $field){
+		    $num = 1;
+		    while(isset($_POST[$field.'-'.$num])){
+		      $this->addData($field,$_POST[$field.'-'.$num]);
+		      $num++;
 		  }
 	    }
-			
       }
+     }
 	}
 }
 ?>
