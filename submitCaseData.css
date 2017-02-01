@@ -1,0 +1,12 @@
+td{
+  font-size: 1.5em;
+  vertical-align: top;
+  text-align: center;
+  border: 2px solid black;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.result{
+	width: 300px;
+}

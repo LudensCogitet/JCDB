@@ -56,6 +56,40 @@ class ComplaintFormData{
 			}
 		}
 	}
+	
+	public function submitToDatabase(){
+		$dbConn = new mysqli($_SERVER['SERVER_ADDR'],'root');
+		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
+		
+		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES(";
+		
+		$date = date('Y-m-d',strtotime($this->getData('dateOfIncident','string')));
+		
+		$string = $string."'".$this->getData('formScan')."',";
+		$string = $string."'".$this->getData('plaintiff','string')."',";
+		$string = $string."'".$this->getData('defendant','string')."',";
+		$string = $string."'".$this->getData('witness','string')."',";
+		$string = $string."'".$date."',";
+		$string = $string."'".$this->getData('timeOfIncident','string')."',";
+		$string = $string."'".$this->getData('location','string')."',";
+		$string = $string."'".$this->getData('charge','string')."',";
+		$string = $string."'".$this->getData('whatHappened')."');";
+	  
+	    $dbConn->query($string);
+		
+		$sqlReturn = $dbConn->query("SELECT * FROM casehistory ORDER BY caseNumber DESC LIMIT 1;");
+		
+		$row = $sqlReturn->fetch_row();
+		
+		$sqlReturn->free();
+		
+		$this->addData("prefix",$row[0]);
+		$this->addData("caseNumber",$row[1]);
+	
+		$dbConn->close();
+		
+		return $this->getData("prefix")."-".$this->getData("caseNumber");
+	}
 
 	function __construct($caseNum = null){		
 		if($caseNum == null){
@@ -77,32 +111,6 @@ class ComplaintFormData{
 		$this->addData("formScan", $scanFileName);	
 
 		$this->addData("whatHappened",$_POST['whatHappened']);
-	  
-		$dbConn = new mysqli($_SERVER['SERVER_ADDR'],'root');
-		$dbConn->select_db('jcdb'.$GLOBALS['prefix']);
-		
-		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES(";
-		
-		$date = date('Y-m-d',strtotime($this->getData('dateOfIncident','string')));
-		
-		$string = $string."'".$this->getData('formScan')."',";
-		$string = $string."'".$this->getData('plaintiff','string')."',";
-		$string = $string."'".$this->getData('defendant','string')."',";
-		$string = $string."'".$this->getData('witness','string')."',";
-		$string = $string."'".$date."',";
-		$string = $string."'".$this->getData('timeOfIncident','string')."',";
-		$string = $string."'".$this->getData('location','string')."',";
-		$string = $string."'".$this->getData('charge','string')."',";
-		$string = $string."'".$this->getData('whatHappened')."');";
-		echo $string;
-	  
-	    $dbConn->query($string);
-		
-		$sqlReturn = $dbConn->query("SELECT * FROM casehistory ORDER BY caseNumber DESC LIMIT 1;");
-		$sqlReturn = $sqlReturn->fetch_row();
-		
-		$this->addData("prefix",$sqlReturn[0]);
-		$this->addData("caseNumber",$sqlReturn[1]);
 	  }
      }
 	}

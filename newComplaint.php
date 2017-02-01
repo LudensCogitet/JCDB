@@ -5,6 +5,9 @@
   <script src="newComplaint.js"></script>
 </head>
 <body>
+<?php 
+session_start();
+?>
 <form action="submitCaseData.php" method="POST" enctype="multipart/form-data">
   <div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
   <h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input type="file" name="formScan" required></input>
@@ -12,7 +15,7 @@
   <table style="float: left;">
     <tr>
       <td>Plaintiff</td>
-      <td><input type="text" name="plaintiff-1" data-repro="false" required></input></td>
+      <td><input type="text" name="plaintiff-1" data-repro="false" required></input>"</td>
     </tr>
     <tr>
       <td>Defendant</td>

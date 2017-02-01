@@ -1,5 +1,5 @@
 function reproduceField(event){
-    if(event.keyCode == 40 && $(this).data("repro") == false){
+    if(event == "down" || event.keyCode == 40 && $(this).data("repro") == false){
       $(this).data("repro",true);
       console.log();
       var wholeName = $(this).attr("name");
@@ -13,8 +13,9 @@ function reproduceField(event){
       $(this).parent().append(newField);
       $(newField).keydown(reproduceField);
       $(newField).focus();
+	  return newField;
     }
-   else if(event.keyCode == 38){
+   else if(event == "up" || event.keyCode == 38){
      var lastObj = $(this).prev().prev("input");
      var nextObj = $(this).next();
      if(lastObj.length != 0 && nextObj.length == 0){
@@ -22,6 +23,7 @@ function reproduceField(event){
        lastObj.next().remove();
        lastObj.focus();
        $(this).remove();
+	   return lastObj;
      }
    }
   }
