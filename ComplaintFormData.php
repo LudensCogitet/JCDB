@@ -85,6 +85,18 @@ class ComplaintFormData{
 		
 		$this->addData("prefix",$row[0]);
 		$this->addData("caseNumber",$row[1]);
+		
+		$charges = $this->getData("charge");
+		$defendants = $this->getData("defendant");
+		
+		$string = "INSERT INTO casestate(prefix,caseNumber,plaintiff,witness,status,charge,defendant) VALUES(".$this->getData('prefix').", ".$this->getData('caseNumber').", '".$this->getData('plaintiff','string')."', '".$this->getData('witness','string')."', 'pndg', ";
+		
+		foreach($charges as $charge){
+			foreach($defendants as $defendant){
+				$sendString = $string."'".$charge."', '".$defendant."');";
+				$dbConn->query($sendString);
+			}
+		}
 	
 		$dbConn->close();
 		
