@@ -58,7 +58,7 @@ class ComplaintFormData{
 	}
 	
 	public function submitToDatabase(){
-		$dbConn = new mysqli($_SERVER['SERVER_ADDR'],'root');
+		$dbConn = new mysqli("localhost",'root');
 		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
 		
 		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES(";

@@ -1,5 +1,8 @@
 <html>
 <head>
+<script>
+localStorage.removeItem("lastForm");
+</script>
 </head>
 <body>
 <?php 

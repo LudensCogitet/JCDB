@@ -14,7 +14,12 @@
 		$caseNum = $complaint->submitToDatabase();
 		echo "Case #".$caseNum." added to database.<p>";
 		unset($_SESSION['newComplaint']);
-		echo "<button onclick='window.open(\"./newComplaint.php\")'>Submit another</button>";
-		echo "<button onclick='window.open(\"./index.php\")'>Main Menu</button";
 	}
 ?>
+<script>
+localStorage.removeItem("lastForm");
+localStorage.removeItem("lastFormValues");
+</script>
+
+<form style='display:inline;' action='newComplaint.php'><input type='submit' value='Submit Another'></input></form>
+<form style='display:inline;' action='index.php'><input type='submit' value='Main Menu'></input></form>

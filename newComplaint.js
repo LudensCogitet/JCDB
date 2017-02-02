@@ -27,7 +27,3 @@ function reproduceField(event){
      }
    }
   }
-
-$(document).ready(function(){
-  $("input[type='text']").keydown(reproduceField);
-});

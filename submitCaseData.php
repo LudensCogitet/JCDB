@@ -1,6 +1,19 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="./submitCaseData.css">
+<script src="jquery-3.1.1.min.js"></script>
+<script>
+$(document).ready(function(){
+	console.log(localStorage.lastForm);
+	
+	$("#confirm").click(function(){
+		if(localStorage.lastForm)
+			localStorage.removeItem("lastForm");
+			localStorage.removeItem("lastFormValues");
+		}
+	);
+});
+</script>
 </head>
 <body>
 
@@ -19,8 +32,6 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 	echo "<tr><td>Witness(es)</td><td class='result'>".$newForm->getData("witness","string")."</td><td>Location</td><td class='result'>".$newForm->getData("location","string")."</td></tr>";
 	echo "<tr><td>What Happened</td><td class='result'>".$newForm->getData("whatHappened")."</td><td>Charges</td><td class='result'>".$newForm->getData("charge","string")."</td></tr>";
 	echo "</table>";
-	echo "<button onclick='window.open(\"confirmSubmitCaseData.php\");'>Confirm</button>";
-	echo "<button onclick='window.open(\"newComplaint.php\");'>Modify</button>";
 	
 	/*echo "<span style='float: left; margin-right: 10%;'>";
 	foreach(ComplaintFormData::$multiFields as $field){
@@ -29,5 +40,9 @@ if($_SERVER['REQUEST_METHOD'] === "POST"){
 	echo "</span>";*/
 }
 ?>
+<form style="display:inline;" action='confirmSubmitCaseData.php'>
+	<input type="submit" value="Confirm"></input>
+</form>
+<button onclick='history.go(-1);'>Modify</button>
 </body>
 </html>
