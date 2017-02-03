@@ -1,0 +1,46 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="databaseDisplay.css">
+<script src="jquery-3.1.1.min.js"></script>
+<script>
+  $(document).ready(function(){
+	  var mainTable = document.getElementById("mainTable");
+	  $.ajax({url:"./returnDBInfo.php",
+	  success: function(result){
+	    console.log(result);
+		var dbRows = JSON.parse(result);
+		console.log(dbRows);
+		
+		for(var i = 0; i < dbRows.length; i++){
+			var newRow = mainTable.insertRow(-1);
+			newRow.insertCell(-1).innerHTML = dbRows[i][0] + "-" + dbRows[i][1];
+		  for(var j = 2; j < dbRows[i].length; j++){
+		    newRow.insertCell(-1).innerHTML = dbRows[i][j];
+		  }
+		  var caseNum = dbRows[i][1];
+		 $(newRow).click(function(){
+			$.ajax({url:"displayCase.php",
+					data: {"caseNum": caseNum},
+			success: function(result){
+			  $("#caseInfo").append(result);
+			  $("#caseInfo").show();
+			}});
+		 });
+		}
+	  }});
+  
+	$("#caseInfoClose").click(function(){
+	  $(this).parent().hide();
+	  $(this).parent().children().last().remove();
+	});
+  });
+</script>
+</head>
+<body>
+<div id="caseInfo"><button id="caseInfoClose">close</button></div>
+<table id="mainTable">
+<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
+</table>
+<button onclick='history.go(-1);'>Back to Main Menu</button>
+</body>
+</html>

@@ -1,0 +1,25 @@
+th, td{
+  font-size: 1.3em;	
+  border: 2px solid black;
+  padding: 2px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#caseInfo{
+	display: none;
+	position: absolute;
+}
+
+#caseInfoClose{
+	position: absolute;
+	width: 48px;
+	left: 100%;
+	margin-left: -50px;	 
+}
+
+#caseInfo img{
+	border: 2px solid black;
+	box-shadow: 5px 5px 5px black;
+	height: 90%;
+}
