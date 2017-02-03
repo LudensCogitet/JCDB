@@ -3,6 +3,22 @@
 <link rel="stylesheet" type="text/css" href="databaseDisplay.css">
 <script src="jquery-3.1.1.min.js"></script>
 <script>
+  function assignScanDisplay(element,caseNum){
+		 $(element).click(function(){
+		 console.log(caseNum);
+			$.ajax({url:"displayCase.php",
+					data: {"caseNum": caseNum},
+			success: function(result){
+			  if($("#caseInfo").children().length > 0){
+			    console.log("Boom");
+				$("#caseInfo").empty();
+			  }
+			  $("#caseInfo").append(result);
+			  $("#caseInfo").show();
+			}});
+		 });
+  }
+
   $(document).ready(function(){
 	  var mainTable = document.getElementById("mainTable");
 	  $.ajax({url:"./returnDBInfo.php",
@@ -17,30 +33,22 @@
 		  for(var j = 2; j < dbRows[i].length; j++){
 		    newRow.insertCell(-1).innerHTML = dbRows[i][j];
 		  }
-		  var caseNum = dbRows[i][1];
-		 $(newRow).click(function(){
-			$.ajax({url:"displayCase.php",
-					data: {"caseNum": caseNum},
-			success: function(result){
-			  $("#caseInfo").append(result);
-			  $("#caseInfo").show();
-			}});
-		 });
+		  assignScanDisplay(newRow,dbRows[i][1]);
 		}
 	  }});
   
-	$("#caseInfoClose").click(function(){
-	  $(this).parent().hide();
-	  $(this).parent().children().last().remove();
+	$("#caseInfo").click(function(){
+	  $(this).hide();
+	  $(this).empty();
 	});
   });
 </script>
 </head>
 <body>
-<div id="caseInfo"><button id="caseInfoClose">close</button></div>
-<table id="mainTable">
+<div id="caseInfo"></div>
+<button style="float:right;clear:both;" onclick='history.go(-1);'>Back to Main Menu</button>
+<table id="mainTable" style="float:right; clear:both;">
 <th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
 </table>
-<button onclick='history.go(-1);'>Back to Main Menu</button>
 </body>
 </html>
