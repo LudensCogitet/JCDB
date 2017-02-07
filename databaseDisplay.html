@@ -9,10 +9,6 @@
 			$.ajax({url:"displayCase.php",
 					data: {"caseNum": caseNum},
 			success: function(result){
-			  if($("#caseInfo").children().length > 0){
-			    console.log("Boom");
-				$("#caseInfo").empty();
-			  }
 			  $("#caseInfo").append(result);
 			  $("#caseInfo").show();
 			}});
@@ -31,24 +27,37 @@
 			var newRow = mainTable.insertRow(-1);
 			newRow.insertCell(-1).innerHTML = dbRows[i][0] + "-" + dbRows[i][1];
 		  for(var j = 2; j < dbRows[i].length; j++){
-		    newRow.insertCell(-1).innerHTML = dbRows[i][j];
+		    var newCell = newRow.insertCell(-1);
+			newCell.innerHTML = dbRows[i][j];
+			console.log(newCell);
+			$(newCell).click(function(){
+			 console.log("HEY!");
+			 $("#contextMenu").css("left",event.pageX+"px");
+			 $("#contextMenu").css("top",event.pageY+"px");
+			 $("#contextMenu").show();
+			});
 		  }
-		  assignScanDisplay(newRow,dbRows[i][1]);
+		  assignScanDisplay(newRow.cells[0],dbRows[i][1]);
 		}
 	  }});
   
-	$("#caseInfo").click(function(){
-	  $(this).hide();
-	  $(this).empty();
+	$("#caseInfoClose").click(function(){
+	  $(this).parent().hide();
+	  $(this).siblings().remove();
 	});
   });
 </script>
 </head>
 <body>
-<div id="caseInfo"></div>
+<div id="contextMenu">Hi!</div>
+<div id="caseInfo">
+  <button id="caseInfoClose">Close</button>
+</div>
 <button style="float:right;clear:both;" onclick='history.go(-1);'>Back to Main Menu</button>
 <table id="mainTable" style="float:right; clear:both;">
+<thead id="mainTableHead">
 <th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
+</thead>
 </table>
 </body>
 </html>

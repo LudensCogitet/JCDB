@@ -6,20 +6,38 @@ th, td{
   cursor: pointer;
 }
 
+th:hover, td:hover{
+	color: white;
+	background-color: black;
+}
+
 #caseInfo{
 	display: none;
-	position: absolute;
+	background-color: white;
+	position: fixed;
+	border: 2px solid black;
+	box-shadow: 5px 5px 5px black;
+	height: 90%;
 }
 
 #caseInfoClose{
 	position: absolute;
 	width: 48px;
+	top: 2px;
 	left: 100%;
-	margin-left: -50px;	 
+	margin-left: -50px;
 }
 
 #caseInfo img{
+	float: right;
+	height: 100%;
 	border: 2px solid black;
+}
+
+#contextMenu{
+	display: none;
+	position: absolute;
 	box-shadow: 5px 5px 5px black;
-	height: 90%;
+	border: 2px solid black;
+	background-color: white;
 }
