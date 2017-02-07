@@ -27,3 +27,7 @@ function reproduceField(event){
      }
    }
   }
+  
+  /*$(document).ready(function(){
+	  console.log((document.getElementsByTagName("td")[1]).offsetWidth);
+  });*/

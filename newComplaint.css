@@ -1,22 +1,42 @@
 th, td{
   vertical-align: top;
-  text-align: center;
   border: 2px solid black;
   padding-left: 3px;
   padding-right: 3px;
 }
 
+th{text-align: center;}
+
+.textField{
+	width: 308px;
+}
+
 input[type="text"]{
+  border: none;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
   margin: 3px 3px 3px 3px;
   width: 302px;
 }
 
 textarea{
+  border: none;
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
   margin-top: 4px;
   margin-left: 3px;
   margin-right: 3px;
   margin-bottom: 4px;
+}
+
+textarea[name="whatHappened"]{
   width: 300px;
   max-width: 300px;
   height: 208px;
+}
+
+textarea[name="hearingNotes"]{
+  width: 761px;
+  max-width: 761px;
+  height: 300px;
 }
