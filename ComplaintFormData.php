@@ -28,12 +28,12 @@ class ComplaintFormData{
 		}
 		else{
 			if(is_array($this->data[$field])){
-				$entry = sanitize($entry);
-				$this->data[$field][] = $entry;
+				$this->data[$field][] = sanitize($entry);
 				return true;
 			}
 			else{
-				$this->data[$field] = $entry;
+				$this->data[$field] = sanitize($entry);
+				return true;
 			}
 		}
 	}
