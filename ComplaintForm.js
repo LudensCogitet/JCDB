@@ -1,4 +1,4 @@
-function ComplaintForm(info = "new") {
+function ComplaintForm(info = "new", readOnly = false) {
   
   var data = null;
   if(info == "new"){
@@ -32,8 +32,14 @@ function ComplaintForm(info = "new") {
   function makeInputFields(typeOfData){  
     var returnString = "";    
     if(Array.isArray(data[typeOfData]) && data[typeOfData].length > 0){                    
-      for(var i = 0; i < data[typeOfData].length; i++){
-        returnString += '<input type="text" name="'+typeOfData+'-'+(i+1)+'" data-repro="false" value="'+data[typeOfData][i]+'" required></input>';
+      
+	  var repro = "true";
+	  
+	  for(var i = 0; i < data[typeOfData].length; i++){
+        if(i == data[typeOfData].length -1)
+			repro = "false";
+		
+		returnString += '<input type="text" name="'+typeOfData+'-'+(i+1)+'" data-repro="'+repro+'" value="'+data[typeOfData][i]+'" required></input>';
        }
       }
     else{
@@ -54,18 +60,16 @@ function ComplaintForm(info = "new") {
       console.log(num);
       var newField = $("<input type='text' name="+name+"-"+(num+1)+" data-repro='false' required>");
       console.log(newField);
-      $(this).parent().append("<br>");
       $(this).parent().append(newField);
       $(newField).keydown(reproduceField);
       $(newField).focus();
 	  return newField;
     }
    else if(event == "up" || event.keyCode == 38){
-     var lastObj = $(this).prev().prev("input");
-     var nextObj = $(this).next();
+     var lastObj = $(this).prev("input");
+	 var nextObj = $(this).next("input");
      if(lastObj.length != 0 && nextObj.length == 0){
        lastObj.data("repro",false);
-       lastObj.next().remove();
        lastObj.focus();
        $(this).remove();
 	   return lastObj;
@@ -100,7 +104,7 @@ function ComplaintForm(info = "new") {
                           '</tr>'+
                           '<tr>'+
                           '<th>What happened</th>'+
-                          '<td class="areaField" id="whatHappened"><textarea name="whatHappened" value="'+data["whatHappened"]+'" required></textarea></td>'+
+                          '<td class="areaField" id="whatHappened"><textarea name="whatHappened" required>'+data["whatHappened"]+'</textarea></td>'+
                           '<th>Charge & Sec. Number</th>'+
 	                        '<td class="textField" id="charge">'+makeInputFields("charge")+'</td>'+
 	                       '</tr>'+
@@ -113,7 +117,7 @@ function ComplaintForm(info = "new") {
 	                           '</tr>'+
 	                           '<tr>'+
 	                            '<th>Hearing Notes</th>'+
-                              '<td class="areaField" id="hearingNotes" style="width: 767px;"><textarea name="hearingNotes" value="'+data["hearingNotes"]+'"></textarea></td>'+
+                              '<td class="areaField" id="hearingNotes" style="width: 767px;"><textarea name="hearingNotes">'+data["hearingNotes"]+'</textarea></td>'+
 	                           '</tr>'+
                              '</table>';
   }
@@ -169,6 +173,22 @@ function ComplaintForm(info = "new") {
 	  }
   }
   
+  function setReadOnly(val){
+	  if(jqueryInputFields){
+	    if(val == true){
+	   	    jqueryInputFields.children("input[type='text']").attr("readonly","readonly");
+		    jqueryInputFields.children("textarea").attr("readonly","readonly");
+	    }
+		else{
+			jqueryInputFields.children("input[type='text']").removeAttr("readonly");
+		    jqueryInputFields.children("textarea").removeAttr("readonly");
+		}
+      }
+  }
+  this.markReadOnly = function(val){
+	  readOnly = val;
+  }
+  
   this.getJqueryElement = function(type="simple"){
     compileStrings();
 	var returnString = mainComplaintString;
@@ -179,7 +199,8 @@ function ComplaintForm(info = "new") {
 	jqueryElement = $(returnString);
     jqueryInputFields = jqueryElement.children().children().children();
 	jqueryInputFields.children("input[type='text']").keydown(reproduceField);
-    
+	setReadOnly(readOnly);
+	
     console.log(data);
     console.log(jqueryInputFields.filter("#plaintiff").children());
     return jqueryElement;
