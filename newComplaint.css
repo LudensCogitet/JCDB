@@ -16,7 +16,7 @@ input[type="text"]{
   border-bottom: 1px solid black;
   border-right: 1px solid black;
   margin: 3px 3px 3px 3px;
-  width: 302px;
+  width: 304px;
 }
 
 textarea{
@@ -35,8 +35,12 @@ textarea[name="whatHappened"]{
   height: 208px;
 }
 
+#extraComplaint input{
+  width: 764px;
+}
+
 textarea[name="hearingNotes"]{
-  width: 761px;
+  width: 760px;
   max-width: 761px;
   height: 300px;
 }

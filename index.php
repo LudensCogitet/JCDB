@@ -1,7 +1,7 @@
 <html>
 <head>
 <script>
-localStorage.removeItem("lastForm");
+localStorage.removeItem("lastFormData");
 </script>
 </head>
 <body>

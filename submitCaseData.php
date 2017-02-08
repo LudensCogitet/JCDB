@@ -4,12 +4,11 @@
 <script src="jquery-3.1.1.min.js"></script>
 <script>
 $(document).ready(function(){
-	console.log(localStorage.lastForm);
+	console.log(localStorage.lastFormData);
 	
 	$("#confirm").click(function(){
-		if(localStorage.lastForm)
-			localStorage.removeItem("lastForm");
-			localStorage.removeItem("lastFormValues");
+		if(localStorage.lastFormData)
+			localStorage.removeItem("lastFormData");
 		}
 	);
 });
