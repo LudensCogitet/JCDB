@@ -5,9 +5,21 @@ $prefix = DATE('Y');
 	  $dbConn = new mysqli("localHost","root");
 	  $dbConn->select_db("jcdb".$prefix);
 	  
-	  $result = $dbConn->query("SELECT formScan FROM casehistory WHERE caseNumber=".$case." LIMIT 1;");
+	  $result = $dbConn->query("SELECT * FROM casehistory WHERE caseNumber=".$case." LIMIT 1;");
 	  $row = $result->fetch_row();
-	  $scanFile = $row[0];
+	  $columns = $result->fetch_fields();
 	  
-	  echo "<img src='".$scanFile."'>";
+	  $returnArray = [];
+	  
+	  for($i = 0; $i < count($row); $i++){
+		  if($columns[$i]->name == "formScan"){
+			$returnArray[$columns[$i]->name] = "<img src='".$row[$i]."'>";  
+		  }
+		  else{
+		    $returnArray[$columns[$i]->name] = $row[$i];
+		  }
+	  }
+	  //$scanFile = $row[0];
+	  
+	  echo json_encode($returnArray);
 ?>

@@ -21,8 +21,8 @@ class ComplaintFormData{
 					 "timeOfIncident" => [],
 					 "location"  	  => [],
 					 "whatHappened"   => "",
-					 "hearingDate"	  => "",
-					 "hearingNotes"	  => ""];
+					 "hearingDate"	  => null,
+					 "hearingNotes"	  => null];
 	
 	public function addData($field, $entry){
 		if(!array_key_exists($field, $this->data)){
@@ -63,7 +63,7 @@ class ComplaintFormData{
 		$dbConn = new mysqli("localhost",'root');
 		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
 		
-		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened,hearingDate,hearingNotes) VALUES(";
+		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened,hearingDate,hearingNotes) VALUES (";
 		
 		$date = date('Y-m-d',strtotime($this->getData('dateOfIncident','string')));
 		
@@ -75,8 +75,8 @@ class ComplaintFormData{
 		$string = $string."'".$this->getData('timeOfIncident','string')."',";
 		$string = $string."'".$this->getData('location','string')."',";
 		$string = $string."'".$this->getData('charge','string')."',";
-		$string = $string."'".$this->getData('whatHappened')."');";
-		$string = $string."'".$this->getData('hearingDate')."');";
+		$string = $string."'".$this->getData('whatHappened')."',";
+		$string = $string."'".$this->getData('hearingDate')."',";
 		$string = $string."'".$this->getData('hearingNotes')."');";
 	  
 	    $dbConn->query($string);

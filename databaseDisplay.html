@@ -1,15 +1,21 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="databaseDisplay.css">
+<link rel="stylesheet" type="text/css" href="newComplaint.css">
 <script src="jquery-3.1.1.min.js"></script>
+<script src="ComplaintForm.js"></script>
 <script>
   function assignScanDisplay(element,caseNum){
 		 $(element).click(function(){
 		 console.log(caseNum);
 			$.ajax({url:"displayCase.php",
+					type: "POST",
 					data: {"caseNum": caseNum},
 			success: function(result){
-			  $("#caseInfo").append(result);
+			  console.log("this is the result",result);
+			  var complaintForm = new ComplaintForm(JSON.parse(result),true,true);
+			  $("#caseInfo").append(complaintForm.getJqueryElement("complete"));
+			  //$("#caseInfo").append(complaintForm.getData("caseScan"));
 			  $("#caseInfo").show();
 			}});
 		 });
@@ -23,10 +29,10 @@
 		var dbRows = JSON.parse(result);
 		console.log(dbRows);
 		
-		for(var i = 0; i < dbRows.length; i++){
+		for(let i = 0; i < dbRows.length; i++){
 			var newRow = mainTable.insertRow(-1);
 			newRow.insertCell(-1).innerHTML = dbRows[i][0] + "-" + dbRows[i][1];
-		  for(var j = 2; j < dbRows[i].length; j++){
+		  for(let j = 2; j < dbRows[i].length; j++){
 		    var newCell = newRow.insertCell(-1);
 			newCell.innerHTML = dbRows[i][j];
 			console.log(newCell);
