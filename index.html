@@ -5,16 +5,24 @@
 <script src="jquery-3.1.1.min.js"></script>
 <script src="ComplaintForm.js"></script>
 <script>
-  function assignScanDisplay(element,caseNum){
+  localStorage.removeItem("lastFormData"); 
+  function assignScanDisplay(element,prefix,caseNum){
 		 $(element).click(function(){
 		 console.log(caseNum);
 			$.ajax({url:"displayCase.php",
 					type: "POST",
-					data: {"caseNum": caseNum},
+					data: {"prefix": prefix, 
+						   "caseNum": caseNum},
 			success: function(result){
 			  console.log("this is the result",result);
 			  var complaintForm = new ComplaintForm(JSON.parse(result),"both",true);
+			  console.log("lastFormData before:", localStorage.lastFormData);
+			  localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));
+			  console.log("lastFormData after:", localStorage.lastFormData);
 			  $("#caseTarget").append(complaintForm.getJqueryElement("complete"));
+			  $("#caseTarget").append($("<button>Add Hearing Notes</button>"));
+			  $("#caseTarget").children("button").click(function(){
+				window.location.href="addHearingNotes.html"});
 			  console.log("caseScan",complaintForm.getData());
 			  $("#scanTarget").append($(complaintForm.getData("formScan")));
 			  $("#caseInfo").show();
@@ -44,7 +52,7 @@
 			 $("#contextMenu").show();
 			});
 		  }
-		  assignScanDisplay(newRow.cells[0],dbRows[i][1]);
+		  assignScanDisplay(newRow.cells[0],dbRows[i][0],dbRows[i][1]);
 		}
 	  }});
   
@@ -62,7 +70,7 @@
   <div id="caseTarget"></div>
   <div id="scanTarget"></div>
 </div>
-<button style="float:right;clear:both;" onclick='history.go(-1);'>Back to Main Menu</button>
+<button style="float:right;clear:both;" onclick='window.location.href="newComplaint.php"'>Add New Complaint</button>
 <table id="mainTable" style="float:right; clear:both;">
 <thead id="mainTableHead">
 <th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>

@@ -1,11 +1,9 @@
 <?php
-$prefix = DATE('Y');
-
-	if($case = $_REQUEST['caseNum'])
+	if($_REQUEST['caseNum'] && $_REQUEST['prefix'])
 	  $dbConn = new mysqli("localHost","root");
-	  $dbConn->select_db("jcdb".$prefix);
+	  $dbConn->select_db("jcdb".$_REQUEST['prefix']);
 	  
-	  $result = $dbConn->query("SELECT * FROM casehistory WHERE caseNumber=".$case." LIMIT 1;");
+	  $result = $dbConn->query("SELECT * FROM casehistory WHERE caseNumber=".$_REQUEST['caseNum']." LIMIT 1;");
 	  $row = $result->fetch_row();
 	  $columns = $result->fetch_fields();
 	  

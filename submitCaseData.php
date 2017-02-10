@@ -8,7 +8,7 @@
 $(document).ready(function(){
 	console.log(localStorage.lastFormData);
 	
-	var complaintForm = new ComplaintForm(JSON.parse(localStorage.lastFormData),true);
+	var complaintForm = new ComplaintForm(JSON.parse(localStorage.lastFormData),"top");
 	$("#tableTarget").append(complaintForm.getJqueryElement());
 	
 	$("#confirm").click(function(){
@@ -27,7 +27,7 @@ require './ComplaintFormData.php';
 session_start();
 
 if($_SERVER['REQUEST_METHOD'] === "POST"){
-	$newForm = new ComplaintFormData();
+	$newForm = new NewComplaintFormData();
 	$_SESSION['newComplaint'] = $newForm;
 	echo "<img style='height:90%; float: right; border: 3px solid black; box-shadow: 5px 5px 5px black;' src='".$newForm->getData('formScan')."'>";
 	

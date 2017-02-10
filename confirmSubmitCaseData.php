@@ -22,4 +22,4 @@ localStorage.removeItem("lastFormValues");
 </script>
 
 <form style='display:inline;' action='newComplaint.php'><input type='submit' value='Submit Another'></input></form>
-<form style='display:inline;' action='index.php'><input type='submit' value='Main Menu'></input></form>
+<form style='display:inline;' action='index.html'><input type='submit' value='Back to Database'></input></form>

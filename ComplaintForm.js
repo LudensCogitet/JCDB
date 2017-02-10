@@ -75,6 +75,7 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       $(newField).focus();
       return newField;
     } else if (event == "up" || event.keyCode == 38) {
+	   if($(this).attr('readonly') != 'readonly'){
       var lastObj = $(this).prev("input");
       var nextObj = $(this).next("input");
       if (lastObj.length != 0 && nextObj.length == 0) {
@@ -83,7 +84,8 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
         $(this).remove();
         return lastObj;
       }
-    }
+	 }
+	}
   }
 
   function compileStrings() {

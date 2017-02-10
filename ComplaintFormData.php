@@ -7,7 +7,7 @@ function sanitize($var){
 
 $prefix = DATE('Y');
 
-class ComplaintFormData{
+class NewComplaintFormData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location"];
 	private $data = ["formScan"		  => "",
 					 "prefix"		  => -1,
@@ -65,13 +65,11 @@ class ComplaintFormData{
 		
 		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened,hearingDate,hearingNotes) VALUES (";
 		
-		$date = date('Y-m-d',strtotime($this->getData('dateOfIncident','string')));
-		
 		$string = $string."'".$this->getData('formScan')."',";
 		$string = $string."'".$this->getData('plaintiff','string')."',";
 		$string = $string."'".$this->getData('defendant','string')."',";
 		$string = $string."'".$this->getData('witness','string')."',";
-		$string = $string."'".$date."',";
+		$string = $string."'".$this->getData('dateOfIncident','string')."',";
 		$string = $string."'".$this->getData('timeOfIncident','string')."',";
 		$string = $string."'".$this->getData('location','string')."',";
 		$string = $string."'".$this->getData('charge','string')."',";
