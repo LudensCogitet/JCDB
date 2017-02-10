@@ -1,4 +1,4 @@
-th, td{
+.complaintTable th, td{
   vertical-align: top;
   border: 2px solid black;
   padding-left: 3px;
@@ -11,7 +11,7 @@ th{text-align: center;}
 	width: 308px;
 }
 
-input[type="text"]{
+.complaintTable input[type="text"]{
   border: none;
   border-bottom: 1px solid black;
   border-right: 1px solid black;
@@ -19,7 +19,7 @@ input[type="text"]{
   width: 304px;
 }
 
-textarea{
+.complaintTable textarea{
   border: none;
   border-bottom: 1px solid black;
   border-right: 1px solid black;
@@ -29,7 +29,7 @@ textarea{
   margin-bottom: 4px;
 }
 
-textarea[name="whatHappened"]{
+.complaintTable textarea[name="whatHappened"]{
   width: 300px;
   max-width: 300px;
   height: 208px;
@@ -39,7 +39,7 @@ textarea[name="whatHappened"]{
   width: 764px;
 }
 
-textarea[name="hearingNotes"]{
+#extraComplaint textarea[name="hearingNotes"]{
   width: 760px;
   max-width: 761px;
   height: 300px;

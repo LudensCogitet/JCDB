@@ -88,7 +88,7 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 
   function compileStrings() {
 
-    mainComplaintString = '<table id="mainComplaint">' +
+    mainComplaintString = '<table class="complaintTable" id="mainComplaint">' +
       '<tr>' +
       '<th>Case No.</th>' +
       '<td class="textField" id="caseNumber">' + data["prefix"] + '-' + data["caseNumber"] + '</td>' +
@@ -119,7 +119,7 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       '</tr>' +
       '</table>';
 
-    extraComplaintString = '<table id="extraComplaint">' +
+    extraComplaintString = '<table class="complaintTable" id="extraComplaint">' +
       '<tr>' +
       '<th>Hearing Date (YYYY-MM-DD)</th>' +
       '<td id="hearingDate" style="width: 767px;">' + makeInputFields("hearingDate") + '</td>' +
@@ -183,10 +183,15 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 
   function setReadOnly(val) {
     if (jqueryInputFields) {
-      if (val == true) {
-        jqueryInputFields.children("input[type='text']").attr("readonly", "readonly");
+      if (val == "top") {
+        jqueryInputFields.children("#mainComplaint input[type='text']").attr("readonly", "readonly");
+        jqueryInputFields.children("#mainComplaint textarea").attr("readonly", "readonly");
+      }
+	  else if(val == "both"){
+		jqueryInputFields.children("input[type='text']").attr("readonly", "readonly");
         jqueryInputFields.children("textarea").attr("readonly", "readonly");
-      } else {
+	  }
+	  else {
         jqueryInputFields.children("input[type='text']").removeAttr("readonly");
         jqueryInputFields.children("textarea").removeAttr("readonly");
       }

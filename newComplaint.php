@@ -43,5 +43,6 @@ if(isset($_SESSION['newComplaint'])){
   <div id="tableTarget"></div>
 <input type="submit" name="newComplaint"></input>  
 </form>
+<button onclick="history.go(-1)">Back to Main Menu</button>
 </body>
 </html>
