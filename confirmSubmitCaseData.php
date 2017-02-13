@@ -17,8 +17,7 @@
 	}
 ?>
 <script>
-localStorage.removeItem("lastForm");
-localStorage.removeItem("lastFormValues");
+localStorage.removeItem("lastFormData");
 </script>
 
 <form style='display:inline;' action='newComplaint.php'><input type='submit' value='Submit Another'></input></form>

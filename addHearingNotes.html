@@ -1,0 +1,27 @@
+<head>
+	<link rel="stylesheet" type="text/css" href="newComplaint.css">
+  <script src="jquery-3.1.1.min.js"></script>
+	<script src="ComplaintForm.js"></script>
+	<script>
+		$(document).ready(function(){	
+			console.log("the form", localStorage.lastFormData);
+			var complaintForm = new ComplaintForm(JSON.parse(localStorage.lastFormData),"top");
+			var jqueryElements = complaintForm.getJqueryElement("complete");
+			$("#complaintTargetMain").append(jqueryElements[0]);
+			$("#complaintTargetExtra").append(jqueryElements[1]);
+		
+			$("form").submit(function(event){				
+				var val = confirm("Submit hearing notes?");
+				if(!val)
+					event.preventDefault();	
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="complaintTargetMain"></div>
+	<form action="submitHearingNotes.php" method="post">
+		<div id="complaintTargetExtra"></div>
+	<input type="submit" name="addHearingNotes"></input>
+	</form>
+</body>

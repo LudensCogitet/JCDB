@@ -59,7 +59,7 @@ class NewComplaintFormData{
 		}
 	}
 	
-	public function submitToDatabase(){
+	public function submitToDatabase($submissionType = "newCase"){
 		$dbConn = new mysqli("localhost",'root');
 		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
 		
@@ -74,7 +74,7 @@ class NewComplaintFormData{
 		$string = $string."'".$this->getData('location','string')."',";
 		$string = $string."'".$this->getData('charge','string')."',";
 		$string = $string."'".$this->getData('whatHappened')."',";
-		$string = $string."'".$this->getData('hearingDate')."',";
+		$string = $string."'".$this->getData('hearingDate','string')."',";
 		$string = $string."'".$this->getData('hearingNotes')."');";
 	  
 	    $dbConn->query($string);
@@ -115,7 +115,10 @@ class NewComplaintFormData{
 		      $this->addData($field,$_POST[$field.'-'.$num]);
 		      $num++;
 		  }
-	    }
+	  }
+		else{
+			
+		}
 		
 		$scanFileName = "./formScans".$GLOBALS['prefix']."/".Date('U').".jpg";
 		if(!move_uploaded_file($_FILES['formScan']['tmp_name'],$scanFileName)){
