@@ -1,12 +1,12 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="newComplaint.css">
+<link rel="stylesheet" type="text/css" href="ComplaintForm.css">
 <link rel="stylesheet" type="text/css" href="databaseDisplay.css">
 <script src="jquery-3.1.1.min.js"></script>
 <script src="ComplaintForm.js"></script>
 <script>
   localStorage.removeItem("lastFormData"); 
-  function assignScanDisplay(element,prefix,caseNum){
+  function assignFormDisplay(element,prefix,caseNum){
 		 $(element).click(function(){
 		 console.log(caseNum);
 			$.ajax({url:"displayCase.php",
@@ -35,26 +35,28 @@
 	  $.ajax({url:"./returnDBInfo.php",
 	  success: function(result){
 	    console.log(result);
-		var dbRows = JSON.parse(result);
-		console.log(dbRows);
+			var dbRows = JSON.parse(result);
+			console.log(dbRows);
 		
-		for(let i = 0; i < dbRows.length; i++){
-			var newRow = mainTable.insertRow(-1);
-			newRow.insertCell(-1).innerHTML = dbRows[i][0] + "-" + dbRows[i][1];
-		  for(let j = 2; j < dbRows[i].length; j++){
-		    var newCell = newRow.insertCell(-1);
-			newCell.innerHTML = dbRows[i][j];
-			console.log(newCell);
-			$(newCell).click(function(){
-			 console.log("HEY!");
-			 $("#contextMenu").css("left",event.pageX+"px");
-			 $("#contextMenu").css("top",event.pageY+"px");
-			 $("#contextMenu").show();
-			});
-		  }
-		  assignScanDisplay(newRow.cells[0],dbRows[i][0],dbRows[i][1]);
+			for(let i = 0; i < dbRows.length; i++){
+				var newRow = mainTable.insertRow(-1);
+				newRow.insertCell(-1).innerHTML = dbRows[i][0] + "-" + dbRows[i][1];
+				for(let j = 2; j < dbRows[i].length; j++){
+					var newCell = newRow.insertCell(-1);
+					newCell.innerHTML = dbRows[i][j];
+					if(j == dbRows[i].length -1)
+						newCell.style.display = "none";
+					console.log(newCell);
+					$(newCell).click(function(){
+						console.log("HEY!");
+						$("#contextMenu").css("left",event.pageX+"px");
+						$("#contextMenu").css("top",event.pageY+"px");
+						$("#contextMenu").show();
+					});
+				}
+		  assignFormDisplay(newRow.cells[0],dbRows[i][0],dbRows[i][1]);
 		}
-	  }});
+		}});
   
 	$("#caseInfoClose").click(function(){
 	  $(this).parent().hide();

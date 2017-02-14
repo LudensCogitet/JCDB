@@ -1,5 +1,5 @@
 function ComplaintForm(info = "new", readOnly = false,convertFromString = false) {
-  var arrayFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location"];
+  var arrayFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 
   var data = null;
   if (info == "new") {
@@ -15,20 +15,24 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       "timeOfIncident": [],
       "location": [],
       "whatHappened": "",
-      "hearingDate": "",
+      "hearingDate": [],
       "hearingNotes": ""
     };
   } 
   else if (typeof info === "object") {
 	  if(convertFromString){
 		for(let i = 0; i < arrayFields.length; i++){
-			info[arrayFields[i]] = info[arrayFields[i]].split(", ");
+			if(typeof info[arrayFields[i]] === "string"){
+				info[arrayFields[i]] = info[arrayFields[i]].split(", ");
+		 }
 		}
-	  }
-	 if(info["hearingDate"] == null)
-		 info["hearingDate"] = "";
-	 if(info["hearingNotes"] == null)
-		 info["hearingNotes"] = "";
+	 }
+	 
+		if(info["hearingDate"] == null)
+			info["hearingDate"] = "";
+	 
+		if(info["hearingNotes"] == null)
+			info["hearingNotes"] = "";
 	 data = info; 
    }
   else{
@@ -59,7 +63,6 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
   }
 
   function reproduceField(event) {
-    console.log("HI!");
     if (event == "down" || event.keyCode == 40 && $(this).data("repro") == false) {
       $(this).data("repro", true);
       console.log();
@@ -74,7 +77,8 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       $(newField).keydown(reproduceField);
       $(newField).focus();
       return newField;
-    } else if (event == "up" || event.keyCode == 38) {
+    } 
+		else if (event == "up" || event.keyCode == 38) {
 	   if($(this).attr('readonly') != 'readonly'){
       var lastObj = $(this).prev("input");
       var nextObj = $(this).next("input");
@@ -91,7 +95,9 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
   function compileStrings() {
 
     mainComplaintString = '<table class="complaintTable" id="mainComplaint">' +
-      '<tr>' +
+      '<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>'+
+			'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNo"'+'></input>'+
+			'<tr>' +
       '<th>Case No.</th>' +
       '<td class="textField" id="caseNumber">' + data["prefix"] + '-' + data["caseNumber"] + '</td>' +
       '</tr>' +
@@ -122,6 +128,8 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       '</table>';
 
     extraComplaintString = '<table class="complaintTable" id="extraComplaint">' +
+			'<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>'+
+			'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNo"'+'></input>'+
       '<tr>' +
       '<th>Hearing Date (YYYY-MM-DD)</th>' +
       '<td id="hearingDate" style="width: 767px;">' + makeInputFields("hearingDate") + '</td>' +
@@ -171,11 +179,14 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       });
 
       data["whatHappened"] = jqueryInputFields.filter("#whatHappened").children().val();
-
-      if (jqueryElement.children("#hearingDate").length) {
-        data["hearingDate"] = jqueryInputFields.filter("#hearingDate").children().val();
-        data["hearingNotes"] = jqueryInputFields.filter("#hearingNotes").children().val();
-      }
+			
+			data["hearingDate"] = [];
+      jqueryInputFields.filter("#hearingDate").children("input").each(function(index) {
+        data["hearingDate"].push($(this).val());
+      });
+     
+      data["hearingNotes"] = jqueryInputFields.filter("#hearingNotes").children().val();
+ 
       console.log(data);
       return true;
     } else {

@@ -7,22 +7,24 @@ function sanitize($var){
 
 $prefix = DATE('Y');
 
-class NewComplaintFormData{
+class NewComplaintData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location"];
 	private $data = ["formScan"		  => "",
 					 "prefix"		  => -1,
 					 "caseNumber"	  => -1,
 					 "plaintiff" 	  => [],
 					 "defendant" 	  => [],
-					 "witness" 	 	  => [],
-					 "charge"	 	  => [],
+					 "witness"				=> [],
+					 "charge"					=> [],
 					 "sectionNumber"  => [],
 					 "dateOfIncident" => [],
 					 "timeOfIncident" => [],
 					 "location"  	  => [],
 					 "whatHappened"   => "",
-					 "hearingDate"	  => null,
-					 "hearingNotes"	  => null];
+					 "hearingDate"			=> [],
+					 "hearingNotes"		=>	""];
+	
+	private $type;
 	
 	public function addData($field, $entry){
 		if(!array_key_exists($field, $this->data)){
@@ -59,11 +61,13 @@ class NewComplaintFormData{
 		}
 	}
 	
-	public function submitToDatabase($submissionType = "newCase"){
+	public function submitToDatabase(){
 		$dbConn = new mysqli("localhost",'root');
+		
+		if($this->type == "newComplaint"){
 		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
 		
-		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened,hearingDate,hearingNotes) VALUES (";
+		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (";
 		
 		$string = $string."'".$this->getData('formScan')."',";
 		$string = $string."'".$this->getData('plaintiff','string')."',";
@@ -73,9 +77,7 @@ class NewComplaintFormData{
 		$string = $string."'".$this->getData('timeOfIncident','string')."',";
 		$string = $string."'".$this->getData('location','string')."',";
 		$string = $string."'".$this->getData('charge','string')."',";
-		$string = $string."'".$this->getData('whatHappened')."',";
-		$string = $string."'".$this->getData('hearingDate','string')."',";
-		$string = $string."'".$this->getData('hearingNotes')."');";
+		$string = $string."'".$this->getData('whatHappened')."');";
 	  
 	    $dbConn->query($string);
 		
@@ -99,25 +101,31 @@ class NewComplaintFormData{
 				$dbConn->query($sendString);
 			}
 		}
-	
 		$dbConn->close();
-		
-		return $this->getData("prefix")."-".$this->getData("caseNumber");
+	  return "Case number: ".$this->getData("prefix")."-".$this->getData("caseNumber")." added to database.";
+	 }
+	 else if($this->type == "hearingNotes"){
+		 $dbConn->select_db("jcdb".$this->getData('prefix'));
+		 
+		 $dbConn->query("UPDATE casehistory ".
+										"SET hearingDate='".$this->getData("hearingDate","string")."', ".
+										"hearingNotes='".$this->getData("hearingNotes")."'".
+										"WHERE caseNumber=".$this->getData("caseNumber").";");
+	 
+	  $dbConn->close();
+	  return "Hearing notes for case number: ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
+	 }
 	}
 
-	function __construct($caseNum = null){		
-		if($caseNum == null){
-		  if($_POST['newComplaint']){
-		    
+	function __construct(){		
+		  if(isset($_POST['newComplaint'])){
+		   $this->type = "newComplaint"; 
 			foreach(self::$multiFields as $field){
 		    $num = 1;
 		    while(isset($_POST[$field.'-'.$num])){
 		      $this->addData($field,$_POST[$field.'-'.$num]);
 		      $num++;
 		  }
-	  }
-		else{
-			
 		}
 		
 		$scanFileName = "./formScans".$GLOBALS['prefix']."/".Date('U').".jpg";
@@ -128,8 +136,18 @@ class NewComplaintFormData{
 		$this->addData("formScan", $scanFileName);	
 
 		$this->addData("whatHappened",$_POST['whatHappened']);
-	  }
-     }
+   }
+	 else if(isset($_POST['newHearingNotes'])){
+		$this->type = "hearingNotes";
+		$num = 1;
+		while(isset($_POST['hearingDate-'.$num])){
+		  $this->addData('hearingDate',$_POST['hearingDate-'.$num]);
+			$num++;
+		}
+		$this->addData('prefix',$_POST['prefix']);
+		$this->addData('caseNumber',$_POST['caseNo']);
+		$this->addData('hearingNotes',$_POST['hearingNotes']);
+	 }
 	}
 }
 ?>

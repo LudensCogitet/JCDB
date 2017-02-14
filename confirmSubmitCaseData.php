@@ -6,13 +6,12 @@
 </html>
 
 <?php
-	require './ComplaintFormData.php';
+	require './NewComplaintData.php';
 	session_start();
 	
 	if(isset($_SESSION['newComplaint'])){
 		$complaint = $_SESSION['newComplaint'];
-		$caseNum = $complaint->submitToDatabase();
-		echo "Case #".$caseNum." added to database.<p>";
+		echo $complaint->submitToDatabase();
 		unset($_SESSION['newComplaint']);
 	}
 ?>

@@ -1,6 +1,6 @@
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="newComplaint.css">
+  <link rel="stylesheet" type="text/css" href="ComplaintForm.css">
   <script src="jquery-3.1.1.min.js"></script>
   <script src="ComplaintForm.js"></script>
   <script>
@@ -27,7 +27,7 @@
 </head>
 <body>
 <?php 
-require './ComplaintFormData.php';
+require './NewComplaintData.php';
 session_start();
 
 if(isset($_SESSION['newComplaint'])){

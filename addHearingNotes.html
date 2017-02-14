@@ -1,5 +1,5 @@
 <head>
-	<link rel="stylesheet" type="text/css" href="newComplaint.css">
+	<link rel="stylesheet" type="text/css" href="ComplaintForm.css">
   <script src="jquery-3.1.1.min.js"></script>
 	<script src="ComplaintForm.js"></script>
 	<script>
@@ -10,18 +10,19 @@
 			$("#complaintTargetMain").append(jqueryElements[0]);
 			$("#complaintTargetExtra").append(jqueryElements[1]);
 		
-			$("form").submit(function(event){				
-				var val = confirm("Submit hearing notes?");
-				if(!val)
-					event.preventDefault();	
+			$("form").submit(function(event){
+				complaintForm.updateFromJquery();
+				console.dir(complaintForm.getData());
+				localStorage.setItem("lastFormData",JSON.stringify(complaintForm.getData()));
 			});
 		});
 	</script>
 </head>
 <body>
 	<div id="complaintTargetMain"></div>
-	<form action="submitHearingNotes.php" method="post">
+	<form action="submitCaseData.php" method="post">
 		<div id="complaintTargetExtra"></div>
-	<input type="submit" name="addHearingNotes"></input>
+	<input type="submit" name="newHearingNotes"></input>
 	</form>
+	<button onclick="history.go(-1)">Back to Database</button>
 </body>

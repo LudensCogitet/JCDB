@@ -5,9 +5,9 @@
   padding-right: 3px;
 }
 
-th{text-align: center;}
+.complaintTable th{text-align: center;}
 
-.textField{
+.complaintTable .textField{
 	width: 308px;
 }
 
