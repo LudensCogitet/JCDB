@@ -62,3 +62,7 @@
 #caseTarget{
 	float:left;
 }
+
+#updateDBButton{
+	display: none;
+}

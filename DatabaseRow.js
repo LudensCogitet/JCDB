@@ -6,6 +6,12 @@ function DatabaseRow(rawData,targetTable,rowArray){
 	
 	var textEntryFields 	=		["hearingDate","sentence"];
 	
+	var entriesChanged = {"status": 				false,
+												"verdict": 				false,
+												"sentenceStatus":	false,
+												"hearingDate": 		false,
+												"sentence": 			false};
+	
 	var initialData = {
 		"prefix": 				rawData[0],
 		"caseNumber":			rawData[1],
@@ -19,11 +25,43 @@ function DatabaseRow(rawData,targetTable,rowArray){
 		"sentence":				rawData[9],
 		"sentenceStatus":	rawData[10],
 		"rowID":					rawData[11]};
+		
+	Object.keys(initialData).forEach(function(key){
+		console.log(key,typeof initialData[key]);
+		if(initialData[key] == null){
+			initialData[key] = "";
+		}
+		console.log(key,typeof initialData[key]);
+	});
 	
 	var data = JSON.parse(JSON.stringify(initialData));
 	
 	console.dir(initialData);
 	console.dir(data);
+	
+		function updateKey(key,value){
+			var updateButton = $("#updateDBButton");
+			data[key] = value;
+			if(!entriesChanged[key]){
+				if(initialData[key] != data[key]){
+					entriesChanged[key] = true;
+					DatabaseRow.numChanged++;
+					console.log(DatabaseRow.numChanged);
+					if(!updateButton.is(":visible")){
+						updateButton.show();
+					}
+				}
+			}
+			else{
+				if(initialData[key] == data[key]){
+					entriesChanged[key] = false;
+					DatabaseRow.numChanged--;
+					if(DatabaseRow.numChanged == 0){
+						updateButton.hide();
+				}
+			}
+		}
+	}
 	
 		function assignFormDisplay(cell){
 		 $(cell).click(function(){
@@ -65,6 +103,7 @@ function DatabaseRow(rawData,targetTable,rowArray){
 									}
 									$(cell).html(assignVal);
 									data[key] = assignVal;
+									updateKey(key,assignVal);
 									contextMenu.hide();
 								});
 								contextMenu.append(menuOption);
@@ -88,11 +127,8 @@ function DatabaseRow(rawData,targetTable,rowArray){
 				
 				$(cell).click(function(){
 					contextMenu.hide();
-					
 					if($(this).children(inputType).length == 0){
 						var inputVal = data[key];
-						if(inputVal == null)
-						inputVal = "";
 					
 						if(inputType == "input"){
 							inputField.val(inputVal);
@@ -109,6 +145,8 @@ function DatabaseRow(rawData,targetTable,rowArray){
 								console.log(value);
 								
 								data[key] = value;
+								console.log("VALUE",typeof value);
+								updateKey(key,value);
 								$(this).parent().html(value);
 							}		
 						});
@@ -122,10 +160,6 @@ function DatabaseRow(rawData,targetTable,rowArray){
 						$(this).children().trigger(e);
 					}
 				});
-		}
-		
-		function statusFieldAction(){
-			$(this).html();
 		}
 		
 		var myRow = targetTable.insertRow(-1);
@@ -179,7 +213,28 @@ function DatabaseRow(rawData,targetTable,rowArray){
 		return [data["prefix"],data["caseNumber"],data["rowID"]];
 	}
 
-	this.getQueryString = function(){
+	this.sendChanges = function(){
+		var sendData = [];
 		
+			Object.keys(entriesChanged).forEach(function(key){
+			if(entriesChanged[key]){
+					sendData.push([key,entriesChanged[key]]);
+					entriesChanged[key] = false;
+					DatabaseRow.numChanged--;
+					if(DatabaseRow.numChanged == 0){
+						$("#updateDBButton").hide();
+				}
+			}
+		});
+	
+		if(sendData.length > 0){
+			$.ajax({url:"./updateDB.php",
+							method: "POST",
+							data: JSON.stringify(sendData),
+							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);}
+			});
+		}
 	}
 }
+
+DatabaseRow.numChanged = 0;

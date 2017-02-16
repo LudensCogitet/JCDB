@@ -9,8 +9,16 @@
   localStorage.removeItem("lastFormData"); 
 
   $(document).ready(function(){
-	  var mainTable = document.getElementById("mainTable");
+		var mainTable = document.getElementById("mainTable");
 	  var rowObjects = [];
+		
+		$("#updateDBButton").click(function(){	
+			if(confirm('Are you sure?')){
+				for(let i = 0; i < rowObjects.length; i++){
+					rowObjects[i].sendChanges();
+				}
+			}
+		});
 		
 		$.ajax({url:"./returnDBInfo.php",
 	  success: function(result){
@@ -40,7 +48,8 @@
   <div id="caseTarget"></div>
   <div id="scanTarget"></div>
 </div>
-<button style="float:right;clear:both;" onclick='window.location.href="newComplaint.php"'>Add New Complaint</button>
+<button style="float:right;clear:right;" onclick='window.location.href="newComplaint.php"'>Add New Complaint</button>
+<button id="updateDBButton" style="float:right;clear:left;">Update Database</button>
 <table id="mainTable" style="float:right; clear:both;">
 <thead id="mainTableHead">
 <th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
