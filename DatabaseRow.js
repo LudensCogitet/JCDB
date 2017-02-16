@@ -214,11 +214,12 @@ function DatabaseRow(rawData,targetTable,rowArray){
 	}
 
 	this.sendChanges = function(){
-		var sendData = [];
+		var sendData = [data["prefix"],data["rowID"],{}];
+		console.dir(sendData);
 		
 			Object.keys(entriesChanged).forEach(function(key){
 			if(entriesChanged[key]){
-					sendData.push([key,entriesChanged[key]]);
+					sendData[2][key] = initialData[key] = data[key];
 					entriesChanged[key] = false;
 					DatabaseRow.numChanged--;
 					if(DatabaseRow.numChanged == 0){
@@ -227,10 +228,10 @@ function DatabaseRow(rawData,targetTable,rowArray){
 			}
 		});
 	
-		if(sendData.length > 0){
+		if(Object.keys(sendData[2]).length != 0){
 			$.ajax({url:"./updateDB.php",
 							method: "POST",
-							data: JSON.stringify(sendData),
+							data: {changes: JSON.stringify(sendData)},
 							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);}
 			});
 		}

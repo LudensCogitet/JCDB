@@ -6,6 +6,8 @@
   
   $sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
   
+	$dbConn->close();
+	
   $values = [];
   
   while($row = $sqlResult->fetch_row()){
