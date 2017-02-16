@@ -4,64 +4,32 @@
 <link rel="stylesheet" type="text/css" href="databaseDisplay.css">
 <script src="jquery-3.1.1.min.js"></script>
 <script src="ComplaintForm.js"></script>
+<script src="DatabaseRow.js"></script>
 <script>
   localStorage.removeItem("lastFormData"); 
-  function assignFormDisplay(element,prefix,caseNum){
-		 $(element).click(function(){
-		 console.log(caseNum);
-			$.ajax({url:"displayCase.php",
-					type: "POST",
-					data: {"prefix": prefix, 
-						   "caseNum": caseNum},
-			success: function(result){
-			  console.log("this is the result",result);
-			  var complaintForm = new ComplaintForm(JSON.parse(result),"both",true);
-			  console.log("lastFormData before:", localStorage.lastFormData);
-			  localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));
-			  console.log("lastFormData after:", localStorage.lastFormData);
-			  $("#caseTarget").append(complaintForm.getJqueryElement("complete"));
-			  $("#caseTarget").append($("<button>Add Hearing Notes</button>"));
-			  $("#caseTarget").children("button").click(function(){
-				window.location.href="addHearingNotes.html"});
-			  console.log("caseScan",complaintForm.getData());
-			  $("#scanTarget").append($(complaintForm.getData("formScan")));
-			  $("#caseInfo").show();
-			}});
-		 });
-  }
 
   $(document).ready(function(){
 	  var mainTable = document.getElementById("mainTable");
-	  $.ajax({url:"./returnDBInfo.php",
+	  var rowObjects = [];
+		
+		$.ajax({url:"./returnDBInfo.php",
 	  success: function(result){
 	    console.log(result);
 			var dbRows = JSON.parse(result);
 			console.log(dbRows);
 		
 			for(let i = 0; i < dbRows.length; i++){
-				var newRow = mainTable.insertRow(-1);
-				newRow.insertCell(-1).innerHTML = dbRows[i][0] + "-" + dbRows[i][1];
-				for(let j = 2; j < dbRows[i].length; j++){
-					var newCell = newRow.insertCell(-1);
-					newCell.innerHTML = dbRows[i][j];
-					if(j == dbRows[i].length -1)
-						newCell.style.display = "none";
-					console.log(newCell);
-					$(newCell).click(function(){
-						console.log("HEY!");
-						$("#contextMenu").css("left",event.pageX+"px");
-						$("#contextMenu").css("top",event.pageY+"px");
-						$("#contextMenu").show();
-					});
-				}
-		  assignFormDisplay(newRow.cells[0],dbRows[i][0],dbRows[i][1]);
-		}
+				rowObjects.push(new DatabaseRow(dbRows[i],mainTable,rowObjects));
+			}
 		}});
+		
+			console.log("TABLE");
+		console.dir(mainTable);
   
-	$("#caseInfoClose").click(function(){
-	  $(this).parent().hide();
-	  $(this).siblings().children().remove();
-	});
+		$("#caseInfoClose").click(function(){
+			$(this).parent().hide();
+			$(this).siblings().children().remove();
+		});
   });
 </script>
 </head>
@@ -77,6 +45,8 @@
 <thead id="mainTableHead">
 <th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
 </thead>
+<tbody>
+</tbody>
 </table>
 </body>
 </html>

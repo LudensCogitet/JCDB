@@ -1,4 +1,4 @@
-#mainTable th, td{
+#mainTable th, #mainTable td{
   font-size: 1.3em;	
   border: 2px solid black;
   padding: 2px;
@@ -6,7 +6,7 @@
   cursor: pointer;
 }
 
-#mainTable th:hover, #mainTable td:hover{
+#mainTable th:hover, #mainTable td:hover, #contextMenu .menuOption:hover{
 	color: white;
 	background-color: black;
 }
@@ -40,6 +40,19 @@
 	box-shadow: 5px 5px 5px black;
 	border: 2px solid black;
 	background-color: white;
+}
+
+#contextMenu{
+	padding: 2px 2px 2px 2px;
+	font-size: 1.3em;
+}
+
+#contextMenu .menuOption{
+	border: 2px solid black;
+	text-align: center;
+	font-size: 1.3em;
+	cursor: pointer;
+	padding: 2px 2px 2px 2px;
 }
 
 #caseTarget, #scanTarget{
