@@ -1,10 +1,9 @@
 <?php
 	if($_SERVER['REQUEST_METHOD'] === 'POST'){
-		$data = json_decode($_POST['changes']);
-		$changes = $data[2];
+		$changes = json_decode($_POST['changes']);
 		
 		$dbConn = new mysqli("localHost","root");
-		$dbConn->select_db("jcdb".$data[0]);
+		$dbConn->select_db("jcdb".$_POST['prefix']);
 		
 		$queryString = "UPDATE casestate SET ";
 		
@@ -19,7 +18,9 @@
 			}
 		}
 		
-		$queryString = $queryString.' WHERE rowID='.$data[1].';';
+		$queryString = $queryString.' WHERE rowID='.$_POST['rowID'].';';
+		
+		echo $queryString;
 		
 		$dbConn->query($queryString);
 	

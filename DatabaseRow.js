@@ -31,13 +31,9 @@ function DatabaseRow(rawData,targetTable,rowArray){
 		if(initialData[key] == null){
 			initialData[key] = "";
 		}
-		console.log(key,typeof initialData[key]);
 	});
 	
 	var data = JSON.parse(JSON.stringify(initialData));
-	
-	console.dir(initialData);
-	console.dir(data);
 	
 		function updateKey(key,value){
 			var updateButton = $("#updateDBButton");
@@ -214,12 +210,12 @@ function DatabaseRow(rawData,targetTable,rowArray){
 	}
 
 	this.sendChanges = function(){
-		var sendData = [data["prefix"],data["rowID"],{}];
+		var sendData = {};
 		console.dir(sendData);
 		
 			Object.keys(entriesChanged).forEach(function(key){
 			if(entriesChanged[key]){
-					sendData[2][key] = initialData[key] = data[key];
+					sendData[key] = initialData[key] = data[key];
 					entriesChanged[key] = false;
 					DatabaseRow.numChanged--;
 					if(DatabaseRow.numChanged == 0){
@@ -228,11 +224,15 @@ function DatabaseRow(rawData,targetTable,rowArray){
 			}
 		});
 	
-		if(Object.keys(sendData[2]).length != 0){
+		if(Object.keys(sendData).length != 0){
+			console.log("HERE!", sendData);
 			$.ajax({url:"./updateDB.php",
 							method: "POST",
-							data: {changes: JSON.stringify(sendData)},
-							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);}
+							data: {prefix: data["prefix"],
+										 rowID: data["rowID"],
+										 changes: JSON.stringify(sendData)},
+							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);},
+							success: function(result){$("html").prepend(result);}
 			});
 		}
 	}
