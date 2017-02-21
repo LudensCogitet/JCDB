@@ -30,9 +30,8 @@ function contextMenu(target,targetDiv,options){
 }
 
 function toggleTextField(target,type,action){
-	$(target).click(function(){
-		if($(this).children(type).length == 0){
-						var inputVal = $(this).html();
+		if($(target).children(type).length == 0){
+						var inputVal = $(target).html();
 						var inputField = null;
 					
 						if(type == "input"){
@@ -44,9 +43,9 @@ function toggleTextField(target,type,action){
 							inputField.append(inputVal);
 						}
 					
-						$(this).html(inputField);
+						$(target).html(inputField);
 								
-						$(this).children().keydown(function(event){
+						$(target).children().keydown(function(event){
 							if(event.keyCode == 13){
 								var value = $(this).val();
 								console.log(value);
@@ -56,14 +55,12 @@ function toggleTextField(target,type,action){
 							}		
 						});
 								
-						$(this).children().focus();
-						$(this).children().select();
+						$(target).children().focus();
+						$(target).children().select();
 					}
 					else{
 						var e = $.Event("keydown");
 						e.keyCode = 13;
-						$(this).children().trigger(e);
-					}
-	});
-	
+						$(target).children().trigger(e);
+					}	
 }

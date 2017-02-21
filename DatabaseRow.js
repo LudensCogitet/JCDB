@@ -111,7 +111,13 @@ function DatabaseRow(rawData,targetTable,rowArray){
 				else if(key == "sentence"){
 					type = "textarea";
 				}
-				toggleTextField(cell,type,function(value){updateKey(key,value);})
+				
+				contextMenu(cell,"#contextMenu",[["Edit",function(){
+																									toggleTextField(cell,type,function(value){
+																											updateKey(key,value);
+																										});
+																								}
+																				 ]]);
 		}
 		
 		var myRow = targetTable.insertRow(-1);
@@ -136,7 +142,6 @@ function DatabaseRow(rawData,targetTable,rowArray){
 				}
 				else if(textEntryFields.indexOf(key) != -1){
 					assignTextEntryClick(currentCell,key);
-				
 				}
 			}
 		});
