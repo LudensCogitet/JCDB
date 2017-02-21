@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="databaseDisplay.css">
 <script src="jquery-3.1.1.min.js"></script>
 <script src="ComplaintForm.js"></script>
+<script src="ContextMenu.js"></script>
 <script src="DatabaseRow.js"></script>
 <script>
   localStorage.removeItem("lastFormData"); 
@@ -38,11 +39,13 @@
 			$(this).parent().hide();
 			$(this).siblings().children().remove();
 		});
+		
+		$("html").click(function(){$("#contextMenu").hide();});
   });
 </script>
 </head>
 <body>
-<div id="contextMenu">Hi!</div>
+<div id="contextMenu"></div>
 <div id="caseInfo">
   <button id="caseInfoClose">Close</button>
   <div id="caseTarget"></div>

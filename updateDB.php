@@ -20,8 +20,6 @@
 		
 		$queryString = $queryString.' WHERE rowID='.$_POST['rowID'].';';
 		
-		echo $queryString;
-		
 		$dbConn->query($queryString);
 	
 		$dbConn->close();		

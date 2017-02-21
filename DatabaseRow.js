@@ -27,7 +27,6 @@ function DatabaseRow(rawData,targetTable,rowArray){
 		"rowID":					rawData[11]};
 		
 	Object.keys(initialData).forEach(function(key){
-		console.log(key,typeof initialData[key]);
 		if(initialData[key] == null){
 			initialData[key] = "";
 		}
@@ -83,79 +82,36 @@ function DatabaseRow(rawData,targetTable,rowArray){
   }
 		
 		function assignMultiChoiceClick(cell,key){
-			contextMenu = $("#contextMenu");
 			
-			$(cell).click(function(){
-						contextMenu.append($("<div class='menuHeading'>filter by:</div>"));
-						contextMenu.append($("<div class='menuOption'>"+cell.innerHTML+"</div>"));
-						contextMenu.append($("<div class='menuHeading'>mark as:</div>"));
-						
-						for(let i = 0; i < multiChoiceFields[key].length; i++){
-								var menuOption = $("<div class='menuOption'>"+multiChoiceFields[key][i]+"</div>");
-								menuOption.click(function(){
-									var assignVal = multiChoiceFields[key][i];
-									if(assignVal === "(blank)"){
-										assignVal = "";
-									}
-									$(cell).html(assignVal);
-									data[key] = assignVal;
-									updateKey(key,assignVal);
-									contextMenu.hide();
-								});
-								contextMenu.append(menuOption);
-						}
-						contextMenu.show();
-					});
+			var options = [["filter by:"],
+										 [cell.innerHTML],
+										 ["mark as:"]];
+										 
+			for(let i = 0; i < multiChoiceFields[key].length; i++){
+				options.push([multiChoiceFields[key][i],function(){
+					var assignVal = multiChoiceFields[key][i];
+					if(assignVal === "(blank)"){
+						assignVal = "";
+					}
+					$(cell).html(assignVal);
+					data[key] = assignVal;
+					updateKey(key,assignVal);
+				}]);
+			}
+			
+			contextMenu(cell,"#contextMenu",options);
 		}
 		
 		function assignTextEntryClick(cell,key){		
-				var inputType = "";
-				var inputField = "";
 				
+				var type = null;
 				if(key == "hearingDate"){
-						inputType = "input";
-						inputField = $("<input type='text'></input>");
-					}
-					else if(key == "sentence"){
-						inputType = "textarea";
-						inputField = $("<textarea></textarea>");
-					}
-				
-				$(cell).click(function(){
-					contextMenu.hide();
-					if($(this).children(inputType).length == 0){
-						var inputVal = data[key];
-					
-						if(inputType == "input"){
-							inputField.val(inputVal);
-						}
-						else if(inputType == "textarea"){
-							inputField.append(inputVal);
-						}
-					
-						$(this).html(inputField);
-								
-						$(this).children().keydown(function(event){
-							if(event.keyCode == 13){
-								var value = $(this).val();
-								console.log(value);
-								
-								data[key] = value;
-								console.log("VALUE",typeof value);
-								updateKey(key,value);
-								$(this).parent().html(value);
-							}		
-						});
-								
-						$(this).children().focus();
-						$(this).children().select();
-					}
-					else{
-						var e = $.Event("keydown");
-						e.keyCode = 13;
-						$(this).children().trigger(e);
-					}
-				});
+					type = "input";
+				}
+				else if(key == "sentence"){
+					type = "textarea";
+				}
+				toggleTextField(cell,type,function(value){updateKey(key,value);})
 		}
 		
 		var myRow = targetTable.insertRow(-1);
@@ -175,15 +131,6 @@ function DatabaseRow(rawData,targetTable,rowArray){
 				
 				currentCell.innerHTML = data[key];
 				
-				var contextMenu = $("#contextMenu");
-				
-				$(currentCell).click(function(){
-					contextMenu.css("left",event.pageX+"px");
-					contextMenu.css("top",event.pageY+"px");
-					contextMenu.empty();
-					contextMenu.hide();
-				});
-				
 				if(Object.keys(multiChoiceFields).indexOf(key) != -1){
 					assignMultiChoiceClick(currentCell,key);
 				}
@@ -191,17 +138,6 @@ function DatabaseRow(rawData,targetTable,rowArray){
 					assignTextEntryClick(currentCell,key);
 				
 				}
-				else{
-					$(currentCell).click(function(event){
-						var content = $(this).html();
-						content = content.split(", ");
-						for(let i = 0; i < content.length; i++){
-							content[i] = $("<div class='menuOption'>"+content[i]+"</div>");
-							contextMenu.append(content[i]);
-							contextMenu.show();
-						}
-					});
-				 }
 			}
 		});
 
@@ -231,8 +167,7 @@ function DatabaseRow(rawData,targetTable,rowArray){
 							data: {prefix: data["prefix"],
 										 rowID: data["rowID"],
 										 changes: JSON.stringify(sendData)},
-							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);},
-							success: function(result){$("html").prepend(result);}
+							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);}
 			});
 		}
 	}
