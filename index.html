@@ -9,13 +9,77 @@
 <script>
   localStorage.removeItem("lastFormData"); 
 
+	function sortRows(column,dir = "asc"){
+		var retVal;
+		
+		if(dir == "desc")
+			retVal = 1;
+		else if(dir == "asc")
+			retVal = -1;
+			
+		rowObjects.sort(function(a,b){
+			if(a.getCellValue(column) < b.getCellValue(column))
+				return retVal;
+			else if(a.getCellValue(column) < b.getCellValue(column))
+				return -retVal;
+			else
+				return 0;
+		});
+	}
+	
+	function makeTable(dataSet){
+		var returnArray = [];
+		
+		for(let i = 0; i < dataSet.length; i++){
+				returnArray.push(new DatabaseRow(dataSet[i],returnArray));
+			}
+			
+		return returnArray;	
+	}
+	
+	function fillTable(table){
+		while(table.rows.length > 0)
+			table.deleteRow(-1);
+			
+			for(let i = 0; i < rowObjects.length; i++){
+				$(table).append(rowObjects[i].returnRow());
+			}
+	}
+	
+	var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9};
+	
+var dataSet = [];
+var rowObjects = [];
+
+ function  simpleHeadingMenuSetup(column){
+ var options = [["Sort By"],["asc",function(cMenuDiv){
+																					cMenuDiv.hide();
+																					sortRows(column,"asc");
+																					fillTable(mainTable.tBodies[0]);
+																				}],
+															 ["desc",function(cMenuDiv){
+																					cMenuDiv.hide();
+																					sortRows(column,"desc");
+																					fillTable(mainTable.tBodies[0]);
+																				}]];
+																				
+		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
+}
+
   $(document).ready(function(){
 		var mainTable = document.getElementById("mainTable");
-	  var rowObjects = [];
+		
+		simpleHeadingMenuSetup("defendant");
+		simpleHeadingMenuSetup("charge");
+		simpleHeadingMenuSetup("status");
+		simpleHeadingMenuSetup("hearingDate");
+		simpleHeadingMenuSetup("verdict");
+		simpleHeadingMenuSetup("sentenceStatus");
 		
 		$("#updateDBButton").click(function(){	
 			if(confirm('Are you sure?')){
 				for(let i = 0; i < rowObjects.length; i++){
+					console.log("SENDING CHANGES");
 					rowObjects[i].sendChanges();
 				}
 			}
@@ -24,23 +88,17 @@
 		$.ajax({url:"./returnDBInfo.php",
 	  success: function(result){
 	    console.log(result);
-			var dbRows = JSON.parse(result);
-			console.log(dbRows);
-		
-			for(let i = 0; i < dbRows.length; i++){
-				rowObjects.push(new DatabaseRow(dbRows[i],mainTable,rowObjects));
-			}
+			dataSet = JSON.parse(result);
+			rowObjects = makeTable(dataSet);
+			fillTable(mainTable.tBodies[0]);
 		}});
-		
-			console.log("TABLE");
-		console.dir(mainTable);
   
 		$("#caseInfoClose").click(function(){
 			$(this).parent().hide();
 			$(this).siblings().children().remove();
 		});
 		
-		$("html").click(function(){$("#contextMenu").hide();});
+		$("html").click(function(){$("#contextMenu").hide();console.log("HIDE TRIGGERED");});
   });
 </script>
 </head>
@@ -55,7 +113,9 @@
 <button id="updateDBButton" style="float:right;clear:left;">Update Database</button>
 <table id="mainTable" style="float:right; clear:both;">
 <thead id="mainTableHead">
+<tr>
 <th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
+</tr>
 </thead>
 <tbody>
 </tbody>

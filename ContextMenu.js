@@ -14,9 +14,9 @@ function contextMenu(target,targetDiv,options){
 				var newOption = $("<div class='menuOption'>"+options[i][0]+"</div>");
     
 				if(options[i][1] != null){
-					newOption.click(function(){
-					targetDiv.hide();
-					options[i][1]();
+					newOption.click(function(event){
+					event.stopPropagation();
+					options[i][1](targetDiv);
 				});
 			}
 			targetDiv.append(newOption);	 

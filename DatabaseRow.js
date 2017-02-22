@@ -1,4 +1,4 @@
-function DatabaseRow(rawData,targetTable,rowArray){
+function DatabaseRow(rawData,rowArray){
 	
 	var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
 														 "verdict":					["ng", "g", "ni", "md", "wd", "(blank)"],
@@ -59,7 +59,7 @@ function DatabaseRow(rawData,targetTable,rowArray){
 	}
 	
 		function assignFormDisplay(cell){
-		 $(cell).click(function(){
+		 cell.click(function(){
 			$.ajax({url:"displayCase.php",
 					type: "POST",
 					data: {"prefix": data["prefix"], 
@@ -88,13 +88,13 @@ function DatabaseRow(rawData,targetTable,rowArray){
 										 ["mark as:"]];
 										 
 			for(let i = 0; i < multiChoiceFields[key].length; i++){
-				options.push([multiChoiceFields[key][i],function(){
+				options.push([multiChoiceFields[key][i],function(cMenuDiv){
+					cMenuDiv.hide();
 					var assignVal = multiChoiceFields[key][i];
 					if(assignVal === "(blank)"){
 						assignVal = "";
 					}
 					$(cell).html(assignVal);
-					data[key] = assignVal;
 					updateKey(key,assignVal);
 				}]);
 			}
@@ -112,7 +112,8 @@ function DatabaseRow(rawData,targetTable,rowArray){
 					type = "textarea";
 				}
 				
-				contextMenu(cell,"#contextMenu",[["Edit",function(){
+				contextMenu(cell,"#contextMenu",[["Edit",function(cMenuDiv){
+																									cMenuDiv.hide();
 																									toggleTextField(cell,type,function(value){
 																											updateKey(key,value);
 																										});
@@ -120,10 +121,10 @@ function DatabaseRow(rawData,targetTable,rowArray){
 																				 ]]);
 		}
 		
-		var myRow = targetTable.insertRow(-1);
-		var myCells = [myRow.insertCell(-1)];
+		var myRow = $("<tr>");
+		var myCells = [$("<td>")];
 	
-		myCells[0].innerHTML = data["prefix"]+"-"+data["caseNumber"];
+		myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
 		assignFormDisplay(myCells[0]);
 		
 		Object.keys(data).forEach(function(key){
@@ -132,10 +133,10 @@ function DatabaseRow(rawData,targetTable,rowArray){
 			}
 			else
 			{
-				myCells.push(myRow.insertCell(-1));
+				myCells.push($("<td>"));
 				var currentCell = myCells[myCells.length-1];
 				
-				currentCell.innerHTML = data[key];
+				currentCell.append(data[key]);
 				
 				if(Object.keys(multiChoiceFields).indexOf(key) != -1){
 					assignMultiChoiceClick(currentCell,key);
@@ -145,6 +146,19 @@ function DatabaseRow(rawData,targetTable,rowArray){
 				}
 			}
 		});
+		
+		
+		for(let i = 0; i < myCells.length; i++)
+			myRow.append(myCells[i]);
+		
+	this.returnRow = function(){
+		console.log(myRow);
+		return myRow;
+	}
+	
+	this.getCellValue = function(cell){
+		return data[cell];
+	}
 
 	this.getIdentity = function(){
 		return [data["prefix"],data["caseNumber"],data["rowID"]];
