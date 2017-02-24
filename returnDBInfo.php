@@ -1,5 +1,10 @@
 <?php
-  $prefix = DATE('Y');
+	require 'getDBIdent.php';
+	
+	if(isset($_GET['dataBaseIdent']))
+		$prefix = $_GET['dataBaseIdent'];
+	else
+		$prefix = getDBIdent();
   
   $dbConn = new mysqli("localHost","root");
   $dbConn->select_db("jcdb".$prefix);
@@ -13,6 +18,6 @@
   while($row = $sqlResult->fetch_row()){
 	  $values[] = $row;
   }
-  
+	
   echo json_encode($values);
 ?>

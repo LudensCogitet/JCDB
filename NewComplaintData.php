@@ -1,11 +1,13 @@
 <?php
+require 'getDBIdent.php';
+
 function sanitize($var){
 	$var = trim($var);
 	$var = htmlspecialchars($var);
 	return $var;
 }
 
-$prefix = DATE('Y');
+$prefix = getDBIdent();
 
 class NewComplaintData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location"];
@@ -61,11 +63,20 @@ class NewComplaintData{
 		}
 	}
 	
+	private function makeNewDatabase($dbConn){
+		$dbConn->query("CREATE DATABASE jcdb".$GLOBALS['prefix'].";");
+		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
+		$dbConn->query("CREATE TABLE casehistory(prefix INTEGER DEFAULT ".$GLOBALS['prefix'].", caseNumber INTEGER AUTO_INCREMENT PRIMARY KEY, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, hearingDate TEXT, hearingNotes TEXT);");
+		$dbConn->query("CREATE TABLE casestate(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY);");
+	}
+	
 	public function submitToDatabase(){
 		$dbConn = new mysqli("localhost",'root');
 		
 		if($this->type == "newComplaint"){
-		$dbConn->select_db("jcdb".$GLOBALS['prefix']);
+			if(!$dbConn->select_db("jcdb".$GLOBALS['prefix'])){
+				$this->makeNewDatabase($dbConn);
+			}
 		
 		$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (";
 		
@@ -128,7 +139,11 @@ class NewComplaintData{
 		  }
 		}
 		
-		$scanFileName = "./formScans".$GLOBALS['prefix']."/".Date('U').".jpg";
+		$scanDirPath = "./formScans".$GLOBALS['prefix'];
+		if(!file_exists($scanDirPath))
+			mkdir($scanDirPath);
+		
+		$scanFileName = $scanDirPath."/".Date('U').".jpg";
 		if(!move_uploaded_file($_FILES['formScan']['tmp_name'],$scanFileName)){
 			echo "FAIL!";
 			echo $_FILES['formScan']['tmp_name'];

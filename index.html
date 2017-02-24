@@ -17,15 +17,61 @@
 		else if(dir == "asc")
 			retVal = -1;
 			
-		rowObjects.sort(function(a,b){
-			if(a.getCellValue(column) < b.getCellValue(column))
+		if(column == "prefixAndCaseNumber"){
+			rowObjects.sort(function(a,b){
+			
+			var aVal = parseInt(a.getCellValue("prefix")+a.getCellValue("caseNumber"));
+			var bVal = parseInt(b.getCellValue("prefix")+b.getCellValue("caseNumber"));
+			
+			if(aVal < bVal)
 				return retVal;
-			else if(a.getCellValue(column) < b.getCellValue(column))
-				return -retVal;
 			else
-				return 0;
+				return -retVal;
 		});
 	}
+	else if(column == "hearingDate"){
+			rowObjects.sort(function(a,b){
+				var aVal = parseInt(a.getCellValue(column).replace(/[^0-9]/g,""));
+				var bVal = parseInt(b.getCellValue(column).replace(/[^0-9]/g,""));
+				
+				if(isNaN(aVal))
+					aVal = 0;
+				if(isNaN(bVal))
+					bVal = 0;
+				
+				console.log("A AND B", aVal, bVal);
+				
+				if(aVal < bVal)
+					return retVal;
+				else
+					return -retVal;
+		});
+	}
+	else if(column == "plaintiff" || column == "witness"){
+		rowObjects.sort(function(a,b){
+			var aVal = a.getCellValue(column).toLowerCase().split(", ");
+			aVal.sort();
+			aVal = aVal.join("");
+			
+			var bVal = b.getCellValue(column).toLowerCase().split(", ");
+			bVal.sort();
+			bVal = bVal.join("");
+			
+			if(aVal < bVal)
+				return retVal;
+			else
+				return -retVal;
+		});
+	}
+	else{
+		rowObjects.sort(function(a,b){
+			if(a.getCellValue(column).toLowerCase() < b.getCellValue(column).toLowerCase())
+				return retVal;
+			else
+				return -retVal;
+		});
+	}
+}
 	
 	function makeTable(dataSet){
 		var returnArray = [];
@@ -51,16 +97,23 @@
 var dataSet = [];
 var rowObjects = [];
 
+var upArrow = $("<span class='arrow up'>&#x25B2;</span>");
+var downArrow = $("<span class='arrow down'>&#x25BC;</span>");
+
  function  simpleHeadingMenuSetup(column){
  var options = [["Sort By"],["asc",function(cMenuDiv){
 																					cMenuDiv.hide();
+																					$(".arrow").remove();
 																					sortRows(column,"asc");
 																					fillTable(mainTable.tBodies[0]);
+																					$(mainTable.rows[0].cells[columnIndex[column]]).append(upArrow.clone());
 																				}],
 															 ["desc",function(cMenuDiv){
 																					cMenuDiv.hide();
+																					$(".arrow").remove();
 																					sortRows(column,"desc");
 																					fillTable(mainTable.tBodies[0]);
+																					$(mainTable.rows[0].cells[columnIndex[column]]).append(downArrow.clone());
 																				}]];
 																				
 		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
@@ -69,7 +122,10 @@ var rowObjects = [];
   $(document).ready(function(){
 		var mainTable = document.getElementById("mainTable");
 		
+		simpleHeadingMenuSetup("prefixAndCaseNumber");
+		simpleHeadingMenuSetup("plaintiff");
 		simpleHeadingMenuSetup("defendant");
+		simpleHeadingMenuSetup("witness");
 		simpleHeadingMenuSetup("charge");
 		simpleHeadingMenuSetup("status");
 		simpleHeadingMenuSetup("hearingDate");
