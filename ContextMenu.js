@@ -16,7 +16,7 @@ function contextMenu(target,targetDiv,options){
 				if(options[i][1] != null){
 					newOption.click(function(event){
 					event.stopPropagation();
-					options[i][1](targetDiv);
+					options[i][1](targetDiv,target);
 				});
 			}
 			targetDiv.append(newOption);	 
@@ -30,6 +30,7 @@ function contextMenu(target,targetDiv,options){
 }
 
 function toggleTextField(target,type,action){
+	console.log("here");
 		if($(target).children(type).length == 0){
 						var inputVal = $(target).html();
 						var inputField = null;

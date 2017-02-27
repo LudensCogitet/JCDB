@@ -1,3 +1,7 @@
+var _highlightKeyDown = false;
+$(window).keydown(function(event){if(event.which == 72)_highlightKeyDown = true;});
+$(window).keyup(function(event){if(event.which == 72)_highlightKeyDown = false;});
+
 function DatabaseRow(rawData,rowArray){
 	
 	var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
@@ -58,6 +62,26 @@ function DatabaseRow(rawData,rowArray){
 		}
 	}
 	
+	function addHighlightOptions(cell){
+		
+		var cell = $(cell);
+		
+		cell.click(function(){
+			if(_highlightKeyDown){
+				if(cell.parent().children().hasClass("de_emphasize")){
+					cell.parent().children().removeClass("de_emphasize");
+				}
+				else if(cell.parent().children().hasClass("emphasize")){
+					cell.parent().children().removeClass("emphasize");
+					cell.parent().children().addClass("de_emphasize");
+				}
+				else{
+					cell.parent().children().addClass("emphasize");
+				}
+			}
+		});
+	}
+	
 		function assignFormDisplay(cell){
 		 cell.click(function(){
 			$.ajax({url:"displayCase.php",
@@ -104,11 +128,8 @@ function DatabaseRow(rawData,rowArray){
 		
 		function assignTextEntryClick(cell,key){		
 				
-				var type = null;
-				if(key == "hearingDate"){
-					type = "input";
-				}
-				else if(key == "sentence"){
+				var type = "input";
+				if(key == "sentence"){
 					type = "textarea";
 				}
 				
@@ -126,6 +147,7 @@ function DatabaseRow(rawData,rowArray){
 	
 		myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
 		assignFormDisplay(myCells[0]);
+		addHighlightOptions(myCells[0]);
 		
 		Object.keys(data).forEach(function(key){
 			if(key === "prefix" || key == "caseNumber" || key == "rowID"){
@@ -135,6 +157,7 @@ function DatabaseRow(rawData,rowArray){
 			{
 				myCells.push($("<td>"));
 				var currentCell = myCells[myCells.length-1];
+				addHighlightOptions(currentCell);
 				
 				currentCell.append(data[key]);
 				

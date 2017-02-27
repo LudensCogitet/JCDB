@@ -66,3 +66,12 @@
 #updateDBButton{
 	display: none;
 }
+
+.emphasize{
+	background-color: yellow;
+}
+
+.de_emphasize{
+	border-color: lightgrey !important;
+	color: lightgrey;
+}

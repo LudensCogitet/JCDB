@@ -100,8 +100,31 @@ var rowObjects = [];
 var upArrow = $("<span class='arrow up'>&#x25B2;</span>");
 var downArrow = $("<span class='arrow down'>&#x25BC;</span>");
 
+function getDBInfo(filterColumn = "all", filterValue = "all"){
+			$.ajax({url:"./returnDBInfo.php",
+			method: "GET",
+			data:{"column": filterColumn,
+						"value": filterValue}, 
+			success: function(result){
+	    console.log(result);
+			dataSet = JSON.parse(result);
+			rowObjects = makeTable(dataSet);
+			fillTable(mainTable.tBodies[0]);
+		}});
+}
+
  function  simpleHeadingMenuSetup(column){
- var options = [["Sort By"],["asc",function(cMenuDiv){
+ 
+	var searchFunc = function(cMenuDiv,target){
+		toggleTextField(cMenuDiv.children(":contains('Search')"),"input",
+		function(value){
+			cMenuDiv.hide();
+			getDBInfo(column,value);
+		});
+	}
+ 
+ var options = [["Search", searchFunc],
+								["Sort By"],["asc",function(cMenuDiv){
 																					cMenuDiv.hide();
 																					$(".arrow").remove();
 																					sortRows(column,"asc");
@@ -141,13 +164,7 @@ var downArrow = $("<span class='arrow down'>&#x25BC;</span>");
 			}
 		});
 		
-		$.ajax({url:"./returnDBInfo.php",
-	  success: function(result){
-	    console.log(result);
-			dataSet = JSON.parse(result);
-			rowObjects = makeTable(dataSet);
-			fillTable(mainTable.tBodies[0]);
-		}});
+		getDBInfo();
   
 		$("#caseInfoClose").click(function(){
 			$(this).parent().hide();

@@ -8,8 +8,11 @@
   
   $dbConn = new mysqli("localHost","root");
   $dbConn->select_db("jcdb".$prefix);
-  
-  $sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
+	
+	if($_GET["column"] == "all" && $_GET["value"] == "all")
+		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
+	else
+		$sqlResult = $dbConn->query("SELECT * FROM casestate WHERE ".$_GET["column"]." = '".$_GET["value"]."' ORDER BY caseNumber");
   
 	$dbConn->close();
 	
