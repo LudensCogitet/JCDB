@@ -14,9 +14,19 @@
 	if($searchCriteria == "all")
 		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
 	else{
-		echo $searchCriteria["defendant"];
+		$queryString = "SELECT * FROM casestate WHERE ";
+		$i = 0;
+		foreach($searchCriteria as $key => $val){
+			if($i == 0)
+				$queryString = $queryString.$key." LIKE '%".$val."%'";
+			else
+				$queryString = $queryString." AND ".$key." LIKE '%".$val."%'";
+			
+			$i++;
+		}
+		$queryString = $queryString.";";
 		
-		$sqlResult = $dbConn->query("SELECT * FROM casestate WHERE ".$_GET["column"]." LIKE '%".$_GET["value"]."%' ORDER BY caseNumber");
+		$sqlResult = $dbConn->query($queryString);
 	}
 	$dbConn->close();
 	

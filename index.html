@@ -9,6 +9,18 @@
 <script>
   localStorage.removeItem("lastFormData"); 
 	
+	function dressUpColumnVal(val){
+		var returnString = "";
+		var breakPoint = val.search(/[A-Z]/);
+		if(breakPoint != -1){
+			returnString = val.slice(0,breakPoint);
+		}
+	}
+	
+	function makeFilter(column,value){
+		var filter = "<span class='filterButton'>"+
+	}
+	
 	function sortRows(column,dir = "asc"){
 		var retVal;
 		
@@ -108,7 +120,7 @@ function getDBInfo(criteria = "all"){
 				if(Object.keys(criteria).length == 0)
 					criteria = "all"
 			}
-
+			
 			$.ajax({url:"./returnDBInfo.php",
 			method: "GET",
 			data:{"criteria": JSON.stringify(criteria)}, 
@@ -190,6 +202,7 @@ function getDBInfo(criteria = "all"){
   <div id="caseTarget"></div>
   <div id="scanTarget"></div>
 </div>
+<div id="currentFilters"></div>
 <button style="float:right;clear:right;" onclick='window.location.href="newComplaint.php"'>Add New Complaint</button>
 <button id="updateDBButton" style="float:right;clear:left;">Update Database</button>
 <table id="mainTable" style="float:right; clear:both;">
