@@ -8,7 +8,7 @@
 <script src="DatabaseRow.js"></script>
 <script>
   localStorage.removeItem("lastFormData"); 
-
+	
 	function sortRows(column,dir = "asc"){
 		var retVal;
 		
@@ -92,6 +92,9 @@
 			}
 	}
 	
+	
+	var dbSearchCritera = {};
+												 
 	var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9};
 	
 var dataSet = [];
@@ -100,11 +103,15 @@ var rowObjects = [];
 var upArrow = $("<span class='arrow up'>&#x25B2;</span>");
 var downArrow = $("<span class='arrow down'>&#x25BC;</span>");
 
-function getDBInfo(filterColumn = "all", filterValue = "all"){
+function getDBInfo(criteria = "all"){
+			if(typeof criteria == "object"){
+				if(Object.keys(criteria).length == 0)
+					criteria = "all"
+			}
+
 			$.ajax({url:"./returnDBInfo.php",
 			method: "GET",
-			data:{"column": filterColumn,
-						"value": filterValue}, 
+			data:{"criteria": JSON.stringify(criteria)}, 
 			success: function(result){
 	    console.log(result);
 			dataSet = JSON.parse(result);
@@ -119,7 +126,8 @@ function getDBInfo(filterColumn = "all", filterValue = "all"){
 		toggleTextField(cMenuDiv.children(":contains('Search')"),"input",
 		function(value){
 			cMenuDiv.hide();
-			getDBInfo(column,value);
+			dbSearchCritera[column] = value;
+			getDBInfo(dbSearchCritera);
 		});
 	}
  

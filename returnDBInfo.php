@@ -6,14 +6,18 @@
 	else
 		$prefix = getDBIdent();
   
+	$searchCriteria = json_decode($_GET["criteria"]);
+	
   $dbConn = new mysqli("localHost","root");
   $dbConn->select_db("jcdb".$prefix);
 	
-	if($_GET["column"] == "all" && $_GET["value"] == "all")
+	if($searchCriteria == "all")
 		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
-	else
-		$sqlResult = $dbConn->query("SELECT * FROM casestate WHERE ".$_GET["column"]." = '".$_GET["value"]."' ORDER BY caseNumber");
-  
+	else{
+		echo $searchCriteria["defendant"];
+		
+		$sqlResult = $dbConn->query("SELECT * FROM casestate WHERE ".$_GET["column"]." LIKE '%".$_GET["value"]."%' ORDER BY caseNumber");
+	}
 	$dbConn->close();
 	
   $values = [];
