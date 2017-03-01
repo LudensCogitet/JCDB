@@ -2,12 +2,24 @@ var _highlightKeyDown = false;
 $(window).keydown(function(event){if(event.which == 72)_highlightKeyDown = true;});
 $(window).keyup(function(event){if(event.which == 72)_highlightKeyDown = false;});
 
-function DatabaseRow(rawData,rowArray){
-	
 	var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
 														 "verdict":					["ng", "g", "ni", "md", "wd", "(blank)"],
 														 "sentenceStatus":	["impsd", "cmpl", "mrgd", "(blank)"]};
-	
+	function fillMultiChoiceMenu(options,key,funcs){
+		if(!Array.isArray(funcs)){
+			for(let i = 0; i < multiChoiceFields[key].length; i++){
+				options.push([multiChoiceFields[key][i],funcs);
+			}
+		}
+		else{
+			for(let i = 0; i < multiChoiceFields[key].length; i++){
+				options.push([multiChoiceFields[key][i],funcs[i]);
+			}
+		}
+	}
+
+function DatabaseRow(rawData,rowArray){
+		
 	var textEntryFields 	=		["hearingDate","sentence"];
 	
 	var entriesChanged = {"status": 				false,
@@ -110,9 +122,8 @@ function DatabaseRow(rawData,rowArray){
 			var options = [["filter by:"],
 										 [cell.innerHTML],
 										 ["mark as:"]];
-										 
-			for(let i = 0; i < multiChoiceFields[key].length; i++){
-				options.push([multiChoiceFields[key][i],function(cMenuDiv){
+				
+			fillMultiChoiceMenu(options,key,function(cMenuDiv){
 					cMenuDiv.hide();
 					var assignVal = multiChoiceFields[key][i];
 					if(assignVal === "(blank)"){
@@ -120,8 +131,7 @@ function DatabaseRow(rawData,rowArray){
 					}
 					$(cell).html(assignVal);
 					updateKey(key,assignVal);
-				}]);
-			}
+				});
 			
 			contextMenu(cell,"#contextMenu",options);
 		}
