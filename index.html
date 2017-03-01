@@ -9,16 +9,38 @@
 <script>
   localStorage.removeItem("lastFormData"); 
 	
-	function dressUpColumnVal(val){
-		var returnString = "";
-		var breakPoint = val.search(/[A-Z]/);
+	function dressUpColumnName(name){
+		var returnString = name.charAt(0).toUpperCase() + name.slice(1);;
+		
+		var breakPoint = name.search(/[A-Z]/);
+		
 		if(breakPoint != -1){
-			returnString = val.slice(0,breakPoint);
+			returnString = returnString.slice(0,breakPoint) + " " + returnString.slice(breakPoint);
 		}
+		return returnString;
 	}
 	
 	function makeFilter(column,value){
-		var filter = "<span class='filterButton'>"+
+		if(dbSearchCritera.hasOwnProperty(column))
+			$(".filterDisplay:contains("+dressUpColumnName(column)+")").remove();
+		
+		dbSearchCritera[column] = value;
+		
+		var closeButton = $("<span class='filterCloseButton'>X</span>");
+		closeButton.click(function(){
+			console.log("SEARCH CRITERIA");
+			console.dir(dbSearchCritera);
+			console.log(column);
+			delete dbSearchCritera[column];
+			getDBInfo(dbSearchCritera);
+			$(this).parent().remove();
+		});
+		
+		var filter = $("<span class='filterDisplay'></span>");
+		filter.html(dressUpColumnName(column)+": "+value);
+		filter.append(closeButton);
+	
+		$("#currentFilters").append(filter);
 	}
 	
 	function sortRows(column,dir = "asc"){
@@ -121,6 +143,8 @@ function getDBInfo(criteria = "all"){
 					criteria = "all"
 			}
 			
+			console.log(criteria);
+			
 			$.ajax({url:"./returnDBInfo.php",
 			method: "GET",
 			data:{"criteria": JSON.stringify(criteria)}, 
@@ -138,7 +162,7 @@ function getDBInfo(criteria = "all"){
 		toggleTextField(cMenuDiv.children(":contains('Search')"),"input",
 		function(value){
 			cMenuDiv.hide();
-			dbSearchCritera[column] = value;
+			makeFilter(column,value);
 			getDBInfo(dbSearchCritera);
 		});
 	}

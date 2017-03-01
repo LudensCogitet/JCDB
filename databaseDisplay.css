@@ -75,3 +75,15 @@
 	border-color: lightgrey !important;
 	color: lightgrey;
 }
+
+.filterDisplay{
+	border: 2px solid black;
+	padding: 2px 2px 2px 2px;
+}
+
+.filterCloseButton{
+	border: 1px solid black;
+	cursor: pointer;
+	margin-left: 5px;
+	padding: 2px 2px 2px p2x;
+}
