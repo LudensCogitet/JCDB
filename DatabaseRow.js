@@ -2,21 +2,22 @@ var _highlightKeyDown = false;
 $(window).keydown(function(event){if(event.which == 72)_highlightKeyDown = true;});
 $(window).keyup(function(event){if(event.which == 72)_highlightKeyDown = false;});
 
-	var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
-														 "verdict":					["ng", "g", "ni", "md", "wd", "(blank)"],
-														 "sentenceStatus":	["impsd", "cmpl", "mrgd", "(blank)"]};
-	function fillMultiChoiceMenu(options,key,funcs){
-		if(!Array.isArray(funcs)){
-			for(let i = 0; i < multiChoiceFields[key].length; i++){
-				options.push([multiChoiceFields[key][i],funcs);
-			}
-		}
-		else{
-			for(let i = 0; i < multiChoiceFields[key].length; i++){
-				options.push([multiChoiceFields[key][i],funcs[i]);
-			}
+var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
+													 "verdict":					["ng", "g", "ni", "md", "wd", "(blank)"],
+													 "sentenceStatus":	["impsd", "cmpl", "mrgd", "(blank)"]};
+
+function fillMultiChoiceMenu(options,key,funcs){
+	if(!Array.isArray(funcs)){
+		for(let i = 0; i < multiChoiceFields[key].length; i++){
+			options.push([multiChoiceFields[key][i],funcs]);
 		}
 	}
+	else{
+		for(let i = 0; i < multiChoiceFields[key].length; i++){
+			options.push([multiChoiceFields[key][i],funcs[i]]);
+		}
+	}
+}
 
 function DatabaseRow(rawData,rowArray){
 		
@@ -123,9 +124,10 @@ function DatabaseRow(rawData,rowArray){
 										 [cell.innerHTML],
 										 ["mark as:"]];
 				
-			fillMultiChoiceMenu(options,key,function(cMenuDiv){
+			fillMultiChoiceMenu(options,key,function(cMenuDiv,clickable,optionVal){
 					cMenuDiv.hide();
-					var assignVal = multiChoiceFields[key][i];
+					var assignVal = optionVal;
+					console.log("ASSIGN VAL",assignVal)
 					if(assignVal === "(blank)"){
 						assignVal = "";
 					}

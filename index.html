@@ -158,7 +158,7 @@ function getDBInfo(criteria = "all"){
 
  function  simpleHeadingMenuSetup(column){
  
-	var searchFunc = function(cMenuDiv,target){
+	var searchFunc = function(cMenuDiv,clickable,optionVal){
 		toggleTextField(cMenuDiv.children(":contains('Search')"),"input",
 		function(value){
 			cMenuDiv.hide();

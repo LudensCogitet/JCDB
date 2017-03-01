@@ -16,7 +16,8 @@ function contextMenu(target,targetDiv,options){
 				if(options[i][1] != null){
 					newOption.click(function(event){
 					event.stopPropagation();
-					options[i][1](targetDiv,target);
+					console.log("OPTIONS I 0",options[i][0])
+					options[i][1](targetDiv,target,options[i][0]);
 				});
 			}
 			targetDiv.append(newOption);	 
