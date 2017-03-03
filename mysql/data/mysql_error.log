@@ -2475,3 +2475,12 @@ Version: '10.1.19-MariaDB'  socket: ''  port: 3306  mariadb.org binary distribut
 2017-03-01 13:54:04 6100 [Note] Server socket created on IP: '::'.
 2017-03-01 13:54:05 6100 [Note] e:\xampp\mysql\bin\mysqld.exe: ready for connections.
 Version: '10.1.19-MariaDB'  socket: ''  port: 3306  mariadb.org binary distribution
+2017-03-03 15:41:03 14732 [Note] e:\xampp\mysql\bin\mysqld.exe: Normal shutdown
+
+2017-03-03 15:41:03 14732 [Note] Event Scheduler: Purging the queue. 0 events
+2017-03-03 15:41:04 8636 [Note] InnoDB: FTS optimize thread exiting.
+2017-03-03 15:41:04 14732 [Note] InnoDB: Starting shutdown...
+2017-03-03 15:41:04 14732 [Note] InnoDB: Waiting for page_cleaner to finish flushing of buffer pool
+2017-03-03 15:41:05 14732 [Note] InnoDB: Shutdown completed; log sequence number 2637641
+2017-03-03 15:41:05 14732 [Note] e:\xampp\mysql\bin\mysqld.exe: Shutdown complete
+

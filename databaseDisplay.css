@@ -1,3 +1,22 @@
+@media print{
+	*{
+			font-size: 12px;
+		}
+	
+	.printHeading{
+		text-align: center;
+		display: block !important;
+	}
+	
+	.printHeading, .printHeading *{
+		font-size: 24px;
+	}
+	
+	.noPrint, .noPrint *{
+		display: none !important;
+	}
+}
+
 #mainTable th, #mainTable td{
   font-size: 1.3em;	
   border: 2px solid black;
@@ -34,7 +53,7 @@
 	border: 2px solid black;
 }
 
-#contextMenu{
+.contextMenuStyle{
 	display: none;
 	position: absolute;
 	box-shadow: 5px 5px 5px black;
@@ -42,12 +61,12 @@
 	background-color: white;
 }
 
-#contextMenu{
+.contextMenuStyle{
 	padding: 2px 2px 2px 2px;
 	font-size: 1.3em;
 }
 
-#contextMenu .menuOption{
+.contextMenuStyle .menuOption{
 	border: 2px solid black;
 	text-align: center;
 	font-size: 1.3em;

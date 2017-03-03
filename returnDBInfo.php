@@ -1,12 +1,16 @@
 <?php
 	require 'getDBIdent.php';
-	
-	if(isset($_GET['dataBaseIdent']))
-		$prefix = $_GET['dataBaseIdent'];
-	else
-		$prefix = getDBIdent();
   
 	$searchCriteria = json_decode($_GET["criteria"]);
+	
+	if(isset($searchCriteria->prefix)){
+		$prefix = $searchCriteria->prefix;
+		if(!isset($searchCriteria->caseNumber))
+			$searchCriteria->caseNumber = "";
+	}
+	else{
+		$prefix = getDBIdent();
+	}
 	
   $dbConn = new mysqli("localHost","root");
   $dbConn->select_db("jcdb".$prefix);

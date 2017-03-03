@@ -1,9 +1,11 @@
 function contextMenu(target,targetDiv,options){
-	target = $(target);
-	targetDiv = $(targetDiv);
+	if(target != null)
+		target = $(target);
 	
-  target.click(function(event){
-    event.stopPropagation();
+	targetDiv = $(targetDiv);
+	console.log("THIS HERE",options);
+	
+  function theBusiness(){
 		targetDiv.empty();
 	 
 		for(let i = 0; i < options.length; i++){
@@ -20,14 +22,26 @@ function contextMenu(target,targetDiv,options){
 					options[i][1](targetDiv,target,options[i][0]);
 				});
 			}
-			targetDiv.append(newOption);	 
+			targetDiv.append(newOption);
 		}
 
 	}
 	targetDiv.css("left",event.pageX+"px");
 	targetDiv.css("top",event.pageY+"px");
 	targetDiv.show();
- });
+	console.log("AND THEN THIS",options);
+	}
+	
+	if(target != null){
+		target.click(function(event){
+		event.stopPropagation();
+		$(".contextMenuStyle").not("#contextMenu").remove();
+		theBusiness();
+		});
+	}
+	else{
+		theBusiness();
+	}
 }
 
 function toggleTextField(target,type,action){
