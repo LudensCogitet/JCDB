@@ -95,8 +95,48 @@ function makeFilter(key,value){
 var currentSort = {column: "prefixAndCaseNumber",
 									 dir:		 "desc"};
 
-function sortRows(column = null, dir = null){
 
+function sortRows(column = null, dir = null){
+	
+	function sortBy(column,retVal,a,b){
+		var aVal;
+		var bVal;
+		
+		if(column == "prefixAndCaseNumber"){
+			aVal = parseInt(a.getCellValue("prefix")+a.getCellValue("caseNumber"));
+			bVal = parseInt(b.getCellValue("prefix")+b.getCellValue("caseNumber"));
+		}
+		else if(column == "hearingDate"){
+			aVal = parseInt(a.getCellValue(column).replace(/[^0-9]/g,""));
+			bVal = parseInt(b.getCellValue(column).replace(/[^0-9]/g,""));
+			
+			if(isNaN(aVal))
+				aVal = 0;
+			if(isNaN(bVal))
+				bVal = 0;
+		}
+		else if(column == "plaintiff" || column == "witness"){
+			aVal = a.getCellValue(column).toLowerCase().split(", ");
+			aVal.sort();
+			aVal = aVal.join("");
+		
+			bVal = b.getCellValue(column).toLowerCase().split(", ");
+			bVal.sort();
+			bVal = bVal.join("");
+		}
+		else{
+			aVal = a.getCellValue(column).toLowerCase(); 
+			bVal = b.getCellValue(column).toLowerCase();
+		}
+		
+		if(aVal < bVal)
+			return retVal;
+		else if(aVal > bVal)
+			return -retVal;
+		else
+			return 0;
+	}
+	
 	if(column == null){
 		column = currentSort.column;
 		dir = currentSort.dir;
@@ -119,66 +159,40 @@ function sortRows(column = null, dir = null){
 		
 	if(column == "prefixAndCaseNumber"){
 		rowObjects.sort(function(a,b){
-		
-		var aVal = parseInt(a.getCellValue("prefix")+a.getCellValue("caseNumber"));
-		var bVal = parseInt(b.getCellValue("prefix")+b.getCellValue("caseNumber"));
-		
-		if(aVal < bVal)
-			return retVal;
-		else
-			return -retVal;
-	});
-}
-else if(column == "hearingDate"){
+			var returnVal = sortBy(column,retVal,a,b);
+			if(returnVal == 0){
+				returnVal = sortBy("defendant",retVal,a,b);
+			}
+			return returnVal;
+		});
+	}
+	else if(column == "hearingDate"){
 		rowObjects.sort(function(a,b){
-			var aVal = parseInt(a.getCellValue(column).replace(/[^0-9]/g,""));
-			var bVal = parseInt(b.getCellValue(column).replace(/[^0-9]/g,""));
-			
-			if(isNaN(aVal))
-				aVal = 0;
-			if(isNaN(bVal))
-				bVal = 0;
-			
-			console.log("A AND B", aVal, bVal);
-			
-			if(aVal < bVal)
-				return retVal;
-			else
-				return -retVal;
-	});
-}
-else if(column == "plaintiff" || column == "witness"){
-	rowObjects.sort(function(a,b){
-		var aVal = a.getCellValue(column).toLowerCase().split(", ");
-		aVal.sort();
-		aVal = aVal.join("");
-		
-		var bVal = b.getCellValue(column).toLowerCase().split(", ");
-		bVal.sort();
-		bVal = bVal.join("");
-		
-		if(aVal < bVal)
-			return retVal;
-		else
-			return -retVal;
-	});
-}
-else{
-	rowObjects.sort(function(a,b){
-		if(a.getCellValue(column).toLowerCase() < b.getCellValue(column).toLowerCase())
-			return retVal;
-		else
-			return -retVal;
-	});
-}
-$(".arrow").remove();
+			return sortBy(column,retVal,a,b);
+		});
+	}
+	else if(column == "plaintiff" || column == "witness"){
+		rowObjects.sort(function(a,b){
+			return sortBy(column,retVal,a,b);
+		});
+	}
+	else{
+		rowObjects.sort(function(a,b){
+			var returnVal = sortBy(column,retVal,a,b);
+			if(returnVal == 0){
+				returnVal = sortBy("defendant",retVal,a,b);
+			}
+			return returnVal;
+		});
+	}
+	$(".arrow").remove();
 
-if(dir == "asc"){
-	$(mainTable.rows[0].cells[columnIndex[column]]).append(upArrow.clone());
-}
-else{
-	$(mainTable.rows[0].cells[columnIndex[column]]).append(downArrow.clone());
-}
+	if(dir == "asc"){
+		$(mainTable.rows[0].cells[columnIndex[column]]).append(upArrow.clone());
+	}
+	else{
+		$(mainTable.rows[0].cells[columnIndex[column]]).append(downArrow.clone());
+	}
 }
 
 function makeTable(dataSet){
