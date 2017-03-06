@@ -6,6 +6,12 @@ var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
 													 "verdict":					["ng", "g", "ni", "md", "wd", "(blank)"],
 													 "sentenceStatus":	["impsd", "cmpl", "mrgd", "(blank)"]};
 
+var hearingFields = 	{"status": 				true,
+												"verdict": 				true,
+												"sentenceStatus":	true,
+												"hearingDate": 		true,
+												"sentence": 			true};
+
 function fillMultiChoiceMenu(options,key,funcs){
 	if(!Array.isArray(funcs)){
 		for(let i = 0; i < multiChoiceFields[key].length; i++){
@@ -23,7 +29,11 @@ function DatabaseRow(rawData,rowArray){
 		
 	var textEntryFields 	=		["hearingDate","sentence"];
 	
-	var entriesChanged = {"status": 				false,
+	var entriesChanged = {"plaintiff":			false,
+												"defendant":			false,
+												"witness":				false,
+												"charge":					false,
+												"status": 				false,
 												"verdict": 				false,
 												"sentenceStatus":	false,
 												"hearingDate": 		false,
@@ -76,7 +86,6 @@ function DatabaseRow(rawData,rowArray){
 	}
 	
 	function addHighlightOptions(cell){
-		
 		var cell = $(cell);
 		
 		cell.click(function(){
@@ -169,6 +178,11 @@ function DatabaseRow(rawData,rowArray){
 			{
 				myCells.push($("<td>"));
 				var currentCell = myCells[myCells.length-1];
+				if(hearingFields[key]){
+					console.log("ADDING PDNGINVIS");
+					currentCell.addClass("pndgInvis");
+				}
+				
 				addHighlightOptions(currentCell);
 				
 				currentCell.append(data[key]);
@@ -193,6 +207,11 @@ function DatabaseRow(rawData,rowArray){
 	
 	this.getCellValue = function(cell){
 		return data[cell];
+	}
+	
+	this.setCellValue = function(cell, value){
+		if(data.hasOwnProperty(cell))
+			data[cell] = value;
 	}
 
 	this.getIdentity = function(){

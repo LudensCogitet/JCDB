@@ -19,12 +19,18 @@
 		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
 	else{
 		$queryString = "SELECT * FROM casestate WHERE ";
+		
 		$i = 0;
 		foreach($searchCriteria as $key => $val){
-			if($i == 0)
+			if($i != 0)
+				$queryString = $queryString." AND ";
+			
+			if($key == "hearingDate" && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$val,$matches) == 2){
+				$queryString = $queryString."hearingDate >= '".$matches[0][0]."' AND hearingDate <= '".$matches[0][1]."' ";
+			}
+			else{
 				$queryString = $queryString.$key." LIKE '%".$val."%'";
-			else
-				$queryString = $queryString." AND ".$key." LIKE '%".$val."%'";
+			}
 			
 			$i++;
 		}

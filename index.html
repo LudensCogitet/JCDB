@@ -56,10 +56,13 @@
 	
 		$(heading).addClass("printHeading");
 		getDBInfo(criteria).then(function(){
+			if(kind == "pendingList")
+				$(".pndgInvis").addClass("noPrint");
 			window.print();
 			getDBInfo(dbSearchCriteria);
 			$(heading).removeClass("printHeading");
 			$(heading).css("display","none");
+			$(".pndgInvis").removeClass("noPrint");
 		});
 	}
 	
@@ -200,6 +203,7 @@
 	}
 	
 	function fillTable(table){
+		$("#updateDBButton").hide();
 		while(table.rows.length > 0)
 			table.deleteRow(-1);
 			
@@ -214,13 +218,13 @@
 												 
 	var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9};
 	
-var dataSet = [];
-var rowObjects = [];
+	var dataSet = [];
+	var rowObjects = [];
 
-var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
-var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
+	var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
+	var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
 
-function getDBInfo(criteria = "all"){
+	function getDBInfo(criteria = "all"){
 			var returnPromise = new Promise(function(resolve,reject){
 			var check = false;
 			if(typeof criteria == "object"){
@@ -231,25 +235,25 @@ function getDBInfo(criteria = "all"){
 			console.log(criteria);
 			
 			$.ajax({url:"./returnDBInfo.php",
-			method: "GET",
-			data:{"criteria": JSON.stringify(criteria)}, 
-			success: function(result){
-	    console.log(result);
-			dataSet = JSON.parse(result);
-			rowObjects = makeTable(dataSet);
-			sortRows();
-			fillTable(mainTable.tBodies[0]);
-			resolve("Yay");
-		}});
-	});
+				method: "GET",
+				data:{"criteria": JSON.stringify(criteria)}, 
+				success: function(result){
+					console.log(result);
+					dataSet = JSON.parse(result);
+					rowObjects = makeTable(dataSet);
+					sortRows();
+					fillTable(mainTable.tBodies[0]);
+					resolve("Yay");
+			}});
+		});
 
-	return returnPromise;
-}
+		return returnPromise;
+	}
 
-function  simpleHeadingMenuSetup(column){
-	var searchFunc = null;
-	if(multiChoiceFields[column] == undefined){
-		searchFunc = function(cMenuDiv,clickable,optionVal){
+	function simpleHeadingMenuSetup(column){
+		var searchFunc = null;
+		if(multiChoiceFields[column] == undefined){
+			searchFunc = function(cMenuDiv,clickable,optionVal){
 			toggleTextField(cMenuDiv.children(":contains('Search')"),"input",
 			function(value){
 				cMenuDiv.hide();
@@ -292,9 +296,9 @@ function  simpleHeadingMenuSetup(column){
 																				}]];
 																				
 		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
-}
+	}
 
-var mainTable;
+	var mainTable;
 
   $(document).ready(function(){
 		mainTable = document.getElementById("mainTable");
@@ -351,7 +355,7 @@ var mainTable;
 <table id="mainTable" style="margin: auto; clear:both;">
 <thead id="mainTableHead">
 <tr>
-<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th>Status</th><th>Hearing Date</th><th>Verdict</th><th>Sentence</th><th>Sentence Status</th>
+<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th class='pndgInvis'>Status</th><th class='pndgInvis'>Hearing Date</th><th class='pndgInvis'>Verdict</th><th class='pndgInvis'>Sentence</th><th class='pndgInvis'>Sentence Status</th>
 </tr>
 </thead>
 <tbody>
