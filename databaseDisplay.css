@@ -17,17 +17,6 @@
 	}
 }
 
-/*#mainTable thead{
-	display: block;
-	position: relative;
-}
-
-#mainTable tbody{
-	display: block;
-	overflow: auto;
-	height: 600px;
-}*/
-
 #mainTable th, #mainTable td{
   font-size: 1em;	
   border: 2px solid black;
@@ -47,7 +36,7 @@
 	position: fixed;
 	border: 2px solid black;
 	box-shadow: 5px 5px 5px black;
-	height: 100%;
+	height: 90%;
 }
 
 .fixedElClose{
@@ -57,26 +46,6 @@
 	left: 100%;
 	margin-left: -50px;
 }
-
-#scanInfo{
-	display: none;
-	position: fixed;
-	height: 98%;
-	overflow: auto;
-	z-index: 10;
-	border: 2px solid black;
-}
-}
-
-#scanTarget{}
-
-/*#caseInfo img{
-	float: right;
-	max-width: 100%;
-	width: auto;
-	height: auto;
-	border: 2px solid black;
-}*/
 
 .contextMenuStyle{
 	display: none;
@@ -94,11 +63,8 @@
 	padding: 2px 2px 2px 2px;
 }
 
-#caseTarget, #scanTarget{
-	display: inline-block;
-}
-
 #caseTarget{
+	display: inline-block;
 	float:left;
 }
 

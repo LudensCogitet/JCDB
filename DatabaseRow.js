@@ -103,11 +103,11 @@ function DatabaseRow(rawData,rowArray){
 			});
 		  //console.log("caseScan",complaintForm.getData());
 		  
-			$("#caseTarget").append("<button id='showCaseScan'>Show complaint form scan</button>")
-			$("#caseTarget").children("#showCaseScan").click(function(){
-				$("#scanTarget").append($(complaintForm.getData("formScan")));
-				$("#scanInfo").show();
-			});
+			var scanDisplayForm = "<form target='_blank' action='scanDisplay.php' type='post'>"+
+														"<input type='hidden' name='scanSrc' value='"+complaintForm.getData("formScan")+"'>"+
+														"<input type='submit' value='Open complaint form scan'></submit>";
+			
+			$("#caseTarget").append(scanDisplayForm);
 		  $("#caseInfo").show();
 		}});
 	 });
