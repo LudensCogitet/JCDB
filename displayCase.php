@@ -10,12 +10,7 @@
 	  $returnArray = [];
 	  
 	  for($i = 0; $i < count($row); $i++){
-		  if($columns[$i]->name == "formScan"){
-			$returnArray[$columns[$i]->name] = "<img src='".$row[$i]."'>";  
-		  }
-		  else{
-		    $returnArray[$columns[$i]->name] = $row[$i];
-		  }
+		   $returnArray[$columns[$i]->name] = $row[$i];
 	  }
 	  //$scanFile = $row[0];
 	  
