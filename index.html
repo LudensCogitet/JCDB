@@ -73,10 +73,10 @@
 		function windowClose(){
 			$(this).parent().hide();
 			$(this).siblings().children().remove();
+			localStorage.removeItem('lastFormData');
 		}
 		
 		$("#caseInfoClose").click(windowClose);
-		$("#scanInfoClose").click(windowClose);
 		
 		$("html").click(function(){
 			$("#contextMenu").hide();
