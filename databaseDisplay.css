@@ -37,6 +37,7 @@
 	border: 2px solid black;
 	box-shadow: 5px 5px 5px black;
 	height: 90%;
+	overflow: auto;
 }
 
 .fixedElClose{
