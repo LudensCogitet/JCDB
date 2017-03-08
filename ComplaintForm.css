@@ -1,3 +1,7 @@
+.complaintTable{
+	/*position: absolute;*/
+}
+
 .complaintTable th, td{
   vertical-align: top;
   border: 2px solid black;
@@ -5,7 +9,9 @@
   padding-right: 3px;
 }
 
-.complaintTable th{text-align: center;}
+.complaintTable th{
+	text-align: center;
+}
 
 .complaintTable .textField{
 	width: 308px;
@@ -42,5 +48,5 @@
 #extraComplaint textarea[name="hearingNotes"]{
   width: 760px;
   max-width: 761px;
-  height: 300px;
+  /*height: 300px;*/
 }

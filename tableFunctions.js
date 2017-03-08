@@ -96,7 +96,7 @@ var currentSort = {column: "prefixAndCaseNumber",
 									 dir:		 "desc"};
 
 
-function sortRows(column = null, dir = null){
+function sortRows(column = null, dir = null, column2 = "defendant"){
 	
 	function sortBy(column,retVal,a,b){
 		var aVal;
@@ -156,35 +156,15 @@ function sortRows(column = null, dir = null){
 		retVal = 1;
 	else if(dir == "asc")
 		retVal = -1;
-		
-	if(column == "prefixAndCaseNumber"){
-		rowObjects.sort(function(a,b){
-			var returnVal = sortBy(column,retVal,a,b);
-			if(returnVal == 0){
-				returnVal = sortBy("defendant",retVal,a,b);
-			}
-			return returnVal;
-		});
-	}
-	else if(column == "hearingDate"){
-		rowObjects.sort(function(a,b){
-			return sortBy(column,retVal,a,b);
-		});
-	}
-	else if(column == "plaintiff" || column == "witness"){
-		rowObjects.sort(function(a,b){
-			return sortBy(column,retVal,a,b);
-		});
-	}
-	else{
-		rowObjects.sort(function(a,b){
-			var returnVal = sortBy(column,retVal,a,b);
-			if(returnVal == 0){
-				returnVal = sortBy("defendant",retVal,a,b);
-			}
-			return returnVal;
-		});
-	}
+	
+	rowObjects.sort(function(a,b){
+		var returnVal = sortBy(column,retVal,a,b);
+		if(returnVal == 0){
+			returnVal = sortBy(column2,retVal,a,b);
+		}
+		return returnVal;
+	});
+	
 	$(".arrow").remove();
 
 	if(dir == "asc"){
@@ -263,3 +243,5 @@ function simpleHeadingMenuSetup(column){
 																				
 		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
 	}
+
+var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9};

@@ -62,8 +62,10 @@ function DatabaseRow(rawData,rowArray){
 		}
 	}
 	
-	function addHighlightOptions(cell){
+	function addHighlightOptions(cell,columnName){
 		var cell = $(cell);
+		
+		cell.attr("title",dressUpColumnName(columnName));
 		
 		cell.click(function(){
 			if(_highlightKeyDown){
@@ -88,17 +90,24 @@ function DatabaseRow(rawData,rowArray){
 				data: {"prefix": data["prefix"], 
 							 "caseNum": data["caseNumber"]},
 		success: function(result){
-		  console.log("this is the result",result);
+		  //console.log("this is the result",result);
 		  var complaintForm = new ComplaintForm(JSON.parse(result),"both",true);
-		  console.log("lastFormData before:", localStorage.lastFormData);
+		  //console.log("lastFormData before:", localStorage.lastFormData);
 		  localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));
-		  console.log("lastFormData after:", localStorage.lastFormData);
+		  //console.log("lastFormData after:", localStorage.lastFormData);
 		  $("#caseTarget").append(complaintForm.getJqueryElement("complete"));
-		  $("#caseTarget").append($("<button>Add Hearing Notes</button>"));
-		  $("#caseTarget").children("button").click(function(){
-			window.location.href="addHearingNotes.html"});
-		  console.log("caseScan",complaintForm.getData());
-		  $("#scanTarget").append($(complaintForm.getData("formScan")));
+		  $("#caseTarget").append($("<button id='addHearingNotes'>Add Hearing Notes</button>"));
+		  
+			$("#caseTarget").children("#addHearingNotes").click(function(){
+				window.location.href="addHearingNotes.html"
+			});
+		  //console.log("caseScan",complaintForm.getData());
+		  
+			$("#caseTarget").append("<button id='showCaseScan'>Show complaint form scan</button>")
+			$("#caseTarget").children("#showCaseScan").click(function(){
+				$("#scanTarget").append($(complaintForm.getData("formScan")));
+				$("#scanInfo").show();
+			});
 		  $("#caseInfo").show();
 		}});
 	 });
@@ -145,7 +154,7 @@ function DatabaseRow(rawData,rowArray){
 	
 	myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
 	assignFormDisplay(myCells[0]);
-	addHighlightOptions(myCells[0]);
+	addHighlightOptions(myCells[0],"prefixAndCaseNumber");
 		
 	Object.keys(data).forEach(function(key){
 		if(key === "prefix" || key == "caseNumber" || key == "rowID"){
@@ -160,7 +169,7 @@ function DatabaseRow(rawData,rowArray){
 				currentCell.addClass("pndgInvis");
 			}
 			
-			addHighlightOptions(currentCell);
+			addHighlightOptions(currentCell,key);
 			
 			currentCell.append(data[key]);
 				

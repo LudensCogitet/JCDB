@@ -11,8 +11,6 @@
   localStorage.removeItem("lastFormData"); 
 	
 	var dbSearchCriteria = {};
-												 
-	var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9};
 	
 	var dataSet = [];
 	var rowObjects = [];
@@ -72,42 +70,53 @@
 		
 		getDBInfo();
   
-		$("#caseInfoClose").click(function(){
+		function windowClose(){
 			$(this).parent().hide();
 			$(this).siblings().children().remove();
-		});
+		}
+		
+		$("#caseInfoClose").click(windowClose);
+		$("#scanInfoClose").click(windowClose);
 		
 		$("html").click(function(){
 			$("#contextMenu").hide();
 			$(".contextMenuStyle").not("#contextMenu").remove();
 			console.log("HIDE TRIGGERED");
 		});
+		
+		
+		//$("#maintTable tbody").height($(window).height());
+		//$(window).resize(function(){$("#mainTable tbody").height(0);$("#mainTable tbody").height($(window).height());});
+		//$("#mainTable").height($(window).height());
   });
 </script>
 </head>
 <body>
-<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Pending Cases<br><span class="currentDate"></span></div>
-<div id="hearingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="currentDate"></span></div>
-<div id="contextMenu" class="contextMenuStyle noPrint"></div>
-<div id="caseInfo" class="noPrint">
-  <button id="caseInfoClose">Close</button>
-  <div id="caseTarget"></div>
-  <div id="scanTarget"></div>
-</div>
-<div id="currentFilters" class="noPrint"></div>
-<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Pending List</button>
-<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily Hearing List</button>
-<button style="float:right; clear: both;" onclick='window.print()' class="noPrint">Print</button>
-<button style="float:right; clear: both;" onclick='window.location.href="newComplaint.php"' class="noPrint">Add New Complaint</button>
-<button id="updateDBButton" style="float:right;clear:left;" class="noPrint">Update Database</button>
-<table id="mainTable" style="margin: auto; clear:both;">
-<thead id="mainTableHead">
-<tr>
-<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th class='pndgInvis'>Status</th><th class='pndgInvis'>Hearing Date</th><th class='pndgInvis'>Verdict</th><th class='pndgInvis'>Sentence</th><th class='pndgInvis'>Sentence Status</th>
-</tr>
-</thead>
-<tbody>
-</tbody>
-</table>
+	<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Pending Cases<br><span class="currentDate"></span></div>
+	<div id="hearingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="currentDate"></span></div>
+	<div id="contextMenu" class="contextMenuStyle noPrint"></div>
+	<div id="caseInfo" class="noPrint">
+		<button id="caseInfoClose" class="fixedElClose">Close</button>
+		<div id="caseTarget"></div>
+	</div>
+	<div id="scanInfo" class="noPrint">
+	<button id="scanInfoClose" class="fixedElClose">Close</button>
+	<div id="scanTarget"></div>
+	</div>
+	<div id="currentFilters" class="noPrint"></div>
+	<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Pending List</button>
+	<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily Hearing List</button>
+	<button style="float:right; clear: both;" onclick='window.print()' class="noPrint">Print</button>
+	<button style="float:right; clear: both;" onclick='window.location.href="newComplaint.php"' class="noPrint">Add New Complaint</button>
+	<button id="updateDBButton" style="float:right;clear:left;" class="noPrint">Update Database</button>
+	<table id="mainTable" style="margin: auto; clear:both;">
+		<thead id="mainTableHead">
+			<tr>
+				<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th class='pndgInvis'>Status</th><th class='pndgInvis'>Hearing Date</th><th class='pndgInvis'>Verdict</th><th class='pndgInvis'>Sentence</th><th class='pndgInvis'>Sentence Status</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
 </body>
 </html>
