@@ -27,12 +27,7 @@ $(document).ready(function(){
 	$("#tableTarget").append(complaintForm.getJqueryElement(display));
 	
 	<?php
-		if(isset($_POST['newComplaint'])){
 			echo "var formScan = '<img src=\'".$newForm->getData('formScan')."\'>'";
-		}
-		else{
-			echo "var formScan = complaintForm.getData('formScan');";
-		}
 	?>
 	
 	formScan = $(formScan);
