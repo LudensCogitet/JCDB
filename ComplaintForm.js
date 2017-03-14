@@ -64,40 +64,51 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 
   function reproduceField(event) {
     if (event == "down" || event.keyCode == 40 && $(this).data("repro") == false) {
-      $(this).data("repro", true);
-      console.log();
-      var wholeName = $(this).attr("name");
-      var name = wholeName.slice(0, wholeName.indexOf("-"));
-      var num = parseInt(wholeName.substr(wholeName.indexOf("-") + 1));
-      console.log(name);
-      console.log(num);
-      var newField = $("<input type='text' name=" + name + "-" + (num + 1) + " data-repro='false' required>");
-      console.log(newField);
-      $(this).parent().append(newField);
-      $(newField).keydown(reproduceField);
-      $(newField).focus();
-      return newField;
-    } 
-		else if (event == "up" || event.keyCode == 38) {
-	   if($(this).attr('readonly') != 'readonly'){
-      var lastObj = $(this).prev("input");
-      var nextObj = $(this).next("input");
-      if (lastObj.length != 0 && nextObj.length == 0) {
-        lastObj.data("repro", false);
-        lastObj.focus();
-        $(this).remove();
-        return lastObj;
-      }
-	 }
+				$(this).data("repro", true);
+				console.log();
+				var wholeName = $(this).attr("name");
+				var name = wholeName.slice(0, wholeName.indexOf("-"));
+				var num = parseInt(wholeName.substr(wholeName.indexOf("-") + 1));
+				console.log(name);
+				console.log(num);
+				var newField = $("<input type='text' name=" + name + "-" + (num + 1) + " data-repro='false' required>");
+				console.log(newField);
+				$(this).parent().append(newField);
+				$(newField).keydown(reproduceField);
+				$(newField).focus();
+				return newField;
+			} 
+			else if (event == "up" || event.keyCode == 38) {
+			if($(this).attr('readonly') != 'readonly'){
+				var lastObj = $(this).prev("input");
+				var nextObj = $(this).next("input");
+				if (lastObj.length != 0 && nextObj.length == 0) {
+					lastObj.data("repro", false);
+					lastObj.focus();
+					$(this).remove();
+					return lastObj;
+				}
+			}
+		}
 	}
-  }
 
   function compileStrings() {
 
-    mainComplaintString = '<table class="complaintTable" id="mainComplaint">' +
-      '<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>'+
-			'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNo"'+'></input>'+
-			'<tr>' +
+    mainComplaintString = '<table class="complaintTable" id="mainComplaint">';
+		
+		if(data["prefix"] != ""){	
+			mainComplaintString += '<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>';
+		}
+			
+		if(data["caseNumber"] != ""){
+			mainComplaintString +=	'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNumber"'+'></input>';
+		}
+			
+		if(data["formScan"] != ""){
+			mainComplaintString += 	'<input type="hidden" value="'+data["formScan"]+'" name="formScan"'+'></input>';
+		}
+			
+		mainComplaintString += '<tr>' +
       '<th>Case No.</th>' +
       '<td class="textField" id="caseNumber">' + data["prefix"] + '-' + data["caseNumber"] + '</td>' +
       '</tr>' +

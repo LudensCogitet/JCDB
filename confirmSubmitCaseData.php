@@ -11,6 +11,10 @@
 	
 	if(isset($_SESSION['newComplaint'])){
 		$complaint = $_SESSION['newComplaint'];
+		if(!$complaint->getData("prefix")){
+			echo "<script>console.log('What the hell!');</script>";
+		}
+		echo "<script>console.log(".$complaint->getData("prefix").");</script>";
 		echo $complaint->submitToDatabase();
 		unset($_SESSION['newComplaint']);
 	}

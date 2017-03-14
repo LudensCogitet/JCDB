@@ -7,10 +7,11 @@
 	$(document).ready(function(){
 	  var complaintForm = null;
 	  if(localStorage.lastFormData){
-		console.log(localStorage.lastFormData);
-		complaintForm = new ComplaintForm(JSON.parse(localStorage.lastFormData));
-		console.log(complaintForm.getData());
-		localStorage.removeItem("lastFormData");
+			complaintForm = new ComplaintForm(JSON.parse(localStorage.lastFormData));
+			if(complaintForm.getData("formScan") != ""){
+				$("#formScanInput").removeAttr("required");
+			}
+			localStorage.removeItem("lastFormData");
 	  }
 	  else{
 		complaintForm = new ComplaintForm();
@@ -38,7 +39,7 @@ if(isset($_SESSION['newComplaint'])){
 ?>
 <form id="complaintEntryForm" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
   <div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
-  <h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input type="file" name="formScan" required></input>
+  <h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" required></input>
   </div>
   <div id="tableTarget"></div>
 <input type="submit" name="newComplaint"></input>  

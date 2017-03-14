@@ -99,7 +99,7 @@ function DatabaseRow(rawData,rowArray){
 		  $("#caseTarget").append($("<button id='addHearingNotes'>Add Hearing Notes</button>"));
 		  
 			$("#caseTarget").children("#addHearingNotes").click(function(){
-				window.location.href="addHearingNotes.html"
+				window.location.href="newComplaint.php"
 			});
 		  //console.log("caseScan",complaintForm.getData());
 		  
