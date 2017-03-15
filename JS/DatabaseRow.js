@@ -85,7 +85,7 @@ function DatabaseRow(rawData,rowArray){
 	
 	function assignFormDisplay(cell){
 		cell.click(function(){
-		$.ajax({url:"displayCase.php",
+		$.ajax({url:"../PHP/displayCase.php",
 				type: "POST",
 				data: {"prefix": data["prefix"], 
 							 "caseNum": data["caseNumber"]},
@@ -96,14 +96,14 @@ function DatabaseRow(rawData,rowArray){
 		  localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));
 		  //console.log("lastFormData after:", localStorage.lastFormData);
 		  $("#caseTarget").append(complaintForm.getJqueryElement("complete"));
-		  $("#caseTarget").append($("<button id='addHearingNotes'>Add Hearing Notes</button>"));
+		  $("#caseTarget").append($("<button id='updateComplaint'>Update complaint</button>"));
 		  
-			$("#caseTarget").children("#addHearingNotes").click(function(){
-				window.location.href="newComplaint.php"
+			$("#caseTarget").children("#updateComplaint").click(function(){
+				window.location.href="../PHP/complaint.php"
 			});
 		  //console.log("caseScan",complaintForm.getData());
 		  
-			var scanDisplayForm = "<form target='_blank' action='scanDisplay.php' type='post'>"+
+			var scanDisplayForm = "<form target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
 														"<input type='hidden' name='scanSrc' value='"+complaintForm.getData("formScan")+"'>"+
 														"<input type='submit' value='Open complaint form scan'></submit>";
 			

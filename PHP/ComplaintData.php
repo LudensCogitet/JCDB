@@ -1,5 +1,5 @@
 <?php
-require 'getDBIdent.php';
+require './getDBIdent.php';
 
 function sanitize($var){
 	$var = trim($var);
@@ -9,7 +9,7 @@ function sanitize($var){
 
 $DBPrefix = getDBIdent();
 
-class NewComplaintData{
+class ComplaintData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 	public static $otherFields = ["whatHappened","hearingNotes"];
 	private $data = ["formScan"		  => "",	
@@ -211,6 +211,10 @@ class NewComplaintData{
 		
 		
 		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
+			/*if(isset($_POST['formScan'])){
+				unlink($_POST['formScan']);
+			}*/
+			
 			$scanDirPath = "./formScans".$GLOBALS['DBPrefix'];
 			if(!file_exists($scanDirPath))
 				mkdir($scanDirPath);
@@ -219,8 +223,11 @@ class NewComplaintData{
 			if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
 				echo "FAIL!";
 				echo $_FILES['formScanFile']['tmp_name'];
+				$this->addData("formScan","FARTS");
 			}
-			$this->addData("formScan", $scanFileName);	
+			else{
+				$this->addData("formScan", $scanFileName);	
+			}
 		}
 		else if(isset($_POST['formScan'])){
 			$this->addData("formScan",$_POST['formScan']);

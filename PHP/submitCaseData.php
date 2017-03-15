@@ -1,17 +1,17 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="./submitCaseData.css">
-<link rel="stylesheet" type="text/css" href="./ComplaintForm.css">
-<script src="jquery-3.1.1.min.js"></script>
-<script src="ComplaintForm.js"></script>
+<link rel="stylesheet" type="text/css" href="../CSS/submitCaseData.css">
+<link rel="stylesheet" type="text/css" href="../CSS/ComplaintForm.css">
+<script src="../JS/jquery-3.1.1.min.js"></script>
+<script src="../JS/ComplaintForm.js"></script>
 <?php
-require './NewComplaintData.php';
+require './ComplaintData.php';
 
 session_start();
 
 if($_SERVER['REQUEST_METHOD'] === "POST"){
-	$newForm = new NewComplaintData();
-	$_SESSION['newComplaint'] = $newForm;
+	$newForm = new ComplaintData();
+	$_SESSION['complaint'] = $newForm;
 }
 ?>
 <script>

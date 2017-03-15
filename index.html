@@ -1,12 +1,12 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="ComplaintForm.css">
-<link rel="stylesheet" type="text/css" href="databaseDisplay.css">
-<script src="jquery-3.1.1.min.js"></script>
-<script src="ComplaintForm.js"></script>
-<script src="ContextMenu.js"></script>
-<script src="DatabaseRow.js"></script>
-<script src="tableFunctions.js"></script>
+<link rel="stylesheet" type="text/css" href="./CSS/ComplaintForm.css">
+<link rel="stylesheet" type="text/css" href="./CSS/databaseDisplay.css">
+<script src="./JS/jquery-3.1.1.min.js"></script>
+<script src="./JS/ComplaintForm.js"></script>
+<script src="./JS/ContextMenu.js"></script>
+<script src="./JS/DatabaseRow.js"></script>
+<script src="./JS/tableFunctions.js"></script>
 <script>
   localStorage.removeItem("lastFormData"); 
 	
@@ -28,7 +28,7 @@
 			
 			console.log(criteria);
 			
-			$.ajax({url:"./returnDBInfo.php",
+			$.ajax({url:"./PHP/returnDBInfo.php",
 				method: "GET",
 				data:{"criteria": JSON.stringify(criteria)}, 
 				success: function(result){
@@ -103,7 +103,7 @@
 	<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Pending List</button>
 	<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily Hearing List</button>
 	<button style="float:right; clear: both;" onclick='window.print()' class="noPrint">Print</button>
-	<button style="float:right; clear: both;" onclick='window.location.href="newComplaint.php"' class="noPrint">Add New Complaint</button>
+	<button style="float:right; clear: both;" onclick='window.location.href="./PHP/complaint.php"' class="noPrint">Add New Complaint</button>
 	<button id="updateDBButton" style="float:right;clear:left;" class="noPrint">Update Database</button>
 	<table id="mainTable" style="margin: auto; clear:both;">
 		<thead id="mainTableHead">

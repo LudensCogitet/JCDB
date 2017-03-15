@@ -1,8 +1,8 @@
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="ComplaintForm.css">
-  <script src="jquery-3.1.1.min.js"></script>
-  <script src="ComplaintForm.js"></script>
+  <link rel="stylesheet" type="text/css" href="../CSS/ComplaintForm.css">
+  <script src="../JS/jquery-3.1.1.min.js"></script>
+  <script src="../JS/ComplaintForm.js"></script>
   <script>
 	$(document).ready(function(){
 	  var complaintForm = null;
@@ -28,12 +28,12 @@
 </head>
 <body>
 <?php 
-require './NewComplaintData.php';
+require './ComplaintData.php';
 session_start();
 
-if(isset($_SESSION['newComplaint'])){
-	unlink($_SESSION['newComplaint']->getData('formScan'));
-	unset($_SESSION['newComplaint']);
+if(isset($_SESSION['complaint'])){
+	unlink($_SESSION['complaint']->getData('formScan'));
+	unset($_SESSION['complaint']);
 }
 
 ?>

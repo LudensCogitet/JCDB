@@ -1,5 +1,5 @@
 <?php
-	require 'getDBIdent.php';
+	require './getDBIdent.php';
   
 	$searchCriteria = json_decode($_GET["criteria"]);
 	
