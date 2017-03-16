@@ -147,18 +147,26 @@ class ComplaintData{
 			
 			$defendants = $this->getData("defendant");
 			$charges = $this->getData("charge");
-		
+			
+			$logFile = fopen("../log.txt","w+");
+			
 			$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
+			
+			fwrite($logFile, "DELETE missing".PHP_EOL);
 			
 			foreach($sqlReturn->fetch_all() as $row){
 				$match = false;
 				foreach($charges as $charge){
 					foreach($defendants as $defendant){
+						fwrite($logFile,"charge - database: ".$row[0]." complaint data: ".$charge.PHP_EOL."defendant - database: ".$row[1]." complaint data: ".$defendant.PHP_EOL);
 						if($row[0] == $charge && $row[1] == $defendant){
-							$match == true;
+							fwrite($logFile, "MATCH".PHP_EOL);
+							$match = true;
 							break;
 						}
 					}
+					if($match == true)
+						break;
 				}
 				if($match == false){
 					$dbConn->query("DELETE FROM casestate WHERE charge = '".$row[0]."' AND defendant = '".$row[1]."' AND caseNumber = ".$this->getData("caseNumber").";");
@@ -167,21 +175,26 @@ class ComplaintData{
 			$sqlReturn->free();
 			
 			$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
+			$dbRows = $sqlReturn->fetch_all();
+			fwrite($logFile, "ADD new".PHP_EOL);
 			
 			foreach($charges as $charge){
 					foreach($defendants as $defendant){
 						$match = false;
-						foreach($sqlReturn->fetch_all() as $row){
-							if($row[0] == $charge && $row[1] == $defendant)
-							$match == true;
-							break;
+						foreach($dbRows as $row){
+							fwrite($logFile,"charge - database: ".$row[0]." complaint data: ".$charge.PHP_EOL."defendant - database: ".$row[1]." complaint data: ".$defendant.PHP_EOL);
+							if($row[0] == $charge && $row[1] == $defendant){
+								fwrite($logFile, "MATCH".PHP_EOL);	
+								$match = true;
+								break;
+							}
 						}
 						if($match == false){
 							$dbConn->query($updateCaseInsertString."'".$charge."', '".$defendant."');");
 						}
 					}
 				}
-			
+			fclose($logFile);
 			$dbConn->close();
 			
 			return "Case number: ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
@@ -211,9 +224,9 @@ class ComplaintData{
 		
 		
 		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
-			/*if(isset($_POST['formScan'])){
+			if(isset($_POST['formScan'])){
 				unlink($_POST['formScan']);
-			}*/
+			}
 			
 			$scanDirPath = "./formScans".$GLOBALS['DBPrefix'];
 			if(!file_exists($scanDirPath))
@@ -223,7 +236,7 @@ class ComplaintData{
 			if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
 				echo "FAIL!";
 				echo $_FILES['formScanFile']['tmp_name'];
-				$this->addData("formScan","FARTS");
+				
 			}
 			else{
 				$this->addData("formScan", $scanFileName);	
