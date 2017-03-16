@@ -26,6 +26,8 @@ class ComplaintData{
 					 "hearingDate"			=> [],
 					 "hearingNotes"		=>	""];
 	
+	private $deleteCase = false;
+	
 	public function addData($field, $entry){
 		if(!array_key_exists($field, $this->data)){
 			return false;
@@ -79,6 +81,7 @@ class ComplaintData{
 		
 		$caseStateInsertString = "INSERT INTO casestate(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES('".$this->getData('plaintiff','string')."', '".$this->getData('witness','string')."', 'pndg', ";
 		
+		// If there is no prefix or case number, then generate a new complaint form record
 		if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 			$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (";
 			
@@ -103,6 +106,8 @@ class ComplaintData{
 			$this->addData("prefix",$row[0]);
 			$this->addData("caseNumber",$row[1]);
 			
+			// Add charges to the casestate database
+			
 			$newCaseInsertString = $caseStateInsertString.$this->getData('prefix').", ".$this->getData('caseNumber').", "; 
 			
 			$charges = $this->getData("charge");
@@ -115,11 +120,19 @@ class ComplaintData{
 			}
 			
 			$dbConn->close();
-			return "Case number: ".$this->getData("prefix")."-".$this->getData("caseNumber")." added to database.";
+			return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." added to database.";
 		}
-		else{
+		else{		// Otherwise, update an existing complaint form record
+		
+			if($this->deleteCase == true){	// Or just delete it, if that's what the user wants
+				$dbConn->query("DELETE FROM casehistory WHERE caseNumber =".$this->getData("caseNumber").";");
+				$dbConn->query("DELETE FROM casestate WHERE caseNumber =".$this->getData("caseNumber").";");
+				unlink($this->getData("formScan"));
+				$dbConn->close();
+				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
+			}
+			
 			$updateCaseInsertString = $caseStateInsertString.$this->getData('prefix').", ".$this->getData('caseNumber').", ";
-			// Update the complaint form record
 			$queryString = "UPDATE casehistory SET ";
 			
 			$queryString = $queryString."formScan = '".$this->getData("formScan")."', ";
@@ -143,7 +156,7 @@ class ComplaintData{
 			
 			$dbConn->query($queryString);
 			
-			// Update the charges in the database
+			// Update the charges in the casestate database
 			
 			$defendants = $this->getData("defendant");
 			$charges = $this->getData("charge");
@@ -187,7 +200,7 @@ class ComplaintData{
 				}
 			$dbConn->close();
 			
-			return "Case number: ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
+			return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
 			
 		}
 	}
@@ -209,8 +222,12 @@ class ComplaintData{
 		
 		if(isset($_POST["prefix"]))
 			$this->addData("prefix",$_POST["prefix"]);
-		if(isset($_POST["caseNumber"]))
+		if(isset($_POST["caseNumber"])){
 			$this->addData("caseNumber",$_POST["caseNumber"]);
+			if(isset($_POST["deleteComplaint"])){
+				$this->deleteCase = true;
+			}
+		}
 		
 		
 		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
