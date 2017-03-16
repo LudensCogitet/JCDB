@@ -185,7 +185,6 @@ class ComplaintData{
 						}
 					}
 				}
-			fclose($logFile);
 			$dbConn->close();
 			
 			return "Case number: ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
