@@ -148,19 +148,13 @@ class ComplaintData{
 			$defendants = $this->getData("defendant");
 			$charges = $this->getData("charge");
 			
-			$logFile = fopen("../log.txt","w+");
-			
 			$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
-			
-			fwrite($logFile, "DELETE missing".PHP_EOL);
 			
 			foreach($sqlReturn->fetch_all() as $row){
 				$match = false;
 				foreach($charges as $charge){
 					foreach($defendants as $defendant){
-						fwrite($logFile,"charge - database: ".$row[0]." complaint data: ".$charge.PHP_EOL."defendant - database: ".$row[1]." complaint data: ".$defendant.PHP_EOL);
 						if($row[0] == $charge && $row[1] == $defendant){
-							fwrite($logFile, "MATCH".PHP_EOL);
 							$match = true;
 							break;
 						}
@@ -176,15 +170,12 @@ class ComplaintData{
 			
 			$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
 			$dbRows = $sqlReturn->fetch_all();
-			fwrite($logFile, "ADD new".PHP_EOL);
 			
 			foreach($charges as $charge){
 					foreach($defendants as $defendant){
 						$match = false;
 						foreach($dbRows as $row){
-							fwrite($logFile,"charge - database: ".$row[0]." complaint data: ".$charge.PHP_EOL."defendant - database: ".$row[1]." complaint data: ".$defendant.PHP_EOL);
 							if($row[0] == $charge && $row[1] == $defendant){
-								fwrite($logFile, "MATCH".PHP_EOL);	
 								$match = true;
 								break;
 							}
