@@ -85,7 +85,7 @@ function DatabaseRow(rawData,rowArray){
 	
 	function assignFormDisplay(cell){
 		cell.click(function(){
-		$.ajax({url:"../PHP/displayCase.php",
+		$.ajax({url:"../PHP/displayComplaint.php",
 				type: "POST",
 				data: {"prefix": data["prefix"], 
 							 "caseNum": data["caseNumber"]},
@@ -99,7 +99,7 @@ function DatabaseRow(rawData,rowArray){
 		  $("#caseTarget").append($("<button id='updateComplaint'>Update complaint</button>"));
 		  
 			$("#caseTarget").children("#updateComplaint").click(function(){
-				window.location.href="../PHP/complaint.php"
+				window.location.href="../PHP/enterComplaintData.php"
 			});
 		  //console.log("caseScan",complaintForm.getData());
 		  
@@ -222,7 +222,7 @@ function DatabaseRow(rawData,rowArray){
 	
 		if(Object.keys(sendData).length != 0){
 			console.log("HERE!", sendData);
-			$.ajax({url:"./updateDB.php",
+			$.ajax({url:"../PHP/updateDB.php",
 							method: "POST",
 							data: {prefix: data["prefix"],
 										 rowID: data["rowID"],

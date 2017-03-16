@@ -21,5 +21,5 @@
 localStorage.removeItem("lastFormData");
 </script>
 
-<form style='display:inline;' action='./complaint.php'><input type='submit' value='Submit Another'></input></form>
+<form style='display:inline;' action='./enterComplaintData.php'><input type='submit' value='Submit Another'></input></form>
 <form style='display:inline;' action='../index.html'><input type='submit' value='Back to Database'></input></form>

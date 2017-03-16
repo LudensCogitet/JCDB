@@ -37,7 +37,7 @@ if(isset($_SESSION['complaint'])){
 }
 
 ?>
-<form id="complaintEntryForm" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
+<form id="complaintEntryForm" action="submitComplaintData.php" method="POST" enctype="multipart/form-data">
   <div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
   <h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" required></input>
   </div>
