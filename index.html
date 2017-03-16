@@ -49,15 +49,15 @@
   $(document).ready(function(){
 		mainTable = document.getElementById("mainTable");
 		
-		simpleHeadingMenuSetup("prefixAndCaseNumber");
-		simpleHeadingMenuSetup("plaintiff");
-		simpleHeadingMenuSetup("defendant");
-		simpleHeadingMenuSetup("witness");
-		simpleHeadingMenuSetup("charge");
-		simpleHeadingMenuSetup("status");
-		simpleHeadingMenuSetup("hearingDate");
-		simpleHeadingMenuSetup("verdict");
-		simpleHeadingMenuSetup("sentenceStatus");
+		headingMenuSetup("prefixAndCaseNumber");
+		headingMenuSetup("plaintiff");
+		headingMenuSetup("defendant");
+		headingMenuSetup("witness");
+		headingMenuSetup("charge");
+		headingMenuSetup("status");
+		headingMenuSetup("hearingDate");
+		headingMenuSetup("verdict");
+		headingMenuSetup("sentenceStatus");
 		
 		$("#updateDBButton").click(function(){	
 			if(confirm('Are you sure?')){

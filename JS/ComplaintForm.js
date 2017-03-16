@@ -34,9 +34,6 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 		if(info["hearingNotes"] == null)
 			info["hearingNotes"] = "";
 	 data = info; 
-   }
-  else{
-	  
   }
 
   var mainComplaintString = "";
@@ -261,17 +258,3 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
     }
   }
 }
-
-/*$(document).ready(function() {
-  var thing = new ComplaintForm();
-
-  $("#target").append(thing.getJqueryElement("complete"));
-
-  $("#update").click(function() {
-    thing.updateFromJquery();
-    console.log(thing.getData());
-  });
-  
-  thing.setData("whatHappened","lol");
-  console.log(thing.getData());
-});*/

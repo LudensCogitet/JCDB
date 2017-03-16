@@ -196,7 +196,7 @@ function fillTable(table){
 	return true;
 }
 
-function simpleHeadingMenuSetup(column){
+function headingMenuSetup(column){
 		var searchFunc = null;
 		if(multiChoiceFields[column] == undefined){
 			searchFunc = function(cMenuDiv,clickable,optionVal){
