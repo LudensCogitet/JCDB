@@ -49,7 +49,7 @@ $(document).ready(function(){
 </head>
 <body>
 <div id="tableTarget"></div>
-<form style="display:inline;" action='confirmSubmitCaseData.php'>
+<form style="display:inline;" action='confirmSubmission.php'>
 	<input type="submit" value="Confirm"></input>
 </form>
 <button onclick='history.go(-1);'>Modify</button>
