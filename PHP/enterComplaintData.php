@@ -11,6 +11,9 @@
 			if(complaintForm.getData("formScan") != ""){
 				$("#formScanInput").removeAttr("required");
 			}
+			if(complaintForm.getData("caseNumber") != ""){
+				$("#complaintEntryForm").append("<input type='submit' name='deleteComplaint' value='Delete complaint'></input>");
+			}
 			localStorage.removeItem("lastFormData");
 	  }
 	  else{
@@ -42,7 +45,7 @@ if(isset($_SESSION['complaint'])){
   <h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" required></input>
   </div>
   <div id="tableTarget"></div>
-<input type="submit" name="newComplaint"></input>  
+<input type="submit" name="enterComplaintData"></input>  
 </form>
 <button onclick="history.go(-1)">Back to Database</button>
 </body>
