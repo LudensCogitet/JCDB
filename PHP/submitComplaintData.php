@@ -10,9 +10,9 @@ require './ComplaintData.php';
 session_start();
 
 if($_SERVER['REQUEST_METHOD'] === "POST"){
-	$newForm = new ComplaintData();
-	$_SESSION['complaint'] = $newForm;
-}
+	if(!isset($_SESSION['complaint'])){
+		$newForm = new ComplaintData();
+		$_SESSION['complaint'] = $newForm;
 ?>
 <script>
 $(document).ready(function(){
@@ -49,9 +49,25 @@ $(document).ready(function(){
 </head>
 <body>
 <div id="tableTarget"></div>
-<form style="display:inline;" action='confirmSubmission.php'>
+<form style="display:inline;" method="POST">
 	<input type="submit" value="Confirm"></input>
 </form>
 <button onclick='history.go(-1);'>Modify</button>
 </body>
 </html>
+<?php
+	}
+	else{
+		$complaint = $_SESSION['complaint'];
+		echo $complaint->submitToDatabase();
+		unset($_SESSION['complaint']);
+?>
+<script>
+localStorage.removeItem("lastFormData");
+</script>
+<form style='display:inline;' action='./enterComplaintData.php'><input type='submit' value='Submit Another'></input></form>
+<form style='display:inline;' action='../index.html'><input type='submit' value='Back to Database'></input></form>
+<?php	
+	}
+}
+?>
