@@ -29,7 +29,10 @@
 				$queryString = $queryString."hearingDate >= '".$matches[0][0]."' AND hearingDate <= '".$matches[0][1]."' ";
 			}
 			else{
-				$queryString = $queryString.$key." LIKE '%".$val."%'";
+				if($val == "")
+					$queryString = $queryString.$key." IS NULL";
+				else
+					$queryString = $queryString.$key." LIKE '%".$val."%'";
 			}
 			
 			$i++;

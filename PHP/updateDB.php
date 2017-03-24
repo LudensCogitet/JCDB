@@ -10,7 +10,10 @@
 		$i = 0;
 		$length = count((array)$changes);
 		foreach($changes as $key=>$value){
-			$queryString = $queryString.$key.'="'.$value.'"';
+			if($value == "")
+				$queryString = $queryString.$key.'= NULL';
+			else
+				$queryString = $queryString.$key.'="'.$value.'"';
 			if($i < $length -1){
 				$queryString = $queryString.', ';
 			

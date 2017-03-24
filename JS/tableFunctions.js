@@ -86,7 +86,10 @@ function makeFilter(key,value){
 	});
 	
 	var filter = $("<span class='filterDisplay noPrint'></span>");
-	filter.html(dressUpColumnName(key)+": "+value);
+	if(value == "")
+		filter.html(dressUpColumnName(key)+": (blank)");
+	else
+		filter.html(dressUpColumnName(key)+": "+value);
 	filter.append(closeButton);
 
 	$("#currentFilters").append(filter);

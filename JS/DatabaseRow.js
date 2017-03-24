@@ -115,8 +115,11 @@ function DatabaseRow(rawData,rowArray){
 		
 	function assignMultiChoiceClick(cell,key){
 			
-		var options = [["filter by:"],
-									 [cell.innerHTML],
+		var options = [["Filter By",function(cMenuDiv,clickable,optionVal){
+										 cMenuDiv.hide();
+										 makeFilter(key,data[key]);
+										 getDBInfo(dbSearchCriteria);
+									 }],
 									 ["mark as:"]];
 				
 		fillMultiChoiceMenu(options,key,function(cMenuDiv,clickable,optionVal){
@@ -140,13 +143,20 @@ function DatabaseRow(rawData,rowArray){
 				type = "textarea";
 			}
 			
-			contextMenu(cell,"#contextMenu",[["Edit",function(cMenuDiv){
-																								cMenuDiv.hide();
-																								toggleTextField(cell,type,function(value){
-																										updateKey(key,value);
-																									});
-																							}
-																				 ]]);
+			options = [["Filter By",function(cMenuDiv,clickable,optionVal){
+										console.log("FILTER BY"+data[key]);
+										 cMenuDiv.hide();
+										 makeFilter(key,data[key]);
+										 getDBInfo(dbSearchCriteria);
+									 }],
+									 ["Edit",function(cMenuDiv){
+											cMenuDiv.hide();
+											toggleTextField(cell,type,function(value){
+												updateKey(key,value);
+											});
+										}]];
+			
+			contextMenu(cell,"#contextMenu",options);
 	}
 		
 	var myRow = $("<tr>");
