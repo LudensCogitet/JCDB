@@ -1,6 +1,5 @@
 <?php
 require './getDBIdent.php';
-
 function sanitize($var){
 	$var = trim($var);
 	$var = htmlspecialchars($var);
