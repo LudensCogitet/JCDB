@@ -3,7 +3,7 @@
 		$changes = json_decode($_POST['changes']);
 		
 		$dbConn = new mysqli("localHost","root");
-		$dbConn->select_db("jcdb".$_POST['prefix']);
+		$dbConn->select_db("jcdb");
 		
 		$queryString = "UPDATE casestate SET ";
 		

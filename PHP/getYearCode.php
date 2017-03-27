@@ -1,6 +1,6 @@
 <?php
 
-function getDBIdent($dateString = "today"){
+function getYearCode($dateString = "today"){
 	
 	$date = new DateTime();
 	$date->setTimeStamp(strtotime($dateString));

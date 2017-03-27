@@ -1,5 +1,5 @@
 <?php
-	require './getDBIdent.php';
+	require './getYearCode.php';
   
 	$searchCriteria = json_decode($_GET["criteria"]);
 	
@@ -9,21 +9,19 @@
 			$searchCriteria->caseNumber = "";
 	}
 	else{
-		$prefix = getDBIdent();
+		$prefix = getYearCode();
 	}
 	
   $dbConn = new mysqli("localHost","root");
-  $dbConn->select_db("jcdb".$prefix);
+  $dbConn->select_db("jcdb");
 	
 	if($searchCriteria == "all")
 		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
 	else{
-		$queryString = "SELECT * FROM casestate WHERE ";
+		$queryString = "SELECT * FROM casestate WHERE prefix = ".$prefix." ";
 		
-		$i = 0;
 		foreach($searchCriteria as $key => $val){
-			if($i != 0)
-				$queryString = $queryString." AND ";
+			$queryString = $queryString." AND ";
 			
 			if($key == "hearingDate" && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$val,$matches) == 2){
 				$queryString = $queryString."hearingDate >= '".$matches[0][0]."' AND hearingDate <= '".$matches[0][1]."' ";
@@ -34,8 +32,6 @@
 				else
 					$queryString = $queryString.$key." LIKE '%".$val."%'";
 			}
-			
-			$i++;
 		}
 		$queryString = $queryString.";";
 		

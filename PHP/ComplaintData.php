@@ -1,12 +1,12 @@
 <?php
-require './getDBIdent.php';
+require './getYearCode.php';
 function sanitize($var){
 	$var = trim($var);
 	$var = htmlspecialchars($var);
 	return $var;
 }
 
-$DBPrefix = getDBIdent();
+$currentYearCode = getYearCode();
 
 class ComplaintData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
@@ -63,9 +63,9 @@ class ComplaintData{
 	}
 	
 	private function makeNewDatabase($dbConn){
-		$dbConn->query("CREATE DATABASE jcdb".$GLOBALS['DBPrefix'].";");
-		$dbConn->select_db("jcdb".$GLOBALS['DBPrefix']);
-		$dbConn->query("CREATE TABLE casehistory(prefix INTEGER DEFAULT ".$GLOBALS['DBPrefix'].", caseNumber INTEGER AUTO_INCREMENT PRIMARY KEY, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, hearingDate TEXT, hearingNotes TEXT);");
+		$dbConn->query("CREATE DATABASE jcdb;");
+		$dbConn->select_db("jcdb");
+		$dbConn->query("CREATE TABLE casehistory(prefix INTEGER, caseNumber INTEGER AUTO_INCREMENT PRIMARY KEY, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, hearingDate TEXT, hearingNotes TEXT);");
 		$dbConn->query("CREATE TABLE casestate(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY);");
 	}
 	
@@ -74,7 +74,7 @@ class ComplaintData{
 		$dbConn = new mysqli("localhost",'root');
 		
 		// If there is no database with the proper school year, make one.
-		if(!$dbConn->select_db("jcdb".$GLOBALS['DBPrefix'])){
+		if(!$dbConn->select_db("jcdb")){
 			$this->makeNewDatabase($dbConn);
 		}
 		
@@ -82,9 +82,10 @@ class ComplaintData{
 		
 		// If there is no prefix or case number, then generate a new complaint form record
 		if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
-			$string = "INSERT INTO casehistory(formScan,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (";
+			$string = "INSERT INTO casehistory(formScan,prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (";
 			
 			$string = $string."'".$this->getData('formScan')."',";
+			$string = $string.$GLOBALS['currentYearCode'].",";
 			$string = $string."'".$this->getData('plaintiff','string')."',";
 			$string = $string."'".$this->getData('defendant','string')."',";
 			$string = $string."'".$this->getData('witness','string')."',";
@@ -234,7 +235,7 @@ class ComplaintData{
 				unlink($_POST['formScan']);
 			}
 			
-			$scanDirPath = "./formScans".$GLOBALS['DBPrefix'];
+			$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
 			if(!file_exists($scanDirPath))
 				mkdir($scanDirPath);
 			
