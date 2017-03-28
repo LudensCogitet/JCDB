@@ -1,6 +1,6 @@
 <?php
 	if($_REQUEST['caseNum'] && $_REQUEST['prefix'])
-	  $dbConn = new mysqli("localHost","root");
+	  $dbConn = new mysqli("localhost","root");
 	  $dbConn->select_db("jcdb");
 	  
 	  $result = $dbConn->query("SELECT * FROM casehistory WHERE caseNumber=".$_REQUEST['caseNum']." LIMIT 1;");
