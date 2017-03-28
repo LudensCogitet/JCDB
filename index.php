@@ -2,9 +2,11 @@
 <head>
 <?php
 	session_start();
-	setcookie(session_name(),"",0,"");
-	//$_SESSION['username'] = true;
-	//$_SESSION['superuser'] = true;
+	if(isset($_POST['LOGOUT'])){
+		setcookie(session_name(),session_id(),1);
+		session_unset();
+		session_destroy();
+	}
 ?>
 <link rel="stylesheet" type="text/css" href="./CSS/ComplaintForm.css">
 <link rel="stylesheet" type="text/css" href="./CSS/databaseDisplay.css">
@@ -107,11 +109,29 @@
 		<div id="caseTarget"></div>
 	</div>
 	<div id="currentFilters" class="noPrint"></div>
+<?php 
+	if(!isset($_SESSION['username'])){?>
+		<a href='./PHP/login.php'>login</a>
+<?php 
+	}
+	else{	
+		echo "Currently logged in as ".$_SESSION['username'];
+?>
+	<form method="POST">
+	<input type="submit" name="LOGOUT" value="Logout"></input>
+	</form>
+<?php
+	}
+?>
+	
+	
 	<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Pending List</button>
 	<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily Hearing List</button>
 	<button style="float:right; clear: both;" onclick='window.print()' class="noPrint">Print</button>
-	<button style="float:right; clear: both;" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</button>
-	<button id="updateDBButton" style="float:right;clear:left;" class="noPrint">Update Database</button>
+	<?php if(isset($_SESSION['username'])){ ?>
+		<button style="float:right; clear: both;" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</button>
+		<button id="updateDBButton" style="float:right;clear:left;" class="noPrint">Update Database</button>
+	<?php } ?>
 	<table id="mainTable" style="margin: auto; clear:both;">
 		<thead id="mainTableHead">
 			<tr>
