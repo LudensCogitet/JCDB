@@ -1,5 +1,11 @@
 <html>
 <head>
+<?php
+	session_start();
+	setcookie(session_name(),"",0,"");
+	//$_SESSION['username'] = true;
+	//$_SESSION['superuser'] = true;
+?>
 <link rel="stylesheet" type="text/css" href="./CSS/ComplaintForm.css">
 <link rel="stylesheet" type="text/css" href="./CSS/databaseDisplay.css">
 <script src="./JS/jquery-3.1.1.min.js"></script>

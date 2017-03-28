@@ -1,12 +1,13 @@
 <?php
 	require './config.php';
-
-	if(isset($_SESSION['username']){
+	session_start();
+	
+	if(isset($_SESSION['username'])){
 		if($_SERVER['REQUEST_METHOD'] === 'POST'){
 			$changes = json_decode($_POST['changes']);
 			
 			$dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_MODIFY_USER'],$GLOBALS['config']['SQL_MODIFY_PASS']);
-			$dbConn->select_db("jcdb");
+			$dbConn->select_db($GLOBALS['config']['SQL_DB']);
 			
 			$queryString = "UPDATE casestate SET ";
 			
@@ -28,7 +29,7 @@
 			
 			$dbConn->query($queryString);
 		
-			$dbConn->close();		
+			$dbConn->close();
 		}
 	}
 ?>
