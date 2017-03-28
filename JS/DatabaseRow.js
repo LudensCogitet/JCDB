@@ -90,7 +90,7 @@ function DatabaseRow(rawData,rowArray){
 				data: {"prefix": data["prefix"], 
 							 "caseNum": data["caseNumber"]},
 		success: function(result){
-		  //console.log("this is the result",result);
+		  console.log("this is the result",result);
 		  var complaintForm = new ComplaintForm(JSON.parse(result),"both",true);
 		  //console.log("lastFormData before:", localStorage.lastFormData);
 		  localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));

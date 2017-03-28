@@ -1,5 +1,7 @@
 <?php
 require './getYearCode.php';
+require './config.php';
+
 function sanitize($var){
 	$var = trim($var);
 	$var = htmlspecialchars($var);
@@ -11,6 +13,8 @@ $currentYearCode = getYearCode();
 class ComplaintData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 	public static $otherFields = ["whatHappened","hearingNotes"];
+	public static $hearingFields = ["hearingDate","hearingNotes"];
+	
 	private $data = ["formScan"		  => "",	
 					 "prefix"	=> -1,
 					 "caseNumber"	  => -1,
@@ -70,11 +74,13 @@ class ComplaintData{
 	}
 	
 	public function submitToDatabase(){
-		// Connect to mySQL server
-		$dbConn = new mysqli("localhost",'root');
+		if(!isset($_SESSION["username"]))
+			return;
 		
-		// If there is no database with the proper school year, make one.
-		if(!$dbConn->select_db("jcdb")){
+		// Connect to mySQL server
+		$dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_MODIFY_USER'],$GLOBALS['config']['SQL_MODIFY_PASS']);
+		
+		if(!$dbConn->select_db($GLOBALS['config']['SQL_DB'])){
 			$this->makeNewDatabase($dbConn);
 		}
 		
@@ -124,7 +130,7 @@ class ComplaintData{
 		}
 		else{		// Otherwise, update an existing complaint form record
 		
-			if($this->deleteCase == true){	// Or just delete it, if that's what the user wants
+			if($this->deleteCase == true && isset($_SESSION["superuser"])){	// Or just delete it, if that's what the user wants
 				$dbConn->query("DELETE FROM casehistory WHERE caseNumber =".$this->getData("caseNumber").";");
 				$dbConn->query("DELETE FROM casestate WHERE caseNumber =".$this->getData("caseNumber").";");
 				unlink($this->getData("formScan"));
@@ -132,73 +138,90 @@ class ComplaintData{
 				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
 			}
 			
-			$updateCaseInsertString = $caseStateInsertString.$this->getData('prefix').", ".$this->getData('caseNumber').", ";
 			$queryString = "UPDATE casehistory SET ";
 			
-			$queryString = $queryString."formScan = '".$this->getData("formScan")."', ";
-			
-			foreach(self::$multiFields as $field){
-				if(isset($this->data[$field])){
-					$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
-				}
-			}
-			 
-			foreach(self::$otherFields as $field){
-				if(isset($this->data[$field])){
-					$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
-				}
-			}
-			 
-			if(strrpos($queryString, ", "))
-				$queryString = substr($queryString,0,-2);
-			
-			$queryString = $queryString." WHERE caseNumber = ".$this->getData("caseNumber").";";
-			
-			$dbConn->query($queryString);
-			
-			// Update the charges in the casestate database
-			
-			$defendants = $this->getData("defendant");
-			$charges = $this->getData("charge");
-			
-			$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
-			
-			foreach($sqlReturn->fetch_all() as $row){
-				$match = false;
-				foreach($charges as $charge){
-					foreach($defendants as $defendant){
-						if($row[0] == $charge && $row[1] == $defendant){
-							$match = true;
-							break;
-						}
+			if(!isset($_SESSION['superuser'])){
+					foreach(self::$hearingFields as $field){
+						if(isset($this->data[$field])){
+							$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
 					}
-					if($match == true)
-						break;
 				}
-				if($match == false){
-					$dbConn->query("DELETE FROM casestate WHERE charge = '".$row[0]."' AND defendant = '".$row[1]."' AND caseNumber = ".$this->getData("caseNumber").";");
-				}
+				
+				if(strrpos($queryString, ", "))
+					$queryString = substr($queryString,0,-2);
+				
+				$queryString = $queryString." WHERE caseNumber = ".$this->getData("caseNumber").";";
+				$dbConn->query($queryString);
+				$dbConn->close();
 			}
-			$sqlReturn->free();
-			
-			$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
-			$dbRows = $sqlReturn->fetch_all();
-			
-			foreach($charges as $charge){
-					foreach($defendants as $defendant){
-						$match = false;
-						foreach($dbRows as $row){
+			else{
+				$updateCaseInsertString = $caseStateInsertString.$this->getData('prefix').", ".$this->getData('caseNumber').", ";
+				
+				$queryString = $queryString."formScan = '".$this->getData("formScan")."', ";
+				
+				foreach(self::$multiFields as $field){
+					if(isset($this->data[$field])){
+						$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
+					}
+				}
+				 
+				foreach(self::$otherFields as $field){
+					if(isset($this->data[$field])){
+						$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
+					}
+				}
+				 
+				if(strrpos($queryString, ", "))
+					$queryString = substr($queryString,0,-2);
+				
+				$queryString = $queryString." WHERE caseNumber = ".$this->getData("caseNumber").";";
+				
+				$dbConn->query($queryString);
+				
+				// Update the charges in the casestate database
+				
+				$defendants = $this->getData("defendant");
+				$charges = $this->getData("charge");
+				
+				$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
+				
+				foreach($sqlReturn->fetch_all() as $row){
+					$match = false;
+					foreach($charges as $charge){
+						foreach($defendants as $defendant){
 							if($row[0] == $charge && $row[1] == $defendant){
 								$match = true;
 								break;
 							}
 						}
-						if($match == false){
-							$dbConn->query($updateCaseInsertString."'".$charge."', '".$defendant."');");
-						}
+						if($match == true)
+							break;
+					}
+					if($match == false){
+						$dbConn->query("DELETE FROM casestate WHERE charge = '".$row[0]."' AND defendant = '".$row[1]."' AND caseNumber = ".$this->getData("caseNumber").";");
 					}
 				}
-			$dbConn->close();
+				$sqlReturn->free();
+				
+				$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
+				$dbRows = $sqlReturn->fetch_all();
+				
+				foreach($charges as $charge){
+						foreach($defendants as $defendant){
+							$match = false;
+							foreach($dbRows as $row){
+								if($row[0] == $charge && $row[1] == $defendant){
+									$match = true;
+									break;
+								}
+							}
+							if($match == false){
+								$dbConn->query($updateCaseInsertString."'".$charge."', '".$defendant."');");
+							}
+						}
+					}
+				$dbConn->close();
+			}
 			
 			return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
 			

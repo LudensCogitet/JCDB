@@ -1,5 +1,6 @@
 <?php
 	require './getYearCode.php';
+	require './config.php';
   
 	$searchCriteria = json_decode($_GET["criteria"]);
 	
@@ -12,8 +13,8 @@
 		$prefix = getYearCode();
 	}
 	
-  $dbConn = new mysqli("localHost","root");
-  $dbConn->select_db("jcdb");
+  $dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_VIEW_USER']);
+  $dbConn->select_db($GLOBALS['config']['SQL_DB']);
 	
 	if($searchCriteria == "all")
 		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
