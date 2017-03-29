@@ -37,6 +37,42 @@ function DatabaseRow(rawData,rowArray){
 	});
 	
 	var data = JSON.parse(JSON.stringify(initialData));
+
+	var myRow = $("<tr>");
+	var myCells = [$("<td>")];
+	
+	myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
+	myCells[0].click(function(){displayForm(data['prefix'],data['caseNumber'])});
+	addHighlightOptions(myCells[0],"prefixAndCaseNumber");
+		
+	Object.keys(data).forEach(function(key){
+		if(key === "prefix" || key == "caseNumber" || key == "rowID"){
+			return;
+		}
+		else
+		{
+			myCells.push($("<td>"));
+			var currentCell = myCells[myCells.length-1];
+			if(hearingFields[key]){
+				console.log("ADDING PDNGINVIS");
+				currentCell.addClass("pndgInvis");
+			}
+			
+			addHighlightOptions(currentCell,key);
+			
+			currentCell.append(data[key]);
+				
+			if(Object.keys(multiChoiceFields).indexOf(key) != -1){
+				assignMultiChoiceClick(currentCell,key);
+			}	
+			else if(textEntryFields.indexOf(key) != -1){
+				assignTextEntryClick(currentCell,key);
+			}
+		}		
+	});		
+		
+	for(let i = 0; i < myCells.length; i++)
+		myRow.append(myCells[i]);
 	
 	function updateKey(key,value){
 			var updateButton = $("#updateDBButton");
@@ -82,37 +118,7 @@ function DatabaseRow(rawData,rowArray){
 			}
 		});
 	}
-	
-	function assignFormDisplay(cell){
-		cell.click(function(){
-		$.ajax({url:"../PHP/displayComplaint.php",
-				type: "POST",
-				data: {"prefix": data["prefix"], 
-							 "caseNum": data["caseNumber"]},
-		success: function(result){
-		  console.log("this is the result",result);
-		  var complaintForm = new ComplaintForm(JSON.parse(result),"both",true);
-		  //console.log("lastFormData before:", localStorage.lastFormData);
-		  localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));
-		  //console.log("lastFormData after:", localStorage.lastFormData);
-		  $("#caseTarget").append(complaintForm.getJqueryElement("complete"));
-		  $("#caseTarget").append($("<button id='updateComplaint'>Update complaint</button>"));
-		  
-			$("#caseTarget").children("#updateComplaint").click(function(){
-				window.location.href="../PHP/enterComplaintData.php"
-			});
-		  //console.log("caseScan",complaintForm.getData());
-		  
-			var scanDisplayForm = "<form target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
-														"<input type='hidden' name='scanSrc' value='"+complaintForm.getData("formScan")+"'>"+
-														"<input type='submit' value='Open complaint form scan'></submit>";
-			
-			$("#caseTarget").append(scanDisplayForm);
-		  $("#caseInfo").show();
-		}});
-	 });
-  }
-		
+
 	function assignMultiChoiceClick(cell,key){
 			
 		var options = [["Filter By",function(cMenuDiv,clickable,optionVal){
@@ -158,43 +164,7 @@ function DatabaseRow(rawData,rowArray){
 			
 			contextMenu(cell,"#contextMenu",options);
 	}
-		
-	var myRow = $("<tr>");
-	var myCells = [$("<td>")];
 	
-	myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
-	assignFormDisplay(myCells[0]);
-	addHighlightOptions(myCells[0],"prefixAndCaseNumber");
-		
-	Object.keys(data).forEach(function(key){
-		if(key === "prefix" || key == "caseNumber" || key == "rowID"){
-			return;
-		}
-		else
-		{
-			myCells.push($("<td>"));
-			var currentCell = myCells[myCells.length-1];
-			if(hearingFields[key]){
-				console.log("ADDING PDNGINVIS");
-				currentCell.addClass("pndgInvis");
-			}
-			
-			addHighlightOptions(currentCell,key);
-			
-			currentCell.append(data[key]);
-				
-			if(Object.keys(multiChoiceFields).indexOf(key) != -1){
-				assignMultiChoiceClick(currentCell,key);
-			}	
-			else if(textEntryFields.indexOf(key) != -1){
-				assignTextEntryClick(currentCell,key);
-			}
-		}		
-	});		
-		
-	for(let i = 0; i < myCells.length; i++)
-		myRow.append(myCells[i]);
-		
 	this.returnRow = function(){
 		console.log(myRow);
 		return myRow;

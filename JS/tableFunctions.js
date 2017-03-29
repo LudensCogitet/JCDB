@@ -101,7 +101,30 @@ function makeFilter(key,value){
 
 var currentSort = {column: "prefixAndCaseNumber",
 									 dir:		 "desc"};
-
+ 
+function displayForm(prefix, caseNumber){
+	$.ajax({url:"../PHP/displayComplaint.php",
+					type: "POST",
+					data: {"prefix": prefix, 
+							 "caseNum": caseNumber},
+					success: function(result){
+						console.log("this is the result",result);
+						var complaintForm = new ComplaintForm(JSON.parse(result),"both",true);
+						//console.log("lastFormData before:", localStorage.lastFormData);
+						localStorage.setItem('lastFormData',JSON.stringify(complaintForm.getData()));
+						//console.log("lastFormData after:", localStorage.lastFormData);
+						$("#caseTarget").prepend(complaintForm.getJqueryElement("complete"));
+						//console.log("caseScan",complaintForm.getData());
+		  
+						var scanDisplayForm = "<form target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
+																	"<input type='hidden' name='scanSrc' value='"+complaintForm.getData("formScan")+"'>"+
+																	"<input type='submit' value='Open complaint form scan'></submit>";
+			
+						$("#caseTarget").append(scanDisplayForm);
+						$("#caseInfo").show();
+					}
+				});
+}
 
 function sortRows(column = null, dir = null, column2 = "defendant"){
 	

@@ -106,12 +106,21 @@
 	<div id="contextMenu" class="contextMenuStyle noPrint"></div>
 	<div id="caseInfo" class="noPrint">
 		<button id="caseInfoClose" class="fixedElClose">Close</button>
-		<div id="caseTarget"></div>
+		<div id="caseTarget">
+<?php
+	if(isset($_SESSION['username'])){
+?>
+			<button id='updateComplaint' onclick='window.location.href="../PHP/enterComplaintData.php"'>Update complaint</button>
+<?php 
+	} 
+?>	
+		</div>
 	</div>
 	<div id="currentFilters" class="noPrint"></div>
 <span class='noPrint'>
 <?php 
-	if(!isset($_SESSION['username'])){?>
+	if(!isset($_SESSION['username'])){
+?>
 		<a href='./PHP/login.php'>login</a>
 <?php 
 	}
