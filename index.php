@@ -101,8 +101,8 @@
 </script>
 </head>
 <body>
-	<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Pending Cases<br><span class="currentDate"></span></div>
-	<div id="hearingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="currentDate"></span></div>
+	<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="currentDate"></span></div>
+	<div id="hearingListHeading" style="display: none;">Judicial Committee<br>JC Report<br><span class="currentDate"></span></div>
 	<div id="contextMenu" class="contextMenuStyle noPrint"></div>
 	<div id="caseInfo" class="noPrint">
 		<button id="caseInfoClose" class="fixedElClose">Close</button>
