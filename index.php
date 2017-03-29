@@ -109,6 +109,7 @@
 		<div id="caseTarget"></div>
 	</div>
 	<div id="currentFilters" class="noPrint"></div>
+<span class='noPrint'>
 <?php 
 	if(!isset($_SESSION['username'])){?>
 		<a href='./PHP/login.php'>login</a>
@@ -117,16 +118,23 @@
 	else{	
 		echo "Currently logged in as ".$_SESSION['username'];
 ?>
-	<form method="POST">
-	<input type="submit" name="LOGOUT" value="Logout"></input>
-	</form>
+		<form method="POST">
+			<input type="submit" name="LOGOUT" value="Logout"></input>
+		</form>
 <?php
+		if(isset($_SESSION['superuser']))
+		{
+?>
+			<a href='./PHP/newUser.php'>Add new account</a>
+
+<?php
+		}
 	}
 ?>
+</span>
 	
-	
-	<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Pending List</button>
-	<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily Hearing List</button>
+	<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Hearing List</button>
+	<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</button>
 	<button style="float:right; clear: both;" onclick='window.print()' class="noPrint">Print</button>
 	<?php if(isset($_SESSION['username'])){ ?>
 		<button style="float:right; clear: both;" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</button>

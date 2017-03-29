@@ -20,6 +20,10 @@ function makeReport(kind){
 	var criteria;
 
 	var currentDate = new Date();
+
+	if(kind == "pendingList")
+		currentDate.setDate(currentDate.getDate() + 1);
+	
 	var dateString = currentDate.getFullYear()+"-";
 	
 	if(currentDate.getMonth() < 10)
