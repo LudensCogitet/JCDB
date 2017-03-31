@@ -6,21 +6,27 @@
   <script>
 	$(document).ready(function(){
 	  var complaintForm = null;
-	  if(localStorage.lastFormData){
+	  var element;
+		if(localStorage.lastFormData){
 			complaintForm = new ComplaintForm(JSON.parse(localStorage.lastFormData));
 			if(complaintForm.getData("formScan") != ""){
 				$("#formScanInput").removeAttr("required");
 			}
 			if(complaintForm.getData("caseNumber") != ""){
 				$("#complaintEntryForm").append("<input type='submit' name='deleteComplaint' value='Delete complaint'></input>");
+				element = complaintForm.getJqueryElement("complete")
+			}
+			else{
+				element = complaintForm.getJqueryElement();
 			}
 			localStorage.removeItem("lastFormData");
-	  }
+		}
 	  else{
-		complaintForm = new ComplaintForm();
+			complaintForm = new ComplaintForm();
+			element = complaintForm.getJqueryElement();
 	  }
-	  
-	  $("#tableTarget").append(complaintForm.getJqueryElement());
+		
+		$("#tableTarget").append(element);
 		   
 	 $("#complaintEntryForm").submit(function(){
 	  complaintForm.updateFromJquery();
