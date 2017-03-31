@@ -3,30 +3,43 @@
 	require './config.php';
 	
 	if(isset($_POST['username']) && isset($_POST['password'])){
-		$dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_MODIFY_USER'],$GLOBALS['config']['SQL_MODIFY_PASS']);
-		$dbConn->select_db($GLOBALS['config']['SQL_DB']);
-		$userInfo = $dbConn->query("SELECT * FROM users WHERE username='".$_POST['username']."' LIMIT 1;");
-		if($userInfo->num_rows > 0){
-			$row = $userInfo->fetch_row();
-			if(password_verify($_POST['password'],$row[1])){
-				session_start();
-					$_SESSION['username'] = $row[0];
-				if($row[2] == 1)
-					$_SESSION['superuser'] = true;
+		$_POST['username'] = htmlspecialchars($_POST['username']);
+		$_POST['password'] = htmlspecialchars($_POST['password']);
+		try{
+			$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
+												";dbname=".$GLOBALS['config']['SQL_DB'],
+												$GLOBALS['config']['SQL_MODIFY_USER'],
+												$GLOBALS['config']['SQL_MODIFY_PASS'],
+												[PDO::ATTR_PERSISTENT => true]);
 			
-			echo "Currently signed in as ".$_SESSION['username']; 
-			if(isset($_SESSION['superuser'])) 
-				echo " with extended privileges.";
+			$statement = $dbConn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1;");
+			$statement->execute([$_POST['username']]);
+			
+			if($statement->rowCount() > 0){
+				$row = $statement->fetch(PDO::FETCH_ASSOC);
+				if(password_verify($_POST['password'],$row['password'])){
+					session_start();
+						$_SESSION['username'] = $row['username'];
+					if($row['superuser'] == 1)
+						$_SESSION['superuser'] = true;
+				
+				echo "Currently signed in as ".$_SESSION['username']; 
+				if(isset($_SESSION['superuser'])) 
+					echo " with extended privileges.";
+				}
+				else{
+					echo "Wrong username or password";
+				}
 			}
 			else{
 				echo "Wrong username or password";
 			}
+			$statement = null;
+			$dbConn = null;
 		}
-		else{
-			echo "Wrong username or password";
+		catch(Exception $e){
+			print "Error!:".$e->getMessage()."<br>";
 		}
-		$userInfo->free();
-		$dbConn->close();
 	}
 	else{
 ?>
