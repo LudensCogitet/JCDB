@@ -81,7 +81,7 @@
   
 		function windowClose(){
 			$(this).parent().hide();
-			$(this).siblings().children().remove();
+			$(this).siblings().children(":not(#updateComplaint)").remove();
 			localStorage.removeItem('lastFormData');
 		}
 		
@@ -113,7 +113,7 @@
 			<button id='updateComplaint' onclick='window.location.href="../PHP/enterComplaintData.php"'>Update complaint</button>
 <?php 
 	} 
-?>	
+?>
 		</div>
 	</div>
 	<div id="currentFilters" class="noPrint"></div>

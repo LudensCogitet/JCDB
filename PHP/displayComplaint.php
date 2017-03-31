@@ -1,20 +1,25 @@
 <?php
 	require "./config.php";
 
-	if($_REQUEST['caseNum'] && $_REQUEST['prefix'])
-	  $dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_VIEW_USER']);
-	  $dbConn->select_db($GLOBALS['config']['SQL_DB']);
-	  
-	  $result = $dbConn->query("SELECT * FROM casehistory WHERE caseNumber=".$_REQUEST['caseNum']." LIMIT 1;");
-	  $row = $result->fetch_row();
-	  $columns = $result->fetch_fields();
-	  
-	  $returnArray = [];
-	  
-	  for($i = 0; $i < count($row); $i++){
-		   $returnArray[$columns[$i]->name] = $row[$i];
-	  }
-	  $dbConn->close();
-	  
-	  echo json_encode($returnArray);
+	if($_REQUEST['caseNum'] && $_REQUEST['prefix']){
+		try{
+			$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
+												";dbname=".$GLOBALS['config']['SQL_DB'],
+												$GLOBALS['config']['SQL_VIEW_USER'],
+												"",
+												[PDO::ATTR_PERSISTENT => true]);
+			
+			$statement = $dbConn->prepare("SELECT * FROM casehistory WHERE caseNumber = ? LIMIT 1;");
+			$statement->execute([$_REQUEST['caseNum']]);
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
+		}
+		catch(Exception $e){
+			print "Error!: ".$e->getMessage()."<br/>";
+			return;
+		}
+		
+		$dbConn = false;
+		$statement = false;
+	  echo json_encode($row);
+	}
 ?>

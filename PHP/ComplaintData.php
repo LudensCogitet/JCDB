@@ -74,157 +74,209 @@ class ComplaintData{
 	}
 	
 	public function submitToDatabase(){
-		if(!isset($_SESSION["username"]))
-			return;
-		
-		// Connect to mySQL server
-		$dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_MODIFY_USER'],$GLOBALS['config']['SQL_MODIFY_PASS']);
-		
-		if(!$dbConn->select_db($GLOBALS['config']['SQL_DB'])){
-			$this->makeNewDatabase($dbConn);
-		}
-		
-		$caseStateInsertString = "INSERT INTO casestate(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES('".$this->getData('plaintiff','string')."', '".$this->getData('witness','string')."', 'pndg', ";
-		
-		// If there is no prefix or case number, then generate a new complaint form record
-		if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
-			$string = "INSERT INTO casehistory(formScan,prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (";
-			
-			$string = $string."'".$this->getData('formScan')."',";
-			$string = $string.$GLOBALS['currentYearCode'].",";
-			$string = $string."'".$this->getData('plaintiff','string')."',";
-			$string = $string."'".$this->getData('defendant','string')."',";
-			$string = $string."'".$this->getData('witness','string')."',";
-			$string = $string."'".$this->getData('dateOfIncident','string')."',";
-			$string = $string."'".$this->getData('timeOfIncident','string')."',";
-			$string = $string."'".$this->getData('location','string')."',";
-			$string = $string."'".$this->getData('charge','string')."',";
-			$string = $string."'".$this->getData('whatHappened')."');";
-			
-			$dbConn->query($string);
-			
-			$sqlReturn = $dbConn->query("SELECT prefix, caseNumber FROM casehistory ORDER BY caseNumber DESC LIMIT 1;");
-			
-			$row = $sqlReturn->fetch_row();
-			
-			$sqlReturn->free();
-			
-			$this->addData("prefix",$row[0]);
-			$this->addData("caseNumber",$row[1]);
-			
-			// Add charges to the casestate database
-			
-			$newCaseInsertString = $caseStateInsertString.$this->getData('prefix').", ".$this->getData('caseNumber').", "; 
-			
-			$charges = $this->getData("charge");
-			$defendants = $this->getData("defendant");
-			
-			foreach($charges as $charge){
-				foreach($defendants as $defendant){
-					$dbConn->query($newCaseInsertString."'".$charge."', '".$defendant."');");
-				}
+		try{
+			if(!isset($_SESSION["username"])){
+				echo "No user signed in";
+				return;
 			}
 			
-			$dbConn->close();
-			return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." added to database.";
-		}
-		else{		// Otherwise, update an existing complaint form record
-		
-			if($this->deleteCase == true && isset($_SESSION["superuser"])){	// Or just delete it, if that's what the user wants
-				$dbConn->query("DELETE FROM casehistory WHERE caseNumber =".$this->getData("caseNumber").";");
-				$dbConn->query("DELETE FROM casestate WHERE caseNumber =".$this->getData("caseNumber").";");
-				unlink($this->getData("formScan"));
-				$dbConn->close();
-				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
-			}
+			// Connect to mySQL server
+			$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
+													";dbname=".$GLOBALS['config']['SQL_DB'],
+													$GLOBALS['config']['SQL_MODIFY_USER'],
+													$GLOBALS['config']['SQL_MODIFY_PASS'],
+													[PDO::ATTR_PERSISTENT => true]);
+
+			$caseStateInsertString = "INSERT INTO casestate(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES(?,?,'pndg',?,?,?,?)";
+			$caseStateInsertParams = [$this->getData('plaintiff','string'),$this->getData('witness','string')];
 			
-			$queryString = "UPDATE casehistory SET ";
-			
-			if(!isset($_SESSION['superuser'])){
-					foreach(self::$hearingFields as $field){
-						if(isset($this->data[$field])){
-							$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
-					}
-				}
+			// If there is no prefix or case number, then generate a new complaint form record
+			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 				
-				if(strrpos($queryString, ", "))
-					$queryString = substr($queryString,0,-2);
+				$statement = $dbConn->prepare("INSERT INTO casehistory(formScan,prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
+
+				$statement->bindParam(1,$this->getData('formScan'));
+				$statement->bindParam(2,$GLOBALS['currentYearCode']);
+				$statement->bindParam(3,$this->getData('plaintiff','string'));
+				$statement->bindParam(4,$this->getData('defendant','string'));
+				$statement->bindParam(5,$this->getData('witness','string'));
+				$statement->bindParam(6,$this->getData('dateOfIncident','string'));
+				$statement->bindParam(7,$this->getData('timeOfIncident','string'));
+				$statement->bindParam(8,$this->getData('location','string'));
+				$statement->bindParam(9,$this->getData('charge','string'));
+				$statement->bindParam(10,$this->getData('whatHappened'));
 				
-				$queryString = $queryString." WHERE caseNumber = ".$this->getData("caseNumber").";";
-				$dbConn->query($queryString);
-				$dbConn->close();
-			}
-			else{
-				$updateCaseInsertString = $caseStateInsertString.$this->getData('prefix').", ".$this->getData('caseNumber').", ";
+				$statement->execute();
 				
-				$queryString = $queryString."formScan = '".$this->getData("formScan")."', ";
+				$statement = $dbConn->query("SELECT prefix, caseNumber FROM casehistory ORDER BY caseNumber DESC LIMIT 1");
 				
-				foreach(self::$multiFields as $field){
-					if(isset($this->data[$field])){
-						$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
-					}
-				}
-				 
-				foreach(self::$otherFields as $field){
-					if(isset($this->data[$field])){
-						$queryString = $queryString.$field." = '".$this->getData($field,'string')."', ";
-					}
-				}
-				 
-				if(strrpos($queryString, ", "))
-					$queryString = substr($queryString,0,-2);
+				$row = $statement->fetch(PDO::FETCH_NUM);
 				
-				$queryString = $queryString." WHERE caseNumber = ".$this->getData("caseNumber").";";
+				$this->addData("prefix",$row[0]);
+				$this->addData("caseNumber",$row[1]);
 				
-				$dbConn->query($queryString);
+				// Add charges to the casestate database
+				$caseStateInsertParams[] = $this->getData('prefix');
+				$caseStateInsertParams[] = $this->getData('caseNumber'); 
 				
-				// Update the charges in the casestate database
-				
-				$defendants = $this->getData("defendant");
 				$charges = $this->getData("charge");
+				$defendants = $this->getData("defendant");
 				
-				$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
 				
-				foreach($sqlReturn->fetch_all() as $row){
-					$match = false;
+				$statement = $dbConn->prepare($caseStateInsertString);
+				
+				try{
+					$dbConn->beginTransaction();
+					
 					foreach($charges as $charge){
 						foreach($defendants as $defendant){
-							if($row[0] == $charge && $row[1] == $defendant){
-								$match = true;
-								break;
+							$statement->execute(array_merge($caseStateInsertParams,[$charge,$defendant]));
 							}
 						}
-						if($match == true)
-							break;
-					}
-					if($match == false){
-						$dbConn->query("DELETE FROM casestate WHERE charge = '".$row[0]."' AND defendant = '".$row[1]."' AND caseNumber = ".$this->getData("caseNumber").";");
-					}
+					$dbConn->commit();
 				}
-				$sqlReturn->free();
+				catch(Exception $e){
+					$dbConn->rollBack();
+					throw($e);
+				}
 				
-				$sqlReturn = $dbConn->query("SELECT charge, defendant FROM casestate WHERE caseNumber = ".$this->getData("caseNumber").";");
-				$dbRows = $sqlReturn->fetch_all();
+				$statement = null;
+				$dbConn = null;
 				
-				foreach($charges as $charge){
+				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." added to database.";
+			}
+			else{		// Otherwise, update an existing complaint form record
+			
+				if($this->deleteCase == true && isset($_SESSION["superuser"])){	// Or just delete it, if that's what the user wants
+					$statement = $dbConn->prepare("DELETE FROM casehistory WHERE caseNumber = ?");
+					$statement->execute([$this->getData("caseNumber")]);
+					$statement = $dbConn->prepare("DELETE FROM casestate WHERE caseNumber = ?");
+					$statement->execute([$this->getData("caseNumber")]);
+					unlink($this->getData("formScan"));
+					$dbConn = null;
+					$statement = null;
+					return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
+				}
+				
+				$queryString = "UPDATE casehistory SET ";
+				$queryParams = [];
+				
+				if(!isset($_SESSION['superuser'])){
+						foreach(self::$hearingFields as $field){
+							if(isset($this->data[$field])){
+								$queryString = $queryString.$field." = ?, ";
+								$queryParams[] = $this->getData($field,'string');
+						}
+					}
+					
+					if(strrpos($queryString, ", "))
+						$queryString = substr($queryString,0,-2);
+					
+					$queryString = $queryString." WHERE caseNumber = ?";
+					$queryParams[] = $this->getData("caseNumber");
+					
+					$statement = $dbConn->prepare($queryString);
+					$statement->execute($queryParams);
+					
+					$statement = null;
+					$dbConn = null;
+				}
+				else{
+					$caseStateInsertParams[] = $this->getData('prefix');
+					$caseStateInsertParams[] = $this->getData('caseNumber');
+					
+					$queryString = $queryString."formScan = ?, ";
+					$queryParams[] = $this->getData("formScan");
+					
+					foreach(self::$multiFields as $field){
+						if(isset($this->data[$field])){
+							$queryString = $queryString.$field." = ?, ";
+							$queryParams[] = $this->getData($field,'string');
+						}
+					}
+					 
+					foreach(self::$otherFields as $field){
+						if(isset($this->data[$field])){
+							$queryString = $queryString.$field." = ?, ";
+							$queryParams[] = $this->getData($field,'string');
+						}
+					}
+					 
+					if(strrpos($queryString, ", "))
+						$queryString = substr($queryString,0,-2);
+					
+					$queryString = $queryString." WHERE caseNumber = ?";
+					$queryParams[] = $this->getData("caseNumber");
+					
+					$statement = $dbConn->prepare($queryString);
+					$statement->execute($queryParams);
+					
+					// Update the charges in the casestate database
+					
+					$defendants = $this->getData("defendant");
+					$charges = $this->getData("charge");
+					
+					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ?");
+					$statement->execute([$this->getData("caseNumber")]);
+					
+					$rows = $statement->fetchAll(PDO::FETCH_NUM);
+					
+					$dbConn->beginTransaction();
+					$statement = $dbConn->prepare("DELETE FROM casestate WHERE charge = ? AND defendant = ? AND caseNumber = ?");
+					
+					foreach($rows as $row){
+						$match = false;
+						foreach($charges as $charge){
+							foreach($defendants as $defendant){
+								if($row[0] == $charge && $row[1] == $defendant){
+									$match = true;
+									break;
+								}
+							}
+							if($match == true)
+								break;
+						}
+						if($match == false){
+							$row[] = $this->getData("caseNumber");
+							$statement->execute($row);
+						}
+					}
+					$dbConn->commit();
+					
+					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ?");
+					$statement->execute([$this->getData("caseNumber")]);
+					
+					$rows = $statement->fetchAll(PDO::FETCH_NUM);
+					
+					$dbConn->beginTransaction();
+					$statement = $dbConn->prepare($caseStateInsertString);
+					
+					foreach($charges as $charge){
 						foreach($defendants as $defendant){
 							$match = false;
-							foreach($dbRows as $row){
+							foreach($rows as $row){
 								if($row[0] == $charge && $row[1] == $defendant){
 									$match = true;
 									break;
 								}
 							}
 							if($match == false){
-								$dbConn->query($updateCaseInsertString."'".$charge."', '".$defendant."');");
+								$statement->execute(array_merge($caseStateInsertParams, [$charge,$defendant]));
 							}
 						}
 					}
-				$dbConn->close();
+					$dbConn->commit();
+					
+					$statement = null;
+					$dbConn = null;
+				}
+				
+				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
 			}
-			
-			return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
-			
+		}
+		catch(Exception $e){
+			print "Failed to add or modifiy case record:".$e->getMessage();
+			return;
 		}
 	}
 

@@ -13,38 +13,63 @@
 		$prefix = getYearCode();
 	}
 	
-  $dbConn = new mysqli($GLOBALS['config']['SQL_HOST'],$GLOBALS['config']['SQL_VIEW_USER']);
-  $dbConn->select_db($GLOBALS['config']['SQL_DB']);
-	
-	if($searchCriteria == "all")
-		$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
-	else{
-		$queryString = "SELECT * FROM casestate WHERE prefix = ".$prefix." ";
-		
-		foreach($searchCriteria as $key => $val){
-			$queryString = $queryString." AND ";
-			
-			if($key == "hearingDate" && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$val,$matches) == 2){
-				$queryString = $queryString."hearingDate >= '".$matches[0][0]."' AND hearingDate <= '".$matches[0][1]."' ";
-			}
-			else{
-				if($val == "")
-					$queryString = $queryString.$key." IS NULL";
-				else
-					$queryString = $queryString.$key." LIKE '%".$val."%'";
+	try{
+		$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
+											";dbname=".$GLOBALS['config']['SQL_DB'],
+											$GLOBALS['config']['SQL_VIEW_USER'],
+											"",
+											[PDO::ATTR_PERSISTENT => true]);
+  
+		if($searchCriteria == "all"){
+			$sqlResult = $dbConn->query("SELECT * FROM casestate ORDER BY caseNumber");
+			if(!$sqlResult){	
+				print "Error!:".$dbConn->errorInfo()[2]."<br/>";
+				return;
 			}
 		}
-		$queryString = $queryString.";";
-		
-		$sqlResult = $dbConn->query($queryString);
+		else{
+			$params = [];
+			
+			$queryString = "SELECT * FROM casestate WHERE prefix = ?";
+			$params[] = $prefix;
+			
+			foreach($searchCriteria as $key => $val){
+				$queryString = $queryString." AND ";
+				
+				if($key == "hearingDate" && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/',$val,$matches) == 2){
+					$queryString = $queryString."hearingDate >= ? AND hearingDate <= ?";
+					$params[] = $matches[0][0];
+					$params[] = $matches[0][1];
+				}
+				else{
+					if($val == ""){
+						$queryString = $queryString.$key." IS NULL";
+					}
+					else{
+						$queryString = $queryString.$key." LIKE ?";
+						$params[] = "%$val%";
+					}
+				}
+			}
+			
+			$statement = $dbConn->prepare($queryString);
+			
+			if(!$statement->execute($params)){
+				print "Error!:".$dbConn->errorInfo()[2]."<br/>";
+				die();
+			}
+			$sqlResult = $statement;
+			//$statement->debugDumpParams();
+		}
 	}
-	$dbConn->close();
+	catch(Exception $e){
+		print "Error!: ".$e->getMessage()."<br/>";
+		return;
+	}
 	
-  $values = [];
-  
-  while($row = $sqlResult->fetch_row()){
-	  $values[] = $row;
-  }
+	echo json_encode($sqlResult->fetchAll(PDO::FETCH_NUM));
 	
-  echo json_encode($values);
+	$sqlResult = NULL;
+	$statement = NULL;
+	$dbConn = NULL;
 ?>
