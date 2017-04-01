@@ -60,7 +60,8 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
   }
 
   function reproduceField(event) {
-    if (event == "down" || event.keyCode == 40 && $(this).data("repro") == false) {
+    if (event == "down" || event.keyCode == 40 || event.keyCode == 13 && $(this).data("repro") == false) {
+				event.preventDefault();
 				$(this).data("repro", true);
 				console.log();
 				var wholeName = $(this).attr("name");
@@ -75,8 +76,9 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 				$(newField).focus();
 				return newField;
 			} 
-			else if (event == "up" || event.keyCode == 38) {
+			else if (event == "up" || event.keyCode == 38 || (event.keyCode == 8 && $(this).val() == "")) {
 			if($(this).attr('readonly') != 'readonly'){
+				event.preventDefault();
 				var lastObj = $(this).prev("input");
 				var nextObj = $(this).next("input");
 				if (lastObj.length != 0 && nextObj.length == 0) {
