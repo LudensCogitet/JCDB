@@ -43,6 +43,11 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 
   function makeInputFields(typeOfData) {
     var returnString = "";
+		
+		var coda = '" required></input>';
+		if(typeOfData == "witness" || typeOfData == "hearingDate")
+			coda = '"></input>';
+		
     if (Array.isArray(data[typeOfData]) && data[typeOfData].length > 0) {
 
       var repro = "true";
@@ -50,11 +55,11 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       for (let i = 0; i < data[typeOfData].length; i++) {
         if (i == data[typeOfData].length - 1)
           repro = "false";
-
-        returnString += '<input type="text" name="' + typeOfData + '-' + (i + 1) + '" data-repro="' + repro + '" value="' + data[typeOfData][i] + '" required></input>';
+				
+        returnString += '<input type="text" name="' + typeOfData + '-' + (i + 1) + '" data-repro="' + repro + '" value="' + data[typeOfData][i] + coda;
       }
     } else {
-      returnString = '<input type="text" name="' + typeOfData + '-1" data-repro="false" value="'+data[typeOfData]+'" required></input>';
+      returnString = '<input type="text" name="' + typeOfData + '-1" data-repro="false" value="'+data[typeOfData]+ coda;
     }
     return returnString;
   }
