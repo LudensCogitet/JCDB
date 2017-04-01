@@ -108,12 +108,12 @@ class ComplaintData{
 				
 				$statement->execute();
 				
-				$statement = $dbConn->query("SELECT prefix, caseNumber FROM casehistory ORDER BY caseNumber DESC LIMIT 1");
+				$statement = $dbConn->query("SELECT caseNumber FROM casehistory WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
 				
 				$row = $statement->fetch(PDO::FETCH_NUM);
 				
-				$this->addData("prefix",$row[0]);
-				$this->addData("caseNumber",$row[1]);
+				$this->addData("prefix",$GLOBALS['currentYearCode']);
+				$this->addData("caseNumber",$row[0]);
 				
 				// Add charges to the casestate database
 				$caseStateInsertParams[] = $this->getData('prefix');
@@ -148,10 +148,10 @@ class ComplaintData{
 			else{		// Otherwise, update an existing complaint form record
 			
 				if($this->deleteCase == true && isset($_SESSION["superuser"])){	// Or just delete it, if that's what the user wants
-					$statement = $dbConn->prepare("DELETE FROM casehistory WHERE caseNumber = ?");
-					$statement->execute([$this->getData("caseNumber")]);
-					$statement = $dbConn->prepare("DELETE FROM casestate WHERE caseNumber = ?");
-					$statement->execute([$this->getData("caseNumber")]);
+					$statement = $dbConn->prepare("DELETE FROM casehistory WHERE caseNumber = ? AND prefix = ?");
+					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
+					$statement = $dbConn->prepare("DELETE FROM casestate WHERE caseNumber = ? AND prefix = ?");
+					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					unlink($this->getData("formScan"));
 					$dbConn = null;
 					$statement = null;
@@ -172,8 +172,9 @@ class ComplaintData{
 					if(strrpos($queryString, ", "))
 						$queryString = substr($queryString,0,-2);
 					
-					$queryString = $queryString." WHERE caseNumber = ?";
+					$queryString = $queryString." WHERE caseNumber = ? AND prefix = ?";
 					$queryParams[] = $this->getData("caseNumber");
+					$queryParams[] = $this->getData("prefix");
 					
 					$statement = $dbConn->prepare($queryString);
 					$statement->execute($queryParams);
@@ -205,24 +206,28 @@ class ComplaintData{
 					if(strrpos($queryString, ", "))
 						$queryString = substr($queryString,0,-2);
 					
-					$queryString = $queryString." WHERE caseNumber = ?";
+					$queryString = $queryString." WHERE caseNumber = ? AND prefix = ?";
 					$queryParams[] = $this->getData("caseNumber");
+					$queryParams[] = $this->getData("prefix");
 					
 					$statement = $dbConn->prepare($queryString);
 					$statement->execute($queryParams);
 					
 					// Update the charges in the casestate database
 					
+					$statement = $dbConn->prepare("UPDATE casestate SET plaintiff = ?, witness = ? WHERE prefix = ? AND caseNumber = ?");
+					$statement->execute($caseStateInsertParams);
+					
 					$defendants = $this->getData("defendant");
 					$charges = $this->getData("charge");
 					
-					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ?");
-					$statement->execute([$this->getData("caseNumber")]);
+					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ? AND prefix = ?");
+					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					
 					$rows = $statement->fetchAll(PDO::FETCH_NUM);
 					
 					$dbConn->beginTransaction();
-					$statement = $dbConn->prepare("DELETE FROM casestate WHERE charge = ? AND defendant = ? AND caseNumber = ?");
+					$statement = $dbConn->prepare("DELETE FROM casestate WHERE charge = ? AND defendant = ? AND caseNumber = ? AND prefix = ?");
 					
 					foreach($rows as $row){
 						$match = false;
@@ -238,13 +243,14 @@ class ComplaintData{
 						}
 						if($match == false){
 							$row[] = $this->getData("caseNumber");
+							$row[] = $this->getData("prefix");
 							$statement->execute($row);
 						}
 					}
 					$dbConn->commit();
 					
-					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ?");
-					$statement->execute([$this->getData("caseNumber")]);
+					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ? AND prefix = ?");
+					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					
 					$rows = $statement->fetchAll(PDO::FETCH_NUM);
 					
@@ -280,10 +286,10 @@ class ComplaintData{
 		}
 	}
 
-	function __construct(){		
+	function __construct(){
 		foreach(self::$multiFields as $field){
 		  $num = 1;
-		  while(isset($_POST[$field.'-'.$num])){
+			while(isset($_POST[$field.'-'.$num])){
 				$this->addData($field,$_POST[$field.'-'.$num]);
 				$num++;
 		  }
@@ -304,21 +310,20 @@ class ComplaintData{
 			}
 		}
 		
-		
-		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
+		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"]) && (!isset($_POST['formScan']) xor isset($_SESSION['superuser']))){
 			if(isset($_POST['formScan'])){
 				unlink($_POST['formScan']);
 			}
-			
+				
 			$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
 			if(!file_exists($scanDirPath))
 				mkdir($scanDirPath);
-			
+				
 			$scanFileName = $scanDirPath."/".Date('U').".jpg";
 			if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
 				echo "FAIL!";
 				echo $_FILES['formScanFile']['tmp_name'];
-				
+					
 			}
 			else{
 				$this->addData("formScan", $scanFileName);	

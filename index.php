@@ -110,7 +110,7 @@
 <?php
 	if(isset($_SESSION['username'])){
 ?>
-			<button id='updateComplaint' onclick='window.location.href="../PHP/enterComplaintData.php"'>Update complaint</button>
+			<span id="updateComplaint"><form method='POST' action='./PHP/enterComplaintData.php'><input type='submit' name='updateComplaint' value='Update complaint'></input></form></span>
 <?php 
 	} 
 ?>
