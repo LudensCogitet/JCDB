@@ -81,12 +81,19 @@ class ComplaintData{
 			}
 			
 			// Connect to mySQL server
-			$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
-													";dbname=".$GLOBALS['config']['SQL_DB'],
-													$GLOBALS['config']['SQL_MODIFY_USER'],
-													$GLOBALS['config']['SQL_MODIFY_PASS'],
-													[PDO::ATTR_PERSISTENT => true]);
-
+			$dbConn = NULL;
+			try{
+				$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
+														";dbname=".$GLOBALS['config']['SQL_DB'],
+														$GLOBALS['config']['SQL_MODIFY_USER'],
+														$GLOBALS['config']['SQL_MODIFY_PASS'],
+														[PDO::ATTR_PERSISTENT => true]);
+			}
+			catch(PDOException $e){
+				echo "Exception: ".$e->errorInfo.$dbConn;
+				return;
+			}
+			
 			$caseStateInsertString = "INSERT INTO casestate(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES(?,?,'pndg',?,?,?,?)";
 			$caseStateInsertParams = [$this->getData('plaintiff','string'),$this->getData('witness','string')];
 			
@@ -310,23 +317,26 @@ class ComplaintData{
 			}
 		}
 		
-		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"]) && (!isset($_POST['formScan']) xor isset($_SESSION['superuser']))){
-			if(isset($_POST['formScan'])){
-				unlink($_POST['formScan']);
-			}
+		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
+			if(isset($_POST['formScan']) && isset($_SESSION['superuser']) || !isset($_POST['formScan'])){
 				
-			$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
-			if(!file_exists($scanDirPath))
-				mkdir($scanDirPath);
-				
-			$scanFileName = $scanDirPath."/".Date('U').".jpg";
-			if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
-				echo "FAIL!";
-				echo $_FILES['formScanFile']['tmp_name'];
+				if(isset($_POST['formScan'])){
+					unlink($_POST['formScan']);
+				}
 					
-			}
-			else{
-				$this->addData("formScan", $scanFileName);	
+				$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
+				if(!file_exists($scanDirPath))
+					mkdir($scanDirPath);
+					
+				$scanFileName = $scanDirPath."/".Date('U').".jpg";
+				if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
+					echo "FAIL!";
+					echo $_FILES['formScanFile']['tmp_name'];
+						
+				}
+				else{
+					$this->addData("formScan", $scanFileName);	
+				}
 			}
 		}
 		else if(isset($_POST['formScan'])){
