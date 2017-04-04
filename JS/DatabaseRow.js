@@ -176,7 +176,12 @@ function DatabaseRow(rawData,rowArray){
 	}
 	
 	this.getCellValue = function(cell){
-		return data[cell];
+		if(cell == "prefixAndCaseNumber"){
+			return data["prefix"]+data["caseNumber"];
+		}
+		else{
+			return data[cell];
+		}
 	}
 	
 	this.setCellValue = function(cell, value){

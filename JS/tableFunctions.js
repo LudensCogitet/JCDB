@@ -187,7 +187,7 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 	else if(dir == "asc")
 		retVal = -1;
 	
-	rowObjects.sort(function(a,b){
+	rowObjects["array"].sort(function(a,b){
 		var returnVal = sortBy(column,retVal,a,b);
 		if(returnVal == 0){
 			returnVal = sortBy(column2,retVal,a,b);
@@ -206,13 +206,23 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 }
 
 function makeTable(dataSet){
-	var returnArray = [];
-	
+	rowObjects = {"array": [],
+								"caseNumber": {}}
 	for(let i = 0; i < dataSet.length; i++){
-			returnArray.push(new DatabaseRow(dataSet[i],rowObjects));
-		}
+		let dbRow = new DatabaseRow(dataSet[i],rowObjects);
+		let prefixAndCaseNumber = dbRow.getCellValue("prefixAndCaseNumber");
 		
-	return returnArray;	
+		rowObjects["array"].push(dbRow);
+		
+		if(Array.isArray(rowObjects["caseNumber"][prefixAndCaseNumber])){
+			rowObjects["caseNumber"][prefixAndCaseNumber].push(dbRow);
+		}
+		else{
+			rowObjects["caseNumber"][prefixAndCaseNumber] = [dbRow];
+		}
+	}
+	console.dir(rowObjects);
+	return rowObjects;
 }
 
 function fillTable(table){
@@ -220,8 +230,8 @@ function fillTable(table){
 	while(table.rows.length > 0)
 		table.deleteRow(-1);
 		
-		for(let i = 0; i < rowObjects.length; i++){
-			$(table).append(rowObjects[i].returnRow());
+		for(let i = 0; i < rowObjects["array"].length; i++){
+			$(table).append(rowObjects["array"][i].returnRow());
 		}
 	return true;
 }

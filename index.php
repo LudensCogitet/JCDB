@@ -22,7 +22,9 @@
 	var dbSearchCriteria = {};
 	
 	var dataSet = [];
-	var rowObjects = [];
+	var rowObjects = {"array": [],
+										"caseNumber": {}}
+	
 
 	var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
 	var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
@@ -71,9 +73,9 @@
 		
 		$("#updateDBButton").click(function(){	
 			if(confirm('Are you sure?')){
-				for(let i = 0; i < rowObjects.length; i++){
+				for(let i = 0; i < rowObjects["array"].length; i++){
 					console.log("SENDING CHANGES");
-					rowObjects[i].sendChanges();
+					rowObjects["array"][i].sendChanges();
 				}
 			}
 		});
