@@ -23,13 +23,14 @@
 	
 	var dataSet = [];
 	var rowObjects = {"array": [],
-										"caseNumber": {}}
+										"caseNumber": {}};
+	var limits = {"offset": 0,
+								"count": 30};
 	
-
 	var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
 	var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
 	
-	function getDBInfo(criteria = "all"){
+	function getDBInfo(criteria = "all", type = "overwrite"){
 			var returnPromise = new Promise(function(resolve,reject){
 			var check = false;
 			if(typeof criteria == "object"){
@@ -38,16 +39,34 @@
 			}
 			
 			console.log(criteria);
+			if(type == "overwrite"){
+				limits['offset'] = 0;
+			}
 			
 			$.ajax({url:"./PHP/returnDBInfo.php",
 				method: "GET",
-				data:{"criteria": JSON.stringify(criteria)}, 
+				data:{"criteria": JSON.stringify(criteria),
+							"limits": JSON.stringify(limits)}, 
 				success: function(result){
 					console.log(result);
-					dataSet = JSON.parse(result);
-					rowObjects = makeTable(dataSet);
+					result = JSON.parse(result);
+					if(result[0] == true){
+						$("#loadMore").show();
+					}
+					else{
+						$("#loadMore").hide();
+					}
+					
+					dataSet = result[1];
+					
+					if(type == "overwrite"){
+						rowObjects = makeTable(dataSet);
+					}
+					else{
+						rowObjects = makeTable(dataSet,rowObjects);
+					}
 					sortRows();
-					fillTable(mainTable.tBodies[0]);
+					fillTable(mainTable.tBodies[0],type);
 					resolve("Yay");
 			}});
 		});
@@ -161,5 +180,6 @@
 		<tbody>
 		</tbody>
 	</table>
+	<a id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');" style="float:right; cursor: pointer;">Load more...</a>
 </body>
 </html>

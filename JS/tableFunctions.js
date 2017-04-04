@@ -60,8 +60,7 @@ function makeReport(kind){
 }
 
 function makeFilter(key,value){
-	if(dbSearchCriteria.hasOwnProperty(key))
-		$(".filterDisplay:contains("+dressUpColumnName(key)+")").remove();
+	$("#currentFilters").children("#"+key+"Filter").children(".filterCloseButton").click();
 
 	if(key == "prefixAndCaseNumber"){
 		if(value.length == 4){
@@ -80,7 +79,8 @@ function makeFilter(key,value){
 	closeButton.click(function(){
 		if(key == "prefixAndCaseNumber"){
 			delete dbSearchCriteria["prefix"];
-			delete dbSearchCriteria["caseNumber"];
+			if(value.length > 5)
+				delete dbSearchCriteria["caseNumber"];
 		}
 		else
 			delete dbSearchCriteria[key];
@@ -89,7 +89,7 @@ function makeFilter(key,value){
 		$(this).parent().remove();
 	});
 	
-	var filter = $("<span class='filterDisplay noPrint'></span>");
+	var filter = $("<span class='filterDisplay noPrint' id ='"+key+"Filter'></span>");
 	if(value == "")
 		filter.html(dressUpColumnName(key)+": (blank)");
 	else
@@ -205,9 +205,12 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 	}
 }
 
-function makeTable(dataSet){
-	rowObjects = {"array": [],
-								"caseNumber": {}}
+function makeTable(dataSet,rowObjects = null){
+	if(rowObjects == null){
+		rowObjects = {"array": [],
+									"caseNumber": {}};
+	}
+	
 	for(let i = 0; i < dataSet.length; i++){
 		let dbRow = new DatabaseRow(dataSet[i],rowObjects);
 		let prefixAndCaseNumber = dbRow.getCellValue("prefixAndCaseNumber");
@@ -225,14 +228,17 @@ function makeTable(dataSet){
 	return rowObjects;
 }
 
-function fillTable(table){
+function fillTable(table, type = "overwrite"){
 	$("#updateDBButton").hide();
-	while(table.rows.length > 0)
-		table.deleteRow(-1);
+	
+	if(type == "overwrite"){
+		while(table.rows.length > 0)
+			table.deleteRow(-1);
+	}
 		
-		for(let i = 0; i < rowObjects["array"].length; i++){
-			$(table).append(rowObjects["array"][i].returnRow());
-		}
+	for(let i = 0; i < rowObjects["array"].length; i++){
+		$(table).append(rowObjects["array"][i].returnRow());
+	}
 	return true;
 }
 
