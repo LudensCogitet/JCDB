@@ -11,6 +11,7 @@
 <link rel="stylesheet" type="text/css" href="./CSS/ComplaintForm.css">
 <link rel="stylesheet" type="text/css" href="./CSS/databaseDisplay.css">
 <script src="./JS/jquery-3.1.1.min.js"></script>
+<script src="./JS/formatting.js"></script>
 <script src="./JS/ComplaintForm.js"></script>
 <script src="./JS/ContextMenu.js"></script>
 <script src="./JS/DatabaseRow.js"></script>
@@ -25,7 +26,7 @@
 
 	var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
 	var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
-
+	
 	function getDBInfo(criteria = "all"){
 			var returnPromise = new Promise(function(resolve,reject){
 			var check = false;

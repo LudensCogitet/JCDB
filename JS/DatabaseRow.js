@@ -158,7 +158,12 @@ function DatabaseRow(rawData,rowArray){
 									 ["Edit",function(cMenuDiv){
 											cMenuDiv.hide();
 											toggleTextField(cell,type,function(value){
-												updateKey(key,value);
+												if(checkInputFormat(key,value)){
+													updateKey(key,value);
+												}
+												else{
+													$(cell).text("");
+												}
 											});
 										}]];
 			
@@ -176,8 +181,8 @@ function DatabaseRow(rawData,rowArray){
 	
 	this.setCellValue = function(cell, value){
 		if(data.hasOwnProperty(cell) && cell != "rowID"){
-			data[cell] = value;
-			myCells[columnIndex[cell]].html(value);
+			updateKey(cell,value);
+			myCells[columnIndex[cell]].text(value);
 		}
 	}
 

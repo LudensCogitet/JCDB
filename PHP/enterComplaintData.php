@@ -1,7 +1,8 @@
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="../CSS/ComplaintForm.css">
-  <script src="../JS/jquery-3.1.1.min.js"></script>
+  <script src="../JS/formatting.js"></script>
+	<script src="../JS/jquery-3.1.1.min.js"></script>
   <script src="../JS/ComplaintForm.js"></script>
   <script>
 	$(document).ready(function(){

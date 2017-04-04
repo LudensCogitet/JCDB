@@ -78,6 +78,7 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 				console.log(newField);
 				$(this).parent().append(newField);
 				$(newField).keydown(reproduceField);
+				$(newField).blur(formatCheck);
 				$(newField).focus();
 				return newField;
 			} 
@@ -93,6 +94,12 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 					return lastObj;
 				}
 			}
+		}
+	}
+	
+	function formatCheck(event){
+		if(!checkInputFormat($(this).parent().attr('id'),$(this).val())){
+			$(this).val("");
 		}
 	}
 
@@ -239,6 +246,7 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
     jqueryElement = $(returnString);
     jqueryInputFields = jqueryElement.children().children().children();
     jqueryInputFields.children("input[type='text']").keydown(reproduceField);
+		jqueryInputFields.children().blur(formatCheck);
     setReadOnly(readOnly);
 
     console.log(data);
