@@ -116,9 +116,9 @@ function displayForm(prefix, caseNumber){
 						$("#caseTarget").prepend(complaintForm.getJqueryElement("complete"));
 						//console.log("caseScan",complaintForm.getData());
 		  
-						var scanDisplayForm = "<form target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
-																	"<input type='hidden' name='scanSrc' value='"+complaintForm.getData("formScan")+"'>"+
-																	"<input type='submit' value='Open complaint form scan'></submit>";
+						var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
+																	"<input type='hidden' name='scanSrc' value='"+complaintForm.getData("formScan")+"'></form>"+
+																	"<div style='float:right' class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
 			
 						$("#caseTarget").append(scanDisplayForm);
 						$("#caseInfo").show();

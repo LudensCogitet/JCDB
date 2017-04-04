@@ -42,10 +42,10 @@
 
 .fixedElClose{
 	position: absolute;
-	width: 48px;
+	width: 48px !important;
 	top: 2px;
 	left: 100%;
-	margin-left: -50px;
+	margin-left: -58px !important;
 }
 
 .contextMenuStyle{
@@ -83,6 +83,7 @@
 }
 
 .filterDisplay{
+	margin: 2px 2px 2px 2px;
 	border: 2px solid black;
 	padding: 2px 2px 2px 2px;
 }
@@ -93,3 +94,4 @@
 	margin-left: 5px;
 	padding: 2px 2px 2px p2x;
 }
+

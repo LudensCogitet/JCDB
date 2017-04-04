@@ -10,6 +10,7 @@
 ?>
 <link rel="stylesheet" type="text/css" href="./CSS/ComplaintForm.css">
 <link rel="stylesheet" type="text/css" href="./CSS/databaseDisplay.css">
+<link rel="stylesheet" type="text/css" href="./CSS/UI.css">
 <script src="./JS/jquery-3.1.1.min.js"></script>
 <script src="./JS/formatting.js"></script>
 <script src="./JS/ComplaintForm.js"></script>
@@ -127,50 +128,53 @@
 	<div id="hearingListHeading" style="display: none;">Judicial Committee<br>JC Report<br><span class="currentDate"></span></div>
 	<div id="contextMenu" class="contextMenuStyle noPrint"></div>
 	<div id="caseInfo" class="noPrint">
-		<button id="caseInfoClose" class="fixedElClose">Close</button>
+		<div id="caseInfoClose" class="UIButton fixedElClose">Close</div>
 		<div id="caseTarget">
 <?php
 	if(isset($_SESSION['username'])){
 ?>
-			<span id="updateComplaint"><form method='POST' action='./PHP/enterComplaintData.php'><input type='submit' name='updateComplaint' value='Update complaint'></input></form></span>
+<form name="updateComplaintButton" method='POST' action='./PHP/enterComplaintData.php'><input type='hidden' name='updateComplaint'></input></form>
+			<span id="updateComplaintButton"><div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintButton.submit();">Update Complaint</div></span>
 <?php 
 	} 
 ?>
 		</div>
 	</div>
-	<div id="currentFilters" class="noPrint"></div>
-<span class='noPrint'>
+<div id="currentFilters" class="filtersBox noPrint"></div>
+<div class='loginBox noPrint'>
 <?php 
 	if(!isset($_SESSION['username'])){
 ?>
-		<a href='./PHP/login.php'>login</a>
+		<div class="UIButton buttonShort" onclick="location.href='./PHP/login.php'">login</div>
 <?php 
 	}
 	else{	
-		echo "Currently logged in as ".$_SESSION['username'];
+		echo "<div class='noteBox'>Logged in as ".$_SESSION['username']."</div>";
 ?>
-		<form method="POST">
-			<input type="submit" name="LOGOUT" value="Logout"></input>
+		<form method="POST" name="logoutButton">
+			<input type="hidden" name="LOGOUT"></input>
 		</form>
+		<div class="UIButton buttonShort" onclick="document.logoutButton.submit();">Log out</div>
 <?php
 		if(isset($_SESSION['superuser']))
 		{
 ?>
-			<a href='./PHP/manageUsers.php'>Manage user accounts</a>
+			<div class="UIButton buttonshort" onclick="location.href='./PHP/manageUsers.php'">Manage accounts</div>
 
 <?php
 		}
 	}
 ?>
-</span>
-	
-	<button style="float:right; clear: both;" onclick="makeReport('pendingList');" class="noPrint">Print Hearing List</button>
-	<button style="float:right; clear: both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</button>
-	<button style="float:right; clear: both;" onclick='window.print()' class="noPrint">Print</button>
+</div>
+	<div class="menuBox noPrint">
+	<div class="UIButton buttonShort" style="float:right; clear:both;" onclick="makeReport('pendingList');" class="noPrint">Print Hearing List</div>
+	<div class="UIButton buttonShort" style="float:right; clear:both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
+	<div class="UIButton buttonShort" style="float:right; clear:both;" onclick='window.print()' class="noPrint">Print</div>
 	<?php if(isset($_SESSION['username'])){ ?>
-		<button style="float:right; clear: both;" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</button>
-		<button id="updateDBButton" style="float:right;clear:left;" class="noPrint">Update Database</button>
+		<div class="UIButton buttonShort" style="float:right; clear:both;" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</div>
+		<div class="UIButton buttonShort" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
 	<?php } ?>
+	</div>
 	<table id="mainTable" style="margin: auto; clear:both;">
 		<thead id="mainTableHead">
 			<tr>

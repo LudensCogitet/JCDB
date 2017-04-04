@@ -1,8 +1,17 @@
-<div style="width:200px; height: 200px; position: absolute; top:50%; margin-top: -100px;left:50%; margin-left: -100px;">
+<head>
+<link rel="stylesheet" type="text/css" href="../CSS/UI.css">
+</head>
+<div style="text-align: center; width:200px; height: 200px; position: absolute; top:50%; margin-top: -100px;left:50%; margin-left: -100px;">
 <?php
 	require './config.php';
 	
+		if(isset($_SESSION['username']))
+			unset($_SESSION['username']);
+		if(isset($_SESSION['superuser']))
+			unset($_SESSION['superuser']);
+	
 	if(isset($_POST['username']) && isset($_POST['password'])){
+		
 		$_POST['username'] = htmlspecialchars($_POST['username']);
 		$_POST['password'] = htmlspecialchars($_POST['password']);
 		try{
@@ -23,16 +32,18 @@
 					if($row['superuser'] == 1)
 						$_SESSION['superuser'] = true;
 				
-				echo "Currently signed in as ".$_SESSION['username']; 
-				if(isset($_SESSION['superuser'])) 
-					echo " with extended privileges.";
+				echo "<div style='margin-left: 14px' class='noteBox'>Logged in as<br>".$_SESSION['username']; 
+				if(isset($_SESSION['superuser'])){ 
+					echo "<br>with extended privileges.";
+				}
+				echo "</div>";
 				}
 				else{
-					echo "Wrong username or password";
+					echo "<div style='margin-left: 14px' class='noteBox'>Wrong username or password</div>";
 				}
 			}
 			else{
-				echo "Wrong username or password";
+				echo "<div style='margin-left: 14px' class='noteBox'>Wrong username or password</div>";
 			}
 			$statement = null;
 			$dbConn = null;
@@ -41,16 +52,11 @@
 			print "Error!:".$e->getMessage()."<br>";
 		}
 	}
-	else{
 ?>
-<form method="POST">
-Username: <input type="text" name="username" required></input>
-Password: <input type="password" name="password" required></input>
-<input type="submit"></input>
+<form style='margin-left:14px;' name='loginButton' method="POST">
+Username <input type="text" name="username" required></input>
+Password <input type="password" name="password" required></input>
 </form>
-</div>
-<?php
-}
-?>
-<div><a href="../index.php">Back to database</a></div>
+<div style="clear:both;" class="UIButton buttonMedium" onclick="document.loginButton.submit();">Log In</div>
+<div style="clear:both;" class="UIButton buttonMedium" onclick="location.href='../index.php';">Back To Database</div>
 </div>
