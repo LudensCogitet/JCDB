@@ -59,5 +59,5 @@ f = open(input("location of Apache server httpd.conf: ")+"/httpd.conf",'a')
 f.write("\nSetEnv CONFIG_PATH \""+getPath()+"/config.ini\"")
 f.close()
 
-print("Setup complete. Please use username 'temp' with password: "+tempPass+" to add a new superuser right away.")
+print("Setup complete. Please use username 'temp' with password: '"+tempPass+"' to add a new superuser right away.")
 input("Press Enter to quit...")
