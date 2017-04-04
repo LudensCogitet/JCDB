@@ -134,7 +134,7 @@
 		if(isset($_SESSION['superuser']))
 		{
 ?>
-			<a href='./PHP/newUser.php'>Add new account</a>
+			<a href='./PHP/manageUsers.php'>Manage user accounts</a>
 
 <?php
 		}
