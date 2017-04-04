@@ -26,8 +26,21 @@ function contextMenu(target,targetDiv,options){
 		}
 
 	}
-	targetDiv.css("left",event.pageX+"px");
-	targetDiv.css("top",event.pageY+"px");
+	
+	var offsetX;
+	var offsetY;
+	if(event.pageX !== undefined && event.pageY !== undefined){
+		offsetX = event.pageX;
+		offsetY = event.pageY;
+	}
+	else{
+		offsetX = $(window).width() / 2 - targetDiv.width() / 2;
+		offsetY = $(window).scrollTop() + $(window).height() / 2 - targetDiv.height()/2;
+		
+	}
+	
+	targetDiv.css("left",offsetX+"px");
+	targetDiv.css("top",offsetY+"px");
 	targetDiv.show();
 	console.log("AND THEN THIS",options);
 	}
@@ -60,7 +73,7 @@ function toggleTextField(target,type,action){
 						}
 					
 						$(target).html(inputField);
-								
+					
 						$(target).children().keydown(function(event){
 							if(event.keyCode == 13){
 								var value = $(this).val();

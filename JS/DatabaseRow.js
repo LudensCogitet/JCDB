@@ -118,7 +118,26 @@ function DatabaseRow(rawData,rowArray){
 			}
 		});
 	}
-
+	
+	function autoFillAsk(cell,key){
+		var newMenu = $("<div class='contextMenuStyle'>");
+		$("html").append(newMenu);
+		
+		var options = [["Fill "+dressUpColumnName(key)+" for this case?"],
+									["Yes",	function(cMenuDiv,clickable,optionVal){
+														for(let i = 0; i < rowObjects["caseNumber"][(data["prefix"]+data["caseNumber"]).toString()].length; i++){
+															rowObjects["caseNumber"][(data["prefix"]+data["caseNumber"]).toString()][i].setCellValue(key,data[key]);
+														}
+														$("#contextMenu").hide();
+														cMenuDiv.remove();
+													}],
+									["No",function(cMenuDiv,clickable,optionVal){
+														$("#contextMenu").hide();
+														cMenuDiv.remove();
+													}]];
+		contextMenu(null,newMenu,options);
+	}
+	
 	function assignMultiChoiceClick(cell,key){
 			
 		var options = [["Filter By",function(cMenuDiv,clickable,optionVal){
@@ -137,6 +156,7 @@ function DatabaseRow(rawData,rowArray){
 				}
 				$(cell).html(assignVal);
 				updateKey(key,assignVal);
+				autoFillAsk(cell,key);
 			});
 			
 		contextMenu(cell,"#contextMenu",options);
@@ -149,23 +169,23 @@ function DatabaseRow(rawData,rowArray){
 				type = "textarea";
 			}
 			
-			options = [["Filter By",function(cMenuDiv,clickable,optionVal){
-										console.log("FILTER BY"+data[key]);
-										 cMenuDiv.hide();
-										 makeFilter(key,data[key]);
-										 getDBInfo(dbSearchCriteria);
-									 }],
-									 ["Edit",function(cMenuDiv){
+			options = [["Edit",function(cMenuDiv){
 											cMenuDiv.hide();
 											toggleTextField(cell,type,function(value){
 												if(checkInputFormat(key,value)){
 													updateKey(key,value);
+													autoFillAsk(cell,key);
 												}
 												else{
 													$(cell).text("");
 												}
 											});
-										}]];
+										}],["Filter By",function(cMenuDiv,clickable,optionVal){
+										console.log("FILTER BY"+data[key]);
+										 cMenuDiv.hide();
+										 makeFilter(key,data[key]);
+										 getDBInfo(dbSearchCriteria);
+									 }]];
 			
 			contextMenu(cell,"#contextMenu",options);
 	}
