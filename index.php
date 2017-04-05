@@ -147,7 +147,7 @@
 <?php 
 	if(!isset($_SESSION['username'])){
 ?>
-		<div class="UIButton buttonShort" onclick="location.href='./PHP/login.php'">login</div>
+		<div class="UIButton buttonShort" onclick="location.href='./PHP/login.php'">Log In</div>
 <?php 
 	}
 	else{	
