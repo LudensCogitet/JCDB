@@ -38,12 +38,14 @@
 	box-shadow: 5px 5px 5px black;
 	height: 90%;
 	overflow: auto;
+	z-index: 100;
 }
 
 .fixedElClose{
 	position: absolute;
 	width: 48px !important;
-	top: 2px;
+	top: -4px;
+	margin-left: 2px;
 	left: 100%;
 	margin-left: -58px !important;
 }

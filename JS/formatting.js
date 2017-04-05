@@ -9,7 +9,7 @@ function checkInputFormat(key,value){
 		}
 	}
 	else if(key == "charge"){
-		if(value.search(/^[A-Za-z]+ [0-9]{6}$/) == -1 && value.toLowerCase() != "preamble" && value.length != 0){
+		if(value.search(/^[A-Za-z ]+ [0-9]{6}$/) == -1 && value.toLowerCase() != "preamble" && value.length != 0){
 			alert("Please include the name of the charge followed by the section number");
 			return false;
 		}

@@ -101,19 +101,20 @@ class ComplaintData{
 			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 				
 				$statement = $dbConn->prepare("INSERT INTO casehistory(formScan,prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
-
-				$statement->bindParam(1,$this->getData('formScan'));
-				$statement->bindParam(2,$GLOBALS['currentYearCode']);
-				$statement->bindParam(3,$this->getData('plaintiff','string'));
-				$statement->bindParam(4,$this->getData('defendant','string'));
-				$statement->bindParam(5,$this->getData('witness','string'));
-				$statement->bindParam(6,$this->getData('dateOfIncident','string'));
-				$statement->bindParam(7,$this->getData('timeOfIncident','string'));
-				$statement->bindParam(8,$this->getData('location','string'));
-				$statement->bindParam(9,$this->getData('charge','string'));
-				$statement->bindParam(10,$this->getData('whatHappened'));
 				
-				$statement->execute();
+				$params = [];
+				$params[] = $this->getData('formScan');
+				$params[] = $GLOBALS['currentYearCode'];
+				$params[] = $this->getData('plaintiff','string');
+				$params[] = $this->getData('defendant','string');
+				$params[] = $this->getData('witness','string');
+				$params[] = $this->getData('dateOfIncident','string');
+				$params[] = $this->getData('timeOfIncident','string');
+				$params[] = $this->getData('location','string');
+				$params[] = $this->getData('charge','string');
+				$params[] = $this->getData('whatHappened');
+				
+				$statement->execute($params);
 				
 				$statement = $dbConn->query("SELECT caseNumber FROM casehistory WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
 				

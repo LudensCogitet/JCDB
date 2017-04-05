@@ -104,7 +104,7 @@
   
 		function windowClose(){
 			$(this).parent().hide();
-			$(this).siblings().children(":not(#updateComplaint)").remove();
+			$(this).siblings().children(":not(#updateComplaintButton)").remove();
 			localStorage.removeItem('lastFormData');
 		}
 		
@@ -133,8 +133,10 @@
 <?php
 	if(isset($_SESSION['username'])){
 ?>
+<span id="updateComplaintButton">
 <form name="updateComplaintButton" method='POST' action='./PHP/enterComplaintData.php'><input type='hidden' name='updateComplaint'></input></form>
-			<span id="updateComplaintButton"><div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintButton.submit();">Update Complaint</div></span>
+			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintButton.submit();">Update Complaint</div>
+</span>
 <?php 
 	} 
 ?>
