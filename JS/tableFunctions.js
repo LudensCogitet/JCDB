@@ -75,7 +75,7 @@ function makeFilter(key,value){
 		dbSearchCriteria[key] = value;
 	}
 	
-	var closeButton = $("<span class='filterCloseButton'>X</span>");
+	var closeButton = $("<span class='filterCloseButton'>&#10006;</span>");
 	closeButton.click(function(){
 		if(key == "prefixAndCaseNumber"){
 			delete dbSearchCriteria["prefix"];
