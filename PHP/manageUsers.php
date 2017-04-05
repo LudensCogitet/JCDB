@@ -1,14 +1,20 @@
-<div style="width:200px; height: 300px; position: absolute; top:50%; margin-top: -150px;left:50%; margin-left: -100px;">
+<head>
+<link rel="stylesheet" type="text/css" href="../CSS/UI.css">
+<link rel="stylesheet" type="text/css" href="../CSS/usersDisplay.css">
+</head>
+<div class="centerBox" style="width:300px;">
 <?php
 	require './config.php';
 	session_start();
-	
 	try{
-		$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
+	$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
 											";dbname=".$GLOBALS['config']['SQL_DB'],
 											$GLOBALS['config']['SQL_MODIFY_USER'],
 											$GLOBALS['config']['SQL_MODIFY_PASS'],
 											[PDO::ATTR_PERSISTENT => true]);
+	
+	if($_SERVER['REQUEST_METHOD'] == 'POST'){
+		echo "<div class='noteBox'>";
 		if(isset($_POST['deleteUser'])){
 			$statement = $dbConn->query("SELECT rowID FROM users WHERE superuser = 1");
 			$numSupers = $statement->rowCount();
@@ -17,14 +23,14 @@
 			$targetRow = $statement->fetch(PDO::FETCH_ASSOC);
 			
 			if($numSupers == 1 && $targetRow['superuser'] == 1){
-				echo "Cannot delete last admin user<br>";
+				echo "Cannot delete last admin user";
 			}
 			else if($targetRow['username'] == $_SESSION['username']){
-				echo "Cannot delete yourself!<br>";
+				echo "Cannot delete yourself!";
 			}
 			else{
+				echo "User \"".$targetRow['username']."\" deleted";
 				$statement = $dbConn->prepare("DELETE FROM users WHERE rowID = ?");
-				echo $_POST['rowID'];
 				$statement->execute([$_POST['rowID']]);
 			}
 		}
@@ -35,9 +41,9 @@
 			
 			if(isset($_SESSION['superuser'])){
 				if($_POST['password'] != $_POST['passwordConfirm']){
-					print "<h5>Passwords do not match.</h5>";
+					echo "Passwords do not match.";
 				}
-				else{					
+				else{
 						$pHash = password_hash($_POST['password'],PASSWORD_DEFAULT);
 						
 						$isSuperuser = 0;
@@ -48,34 +54,35 @@
 						
 						if(!$statement->execute([$_POST['username'],$pHash,$isSuperuser])){
 							if($statement->errorCode() == 23000){
-								echo "<h5>Account already exists</h5>";
+								echo "Account already exists";
 							}
 							else{
-								echo "<h5>unable to perform action (".$statement->errorCode()."). Please contact system admin.</h5>";
+								echo "Unable to perform action (".$statement->errorCode()."). Please contact system admin.";
 							}
 						}
 						else
-							echo "<h5>Account ".$_POST["username"]." added.</h5>";
+							echo "Account \"".$_POST["username"]."\" added.";
 						
 						$statement = null;
 				}
 			}
 		}
-	}
-	catch(Exception $e){
-					echo "Error!:".$e->getMessage();
+	echo "</div>";
 	}
 ?>
-<form method="POST">
-Add user<br>
-<span style="display: block;">Admin?<input type="checkbox" name="isSuperuser"></input></span>
-Username: <input type="text" name="username" required></input>
-Password: <input type="password" name="password" required></input>
-Confirm password: <input type="password" name="passwordConfirm" required></input>
-<input type="submit"></input>
+<form name="newUserButton" method="POST">
+<div style="float: right;">Admin<input style="vertical-align: -2px;" type="checkbox" name="isSuperuser"></input></div>
+<div style="clear:both">Username</div>
+<div><input type="text" name="username" required></input></div>
+<div>Password</div> 
+<div><input type="password" name="password" required></input></div>
+<div>Confirm Password</div>
+<div><input type="password" name="passwordConfirm" required></input></div>
+<input style="display:none;" type="submit"></input>
 </form>
-<a href="../index.php">Return to database</a>
-<br>Current Users<br>
+<div class="UIButton buttonMedium" onclick="document.newUserButton.submit();">Add User</div><br>
+<div class="UIButton buttonMedium" onclick="location.href='../index.php';">Return To Database</div>
+<div id="usersBox">
 <table style="text-align: center;">
 <th>Username</th>
 <th>Admin</th>
@@ -89,15 +96,20 @@ Confirm password: <input type="password" name="passwordConfirm" required></input
 		else
 			echo "<td>No</td>";
 		
-		echo "<td><form method='POST'>".
+		echo "<td><form style='display:none' name='delete".$row['rowID']."' method='POST'>".
 					"<input type='hidden' name='rowID' value='".$row['rowID']."'></input>".
-					"<input type='submit' name='deleteUser' value='delete'></input>".
-					"</form></td>";
-		
+					"<input type='hidden' name='deleteUser'></input></form>".
+					"<div class='UIButton buttonTiny' onclick='document.delete".$row['rowID'].".submit();'>Delete</div>".
+					"</td>";
 		echo "</tr>";
 	}
 	$dbConn = null;
 	$statement = null;
+	}
+	catch(Exception $e){
+					echo "Error!:".$e->getMessage();
+	}
 ?>
 </table>
+</div>
 </div>

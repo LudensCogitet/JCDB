@@ -7,7 +7,7 @@ document.onreadystatechange = function(){
 }
 </script>
 </head>
-<div style="text-align: center; width:200px; height: 200px; position: absolute; top:50%; margin-top: -100px;left:50%; margin-left: -100px;">
+<div class="centerBox">
 <?php
 	require './config.php';
 	if(isset($_POST['username']) && isset($_POST['password'])){
@@ -35,7 +35,7 @@ document.onreadystatechange = function(){
 			
 			$statement = $dbConn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1;");
 			$statement->execute([$_POST['username']]);
-			
+			echo "<div class='noteBox'>";
 			if($statement->rowCount() > 0){
 				$row = $statement->fetch(PDO::FETCH_ASSOC);
 				if(password_verify($_POST['password'],$row['password']) || $_POST['password'] == $GLOBALS['config']['TEMP_SETUP_PASS']){
@@ -43,18 +43,17 @@ document.onreadystatechange = function(){
 					if($row['superuser'] == 1)
 						$_SESSION['superuser'] = true;
 				
-				echo "<div style='margin-left: 14px' class='noteBox'>Logged in as<br>".$_SESSION['username']; 
-				if(isset($_SESSION['superuser'])){ 
-					echo "<br>with extended privileges.";
-				}
-				echo "</div>";
+					echo "Logged in as<br>\"".$_SESSION['username']."\""; 
+					if(isset($_SESSION['superuser'])){ 
+						echo "<br>with extended privileges.";
+					}
 				}
 				else{
-					echo "<div style='margin-left: 14px' class='noteBox'>Wrong username or password</div>";
+					echo "Wrong username or password";
 				}
 			}
 			else{
-				echo "<div style='margin-left: 14px' class='noteBox'>Wrong username or password</div>";
+				echo "Wrong username or password";
 			}
 			$statement = null;
 			$dbConn = null;
@@ -62,13 +61,16 @@ document.onreadystatechange = function(){
 		catch(Exception $e){
 			print "Error!:".$e->getMessage()."<br>";
 		}
+		echo "</div>";
 	}
 ?>
-<form style='margin-left:14px;' name='loginButton' method="POST">
-Username <input id="highlightOnLoad" type="text" name="username" required></input>
-Password <input type="password" name="password" required></input>
+<form name='loginButton' method="POST">
+<div>Username</div>
+<div><input id="highlightOnLoad" type="text" name="username" required></input></div>
+<div>Password</div>
+<div><input type="password" name="password" required></input></div>
 <input style='display:none;' type="submit"></input>
 </form>
-<div style="clear:both;" class="UIButton buttonMedium" onclick="document.loginButton.submit();">Log In</div>
-<div style="clear:both;" class="UIButton buttonMedium" onclick="location.href='../index.php';">Back To Database</div>
+<div class="UIButton buttonMedium" onclick="document.loginButton.submit();">Log In</div><br>
+<div class="UIButton buttonMedium" onclick="location.href='../index.php';">Back To Database</div>
 </div>
