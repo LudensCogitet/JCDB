@@ -17,6 +17,23 @@
 	}
 }
 
+#tableContainer{
+	margin: auto;
+}
+
+#tableContainer{
+	width: 65%;
+}
+
+#loadMore{
+	float: right;
+	margin-right: 2px;
+}
+
+#mainTable{
+	width: 100%;
+}
+
 #mainTable th, #mainTable td{
   font-size: 1em;	
   border: 2px solid black;
@@ -85,8 +102,8 @@
 }
 
 .filterDisplay{
-	margin-left: 15px;
-	margin-right: 15px;
+	font-weight: bold;
+	margin-right: 5px;
 	margin-top: 2px;
 	margin-bottom: 2px;
 	border: 2px solid black;
@@ -97,6 +114,42 @@
 	border: 1px solid black;
 	cursor: pointer;
 	margin-left: 5px;
+	color: black;
+	background-color: white;
 	/*padding: 2px 2px 2px 2px;*/
 }
 
+.filterCloseButton:hover{
+	background-color: black;
+	color: white;
+}
+
+.filtersBox{
+	height: 25px;
+	margin-bottom: 10px;
+}
+
+.loginBox{
+	text-align: center;
+	float: left;
+}
+
+.loginBox *{
+	float: left;
+	clear: both;
+}
+
+.menuBox{
+	text-align: center;
+	float: right;
+}
+
+.menuBox *{
+	float: right;
+	clear: both;
+}
+	
+.noteBox{
+	border: 2px solid black;
+	width: 125px;
+}

@@ -161,23 +161,24 @@
 		if(isset($_SESSION['superuser']))
 		{
 ?>
-			<div class="UIButton buttonshort" onclick="location.href='./PHP/manageUsers.php'">Manage accounts</div>
+			<div class="UIButton buttonshort" onclick="location.href='./PHP/manageUsers.php'">Manage Accounts</div>
 
 <?php
 		}
 	}
 ?>
 </div>
-	<div class="menuBox noPrint">
-	<div class="UIButton buttonShort" style="float:right; clear:both;" onclick="makeReport('pendingList');" class="noPrint">Print Hearing List</div>
-	<div class="UIButton buttonShort" style="float:right; clear:both;" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
-	<div class="UIButton buttonShort" style="float:right; clear:both;" onclick='window.print()' class="noPrint">Print</div>
+<div class="menuBox noPrint">
+	<div class="UIButton buttonShort" onclick="makeReport('pendingList');" class="noPrint">Print Hearing List</div>
+	<div class="UIButton buttonShort" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
+	<div class="UIButton buttonShort" onclick='window.print()' class="noPrint">Print</div>
 	<?php if(isset($_SESSION['username'])){ ?>
-		<div class="UIButton buttonShort" style="float:right; clear:both;" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</div>
+		<div class="UIButton buttonShort" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</div>
 		<div class="UIButton buttonShort" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
 	<?php } ?>
-	</div>
-	<table id="mainTable" style="margin: auto; clear:both;">
+</div>
+<div id="tableContainer">
+	<table id="mainTable">
 		<thead id="mainTableHead">
 			<tr>
 				<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th class='pndgInvis'>Status</th><th class='pndgInvis'>Hearing Date</th><th class='pndgInvis'>Verdict</th><th class='pndgInvis'>Sentence</th><th class='pndgInvis'>Sentence Status</th>
@@ -186,6 +187,7 @@
 		<tbody>
 		</tbody>
 	</table>
-	<a id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');" style="float:right; cursor: pointer;">Load more...</a>
+	<div class="UIButton buttonSmall" id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');">Load More...</div>
+</div>
 </body>
 </html>
