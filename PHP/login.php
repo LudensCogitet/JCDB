@@ -4,13 +4,19 @@
 <div style="text-align: center; width:200px; height: 200px; position: absolute; top:50%; margin-top: -100px;left:50%; margin-left: -100px;">
 <?php
 	require './config.php';
-	
-		if(isset($_SESSION['username']))
-			unset($_SESSION['username']);
-		if(isset($_SESSION['superuser']))
-			unset($_SESSION['superuser']);
-	
 	if(isset($_POST['username']) && isset($_POST['password'])){
+		session_start();
+		if(isset($_SESSION['username'])){
+			setcookie(session_name(),session_id(),1);
+			session_unset();
+			session_destroy();
+			
+			unset($_SESSION['username']);
+			if(isset($_SESSION['superuser'])){
+				unset($_SESSION['superuser']);
+			}
+			session_start();
+		}
 		
 		$_POST['username'] = htmlspecialchars($_POST['username']);
 		$_POST['password'] = htmlspecialchars($_POST['password']);
@@ -27,8 +33,7 @@
 			if($statement->rowCount() > 0){
 				$row = $statement->fetch(PDO::FETCH_ASSOC);
 				if(password_verify($_POST['password'],$row['password']) || $_POST['password'] == $GLOBALS['config']['TEMP_SETUP_PASS']){
-					session_start();
-						$_SESSION['username'] = $row['username'];
+					$_SESSION['username'] = $row['username'];
 					if($row['superuser'] == 1)
 						$_SESSION['superuser'] = true;
 				
@@ -56,6 +61,7 @@
 <form style='margin-left:14px;' name='loginButton' method="POST">
 Username <input type="text" name="username" required></input>
 Password <input type="password" name="password" required></input>
+<input style='display:none;' type="submit"></input>
 </form>
 <div style="clear:both;" class="UIButton buttonMedium" onclick="document.loginButton.submit();">Log In</div>
 <div style="clear:both;" class="UIButton buttonMedium" onclick="location.href='../index.php';">Back To Database</div>
