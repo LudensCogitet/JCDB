@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 <?php
@@ -31,7 +32,7 @@
 	var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
 	var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
 	
-	function getDBInfo(criteria = "all", type = "overwrite"){
+	function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
 			var returnPromise = new Promise(function(resolve,reject){
 			var check = false;
 			if(typeof criteria == "object"){
@@ -161,7 +162,7 @@
 		if(isset($_SESSION['superuser']))
 		{
 ?>
-			<div class="UIButton buttonshort" onclick="location.href='./PHP/manageUsers.php'">Manage Accounts</div>
+		<div class="UIButton buttonshort" onclick="location.href='./PHP/manageUsers.php'">Manage Accounts</div>
 
 <?php
 		}
@@ -187,7 +188,7 @@
 		<tbody>
 		</tbody>
 	</table>
-	<div class="UIButton buttonSmall" id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');">Load More...</div>
+	<div class="UIButton buttonSmall noPrint" id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');">Load More...</div>
 </div>
 </body>
 </html>

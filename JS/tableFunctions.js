@@ -48,7 +48,7 @@ function makeReport(kind){
 	}
 
 	$(heading).addClass("printHeading");
-	getDBInfo(criteria).then(function(){
+	getDBInfo(criteria,'overwrite',{'offset':0,'count':500}).then(function(){
 		if(kind == "pendingList")
 			$(".pndgInvis").addClass("noPrint");
 		window.print();

@@ -1,5 +1,5 @@
 function ComplaintForm(info = "new", readOnly = false,convertFromString = false) {
-  var arrayFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
+  var multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 
   var data = null;
   if (info == "new") {
@@ -17,13 +17,13 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
       "whatHappened": "",
       "hearingDate": [],
       "hearingNotes": ""
-    };
-  } 
+		};
+	}	
   else if (typeof info === "object") {
 	  if(convertFromString){
-		for(let i = 0; i < arrayFields.length; i++){
-			if(typeof info[arrayFields[i]] === "string"){
-				info[arrayFields[i]] = info[arrayFields[i]].split(", ");
+		for(let i = 0; i < multiFields.length; i++){
+			if(typeof info[multiFields[i]] === "string"){
+				info[multiFields[i]] = info[multiFields[i]].split(", ");
 		 }
 		}
 	 }
@@ -165,49 +165,15 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 
   this.updateFromJquery = function() {
     if (jqueryElement != null) {
-      data["plaintiff"] = [];
-      jqueryInputFields.filter("#plaintiff").children("input").each(function(index) {
-        data["plaintiff"].push($(this).val());
-      });
 
-      data["defendant"] = [];
-      jqueryInputFields.filter("#defendant").children("input").each(function(index) {
-        data["defendant"].push($(this).val());
-      });
-
-      data["witness"] = [];
-      jqueryInputFields.filter("#witness").children("input").each(function(index) {
-        data["witness"].push($(this).val());
-      });
-
-      data["charge"] = [];
-      jqueryInputFields.filter("#charge").children("input").each(function(index) {
-        data["charge"].push($(this).val());
-      });
-
-      data["dateOfIncident"] = [];
-      jqueryInputFields.filter("#dateOfIncident").children("input").each(function(index) {
-        data["dateOfIncident"].push($(this).val());
-      });
-
-      data["timeOfIncident"] = [];
-      jqueryInputFields.filter("#timeOfIncident").children("input").each(function(index) {
-        data["timeOfIncident"].push($(this).val());
-      });
-
-      data["location"] = [];
-      jqueryInputFields.filter("#location").children("input").each(function(index) {
-        data["location"].push($(this).val());
-      });
-
-      data["whatHappened"] = jqueryInputFields.filter("#whatHappened").children().val();
-			
-			data["hearingDate"] = [];
-      jqueryInputFields.filter("#hearingDate").children("input").each(function(index) {
-        data["hearingDate"].push($(this).val());
-      });
+			for(let i = 0; i < multiFields.length; i++){
+				jqueryInputFields.filter("#"+multiFields[i]).children("input").each(function(index) {
+					data[multiFields[i]].push($(this).val());
+				});
+			}
      
-      data["hearingNotes"] = jqueryInputFields.filter("#hearingNotes").children().val();
+			data["whatHappened"] = jqueryInputFields.filter("#whatHappened").children().val();
+			data["hearingNotes"] = jqueryInputFields.filter("#hearingNotes").children().val();
  
       console.log(data);
       return true;
