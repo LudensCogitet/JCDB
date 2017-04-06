@@ -9,8 +9,8 @@
 												"",
 												[PDO::ATTR_PERSISTENT => true]);
 			
-			$statement = $dbConn->prepare("SELECT * FROM casehistory WHERE caseNumber = ? LIMIT 1;");
-			$statement->execute([$_REQUEST['caseNum']]);
+			$statement = $dbConn->prepare("SELECT * FROM casehistory WHERE prefix = ? AND caseNumber = ? LIMIT 1;");
+			$statement->execute([$_REQUEST['prefix'],$_REQUEST['caseNum']]);
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 		}
 		catch(Exception $e){

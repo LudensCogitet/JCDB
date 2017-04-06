@@ -29,7 +29,7 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
 	 }
 	 
 		if(info["hearingDate"] == null)
-			info["hearingDate"] = "";
+			info["hearingDate"] = [];
 	 
 		if(info["hearingNotes"] == null)
 			info["hearingNotes"] = "";
@@ -167,6 +167,8 @@ function ComplaintForm(info = "new", readOnly = false,convertFromString = false)
     if (jqueryElement != null) {
 
 			for(let i = 0; i < multiFields.length; i++){
+				console.log(multiFields[i]);
+				data[multiFields[i]] = [];
 				jqueryInputFields.filter("#"+multiFields[i]).children("input").each(function(index) {
 					data[multiFields[i]].push($(this).val());
 				});
