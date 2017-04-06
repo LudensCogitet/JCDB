@@ -42,7 +42,10 @@ function DatabaseRow(rawData,rowArray){
 	var myCells = [$("<td>")];
 	
 	myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
-	myCells[0].click(function(){displayForm(data['prefix'],data['caseNumber'])});
+	myCells[0].click(function(){
+		complaintForm("#caseTarget",[data['prefix'],data['caseNumber']],"both");
+		$("#caseInfo").show();
+	});
 	addHighlightOptions(myCells[0],"prefixAndCaseNumber");
 		
 	Object.keys(data).forEach(function(key){
