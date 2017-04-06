@@ -162,7 +162,7 @@
 		if(isset($_SESSION['superuser']))
 		{
 ?>
-		<div class="UIButton buttonshort" onclick="location.href='./PHP/manageUsers.php'">Manage Accounts</div>
+		<div class="UIButton buttonShort" onclick="location.href='./PHP/manageUsers.php'">Manage Users</div>
 
 <?php
 		}
