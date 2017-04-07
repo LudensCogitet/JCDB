@@ -39,12 +39,12 @@
 
 #extraComplaint input{
 	width: 100%;
-  max-width: 664px;
+  max-width: 764px;
 }
 
 #extraComplaint textarea[name="hearingNotes"]{
   /*width: 760px;*/
 	width: 100%;
-  max-width: 661px;
+  max-width: 761px;
   /*height: 300px;*/
 }
