@@ -7,6 +7,13 @@ td{
   padding-right: 3px;
 }
 
+#formScan{
+	height: 90%;
+	float: right;
+	border: 3px solid black;
+	box-shadow: 5px 5px 5px black;
+}
+
 .result{
 	width: 300px;
 }

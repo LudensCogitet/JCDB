@@ -15,18 +15,18 @@ class ComplaintData{
 	public static $otherFields = ["whatHappened","hearingNotes"];
 	public static $hearingFields = ["hearingDate","hearingNotes"];
 	
-	private $data = ["formScan"		  => "",	
-					 "prefix"	=> -1,
+	private $data = ["formScan"		  => "",
+					 "prefix"				=> -1,
 					 "caseNumber"	  => -1,
-					 "plaintiff" 	  => [],
-					 "defendant" 	  => [],
-					 "witness"				=> [],
-					 "charge"					=> [],
-					 "dateOfIncident" => [],
-					 "timeOfIncident" => [],
-					 "location"  	  => [],
+					 "plaintiff" 	  => "",
+					 "defendant" 	  => "",
+					 "witness"				=> "",
+					 "charge"					=> "",
+					 "dateOfIncident" => "",
+					 "timeOfIncident" => "",
+					 "location"  	  => "",
 					 "whatHappened"   => "",
-					 "hearingDate"			=> [],
+					 "hearingDate"			=> "",
 					 "hearingNotes"		=>	""];
 	
 	private $deleteCase = false;
@@ -36,8 +36,8 @@ class ComplaintData{
 			return false;
 		}
 		else{
-			if(is_array($this->data[$field])){
-				$this->data[$field][] = sanitize($entry);
+			if(is_array($entry)){
+				$this->data[$field] = sanitize(implode(', ',$entry));
 				return true;
 			}
 			else{
@@ -47,21 +47,19 @@ class ComplaintData{
 		}
 	}
 	
-	public function getData($field, $as = "array/single"){
+	public function encodeData(){
+		return json_encode($this->data);
+	}
+	
+	public function getData($field, $as = "string/single"){
 		if(!array_key_exists($field, $this->data)){
 				return false;
 		}
 		else{
-			if($as == "array/single" || !is_array($this->data[$field]))
+			if($as == "string/single")
 				return $this->data[$field];
-			else if($as == "string"){
-				$returnStr = "";
-				for($i = 0; $i < count($this->data[$field]); $i++){
-					$returnStr = $returnStr.$this->data[$field][$i];
-					if($i != count($this->data[$field]) - 1)
-					  $returnStr = $returnStr.", ";
-				}
-				return $returnStr;
+			else if($as == "array"){
+				return explode(', ',$this->data[$field]);
 			}
 		}
 	}
@@ -95,7 +93,7 @@ class ComplaintData{
 			}
 			
 			$caseStateInsertString = "INSERT INTO casestate(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES(?,?,'pndg',?,?,?,?)";
-			$caseStateInsertParams = [$this->getData('plaintiff','string'),$this->getData('witness','string')];
+			$caseStateInsertParams = [$this->getData('plaintiff'),$this->getData('witness')];
 			
 			// If there is no prefix or case number, then generate a new complaint form record
 			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
@@ -105,13 +103,13 @@ class ComplaintData{
 				$params = [];
 				$params[] = $this->getData('formScan');
 				$params[] = $GLOBALS['currentYearCode'];
-				$params[] = $this->getData('plaintiff','string');
-				$params[] = $this->getData('defendant','string');
-				$params[] = $this->getData('witness','string');
-				$params[] = $this->getData('dateOfIncident','string');
-				$params[] = $this->getData('timeOfIncident','string');
-				$params[] = $this->getData('location','string');
-				$params[] = $this->getData('charge','string');
+				$params[] = $this->getData('plaintiff');
+				$params[] = $this->getData('defendant');
+				$params[] = $this->getData('witness');
+				$params[] = $this->getData('dateOfIncident');
+				$params[] = $this->getData('timeOfIncident');
+				$params[] = $this->getData('location');
+				$params[] = $this->getData('charge');
 				$params[] = $this->getData('whatHappened');
 				
 				$statement->execute($params);
@@ -127,8 +125,8 @@ class ComplaintData{
 				$caseStateInsertParams[] = $this->getData('prefix');
 				$caseStateInsertParams[] = $this->getData('caseNumber'); 
 				
-				$charges = $this->getData("charge");
-				$defendants = $this->getData("defendant");
+				$charges = $this->getData("charge","array");
+				$defendants = $this->getData("defendant","array");
 				
 				
 				$statement = $dbConn->prepare($caseStateInsertString);
@@ -200,14 +198,14 @@ class ComplaintData{
 					foreach(self::$multiFields as $field){
 						if(isset($this->data[$field])){
 							$queryString = $queryString.$field." = ?, ";
-							$queryParams[] = $this->getData($field,'string');
+							$queryParams[] = $this->getData($field);
 						}
 					}
 					 
 					foreach(self::$otherFields as $field){
 						if(isset($this->data[$field])){
 							$queryString = $queryString.$field." = ?, ";
-							$queryParams[] = $this->getData($field,'string');
+							$queryParams[] = $this->getData($field);
 						}
 					}
 					 
@@ -226,8 +224,8 @@ class ComplaintData{
 					$statement = $dbConn->prepare("UPDATE casestate SET plaintiff = ?, witness = ? WHERE prefix = ? AND caseNumber = ?");
 					$statement->execute($caseStateInsertParams);
 					
-					$defendants = $this->getData("defendant");
-					$charges = $this->getData("charge");
+					$defendants = $this->getData("defendant","array");
+					$charges = $this->getData("charge","array");
 					
 					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
@@ -297,10 +295,12 @@ class ComplaintData{
 	function __construct(){
 		foreach(self::$multiFields as $field){
 		  $num = 1;
+			$array = [];
 			while(isset($_POST[$field.'-'.$num])){
-				$this->addData($field,$_POST[$field.'-'.$num]);
+				$array[] = $_POST[$field.'-'.$num];
 				$num++;
 		  }
+			$this->addData($field,$array);
 		}
 		
 		foreach(self::$otherFields as $field){
@@ -318,26 +318,31 @@ class ComplaintData{
 			}
 		}
 		
-		if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
-			if(isset($_POST['formScan']) && isset($_SESSION['superuser']) || !isset($_POST['formScan'])){
-				
-				if(isset($_POST['formScan'])){
-					unlink($_POST['formScan']);
-				}
+		if(isset($_FILES['formScanFile'])){
+			if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
+				if(isset($_POST['formScan']) && isset($_SESSION['superuser']) || !isset($_POST['formScan'])){
 					
-				$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
-				if(!file_exists($scanDirPath))
-					mkdir($scanDirPath);
-					
-				$scanFileName = $scanDirPath."/".Date('U').".jpg";
-				if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
-					echo "FAIL!";
-					echo $_FILES['formScanFile']['tmp_name'];
+					if(isset($_POST['formScan'])){
+						unlink($_POST['formScan']);
+					}
 						
+					$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
+					if(!file_exists($scanDirPath))
+						mkdir($scanDirPath);
+						
+					$scanFileName = $scanDirPath."/".Date('U').".jpg";
+					if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
+						echo "FAIL!";
+						echo $_FILES['formScanFile']['tmp_name'];
+							
+					}
+					else{
+						$this->addData("formScan", $scanFileName);	
+					}
 				}
-				else{
-					$this->addData("formScan", $scanFileName);	
-				}
+			}
+			else if(isset($_POST['formScan'])){
+				$this->addData("formScan",$_POST['formScan']);
 			}
 		}
 		else if(isset($_POST['formScan'])){

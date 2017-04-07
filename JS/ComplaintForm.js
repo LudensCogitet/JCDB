@@ -1,37 +1,31 @@
-function complaintForm(target, info = "new", readOnly = false) {
+function complaintForm(target, data = "new", display = "top", readOnly = false, formDisplayButton = false, bottomRequired = true) {
   var multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
-	
-	var data = null;
-	if (Array.isArray(info)) {
-		$.ajax({url:"../PHP/displayComplaint.php",
-				type: "POST",
-				data: {"prefix": info[0], 
-						 "caseNum": info[1]},
-				success: function(result){
-					result = JSON.parse(result)
-					
-					for(let i = 0; i < multiFields.length; i++){
-						if(typeof result[multiFields[i]] === "string"){
-							result[multiFields[i]] = result[multiFields[i]].split(", ");
-						}
+
+	if (Array.isArray(data)) {
+			$.ajax({url:"../PHP/displayComplaint.php",
+					type: "POST",
+					data: {"prefix": data[0], 
+							 "caseNum": data[1]},
+					success: function(result){
+						theBusiness(result);
 					}
- 
-					if(result["hearingDate"] == null)
-						result["hearingDate"] = [];
- 
-					if(result["hearingNotes"] == null)
-						result["hearingNotes"] = "";
-					
-					data = result;
-					theBusiness();
-				}
-		});
-  }
+			});
+		}
+		else if(data != "new"){
+			theBusiness(data);
+		}
 	else{
 		theBusiness();
 	}
 
-	function theBusiness(){
+	function theBusiness(workWith = null){
+		if(workWith != null){
+			workWith = JSON.parse(workWith)
+			workWith = convertFields(workWith);
+						
+			data = workWith;
+		}
+		
 		var jqueryElement = null;
 		var jqueryInputFields = null;
 
@@ -44,33 +38,64 @@ function complaintForm(target, info = "new", readOnly = false) {
 		setReadOnly(readOnly,jqueryInputFields);
 
 		$(target).prepend(jqueryElement);
-		var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
-													"<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
-													"<div style='float:right' class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
+		if(data != "new" && formDisplayButton == true){
+			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
+														"<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
+														"<div style='float:right' class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
 				
-		$(target).append(scanDisplayForm);
+			$(target).append(scanDisplayForm);
+		}
+	}
+	
+	function convertFields(object){
+		for(let i = 0; i < multiFields.length; i++){
+					if(typeof object[multiFields[i]] === "string"){
+						object[multiFields[i]] = object[multiFields[i]].split(", ");
+					}
+				}
+
+				if(object["hearingDate"] == null)
+					object["hearingDate"] = "";
+
+				if(object["hearingNotes"] == null)
+					object["hearingNotes"] = "";
+				
+				if(object["prefix"] == -1)
+					object["prefix"] = "";
+				
+				if(object["caseNumber"] == -1)
+					object["caseNumber"] = "";
+		
+		return object;
 	}
 	
 	function makeInputFields(typeOfData) {
 		var coda = '" required></input>';
-		if(typeOfData == "witness" || typeOfData == "hearingDate")
+		
+		if(typeOfData == "witness" || (typeOfData == "hearingDate" && bottomRequired == false))
 			coda = '"></input>';
 		
-		var returnString = '<input type="text" name="' + typeOfData + '-1" data-repro="false" value="'+data[typeOfData]+ coda;
+		var emptyInput = '<input type="text" name="' + typeOfData + '-1" data-repro="false"'+coda;
 		
     if(data != "new"){
 			if (Array.isArray(data[typeOfData]) && data[typeOfData].length > 0) {
 				var repro = "true";
-
+				var returnString = "";
 				for (let i = 0; i < data[typeOfData].length; i++) {
 					if (i == data[typeOfData].length - 1)
 						repro = "false";
 				
 					returnString += '<input type="text" name="' + typeOfData + '-' + (i + 1) + '" data-repro="' + repro + '" value="' + data[typeOfData][i] + coda;
-				}
+				}    
+				return returnString;
+			}
+			else{
+				return emptyInput;
 			}
 		}
-    return returnString;
+		else{
+			return emptyInput;
+		}
   }
 
   function reproduceField(event) {
@@ -116,21 +141,40 @@ function complaintForm(target, info = "new", readOnly = false) {
 
     var complaintString = '<table class="complaintTable" id="mainComplaint">';
 		
-		if(data["prefix"] != ""){	
-			complaintString += '<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>';
-		}
+		var prefix = "";
+		var caseNumber = "";
+		var whatHappened = "";
+		var hearingNotesReq = "required";
+		
+		if(bottomRequired == false)
+			hearingNotesReq = "";
+	
+		
+		if(data != "new"){
+			if(data["prefix"] != ""){
+				prefix = data["prefix"];
+				complaintString += '<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>';
+			}
 			
-		if(data["caseNumber"] != ""){
-			complaintString +=	'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNumber"'+'></input>';
-		}
+			if(data["caseNumber"] != ""){
+				caseNumber = data["caseNumber"];
+				complaintString += '<input type="hidden" value="'+data["caseNumber"]+'" name="caseNumber"'+'></input>';
+			}
 			
-		if(data["formScan"] != ""){
-			complaintString += 	'<input type="hidden" value="'+data["formScan"]+'" name="formScan"'+'></input>';
-		}
+			if(data["formScan"] != ""){
+				complaintString += '<input type="hidden" value="'+data["formScan"]+'" name="formScan"'+'></input>';
+			}
 			
+			if(data["whatHappened"] != ""){
+				whatHappened = data["whatHappened"];
+			}
+		}
+		
+
+		
 		complaintString += '<tr>' +
       '<th>Case No.</th>' +
-      '<td class="textField" id="caseNumber">' + data["prefix"] + '-' + data["caseNumber"] + '</td>' +
+      '<td class="textField" id="caseNumber">' + prefix + '-' + caseNumber + '</td>' +
       '</tr>' +
       '<tr>' +
       '<th>Plaintiff</th>' +
@@ -152,13 +196,13 @@ function complaintForm(target, info = "new", readOnly = false) {
       '</tr>' +
       '<tr>' +
       '<th>What happened</th>' +
-      '<td class="areaField" id="whatHappened"><textarea name="whatHappened" required>' + data["whatHappened"] + '</textarea></td>' +
+      '<td class="areaField" id="whatHappened"><textarea name="whatHappened" required>' + whatHappened + '</textarea></td>' +
       '<th>Charge & Sec. Number</th>' +
       '<td class="textField" id="charge">' + makeInputFields("charge") + '</td>' +
       '</tr>' +
       '</table>';
 
-    if(data["hearingDate"] != [] || data["hearingNotes"] != ""){
+		if(data != "new" && display == "both"){
 			complaintString += '<table class="complaintTable" id="extraComplaint">' +
 				'<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>'+
 				'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNo"'+'></input>'+
@@ -168,7 +212,7 @@ function complaintForm(target, info = "new", readOnly = false) {
 				'</tr>' +
 				'<tr>' +
 				'<th>Hearing Notes</th>' +
-				'<td class="areaField" id="hearingNotes" style="width: 767px;"><textarea name="hearingNotes">' + data["hearingNotes"] + '</textarea></td>' +
+				'<td class="areaField" id="hearingNotes" style="width: 767px;"><textarea name="hearingNotes" '+hearingNotesReq+'>' + data["hearingNotes"] + '</textarea></td>' +
 				'</tr>' +
 				'</table>';
 		}

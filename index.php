@@ -19,8 +19,6 @@
 <script src="./JS/DatabaseRow.js"></script>
 <script src="./JS/tableFunctions.js"></script>
 <script>
-  localStorage.removeItem("lastFormData"); 
-	
 	var dbSearchCriteria = {};
 	
 	var dataSet = [];
@@ -135,8 +133,8 @@
 	if(isset($_SESSION['username'])){
 ?>
 <span id="updateComplaintButton">
-<form name="updateComplaintButton" method='POST' action='./PHP/enterComplaintData.php'><input type='hidden' name='updateComplaint'></input></form>
-			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintButton.submit();">Update Complaint</div>
+<form id="updateComplaintForm" name="updateComplaintForm" method='GET' action='./PHP/enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
+			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
 </span>
 <?php 
 	} 
@@ -174,7 +172,7 @@
 	<div class="UIButton buttonShort" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
 	<div class="UIButton buttonShort" onclick='window.print()' class="noPrint">Print</div>
 	<?php if(isset($_SESSION['username'])){ ?>
-		<div class="UIButton buttonShort" onclick='window.location.href="./PHP/enterComplaintData.php"' class="noPrint">Add New Complaint</div>
+		<div class="UIButton buttonShort" onclick='window.location.href="./PHP/enterComplaintData.php?newComplaint=true"' class="noPrint">Add New Complaint</div>
 		<div class="UIButton buttonShort" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
 	<?php } ?>
 </div>
