@@ -15,6 +15,8 @@ class ComplaintData{
 	public static $otherFields = ["whatHappened","hearingNotes"];
 	public static $hearingFields = ["hearingDate","hearingNotes"];
 	
+	private $newComplaint = true;
+	
 	private $data = ["formScan"		  => "",
 					 "prefix"				=> -1,
 					 "caseNumber"	  => -1,
@@ -44,6 +46,12 @@ class ComplaintData{
 				$this->data[$field] = sanitize($entry);
 				return true;
 			}
+		}
+	}
+	
+	public function checkDeleteScan(){
+		if($this->newComplaint == true){
+			unlink($this->data['formScan']);
 		}
 	}
 	
@@ -309,23 +317,30 @@ class ComplaintData{
 			}
 		}
 		
-		if(isset($_POST["prefix"]))
+		if(isset($_POST["prefix"])){
 			$this->addData("prefix",$_POST["prefix"]);
-		if(isset($_POST["caseNumber"])){
-			$this->addData("caseNumber",$_POST["caseNumber"]);
-			if(isset($_POST["deleteComplaint"])){
-				$this->deleteCase = true;
+			if(isset($_POST["caseNumber"])){
+				$this->addData("caseNumber",$_POST["caseNumber"]);
+				$this->newComplaint = false;
+				if(isset($_POST["deleteComplaint"])){
+					$this->deleteCase = true;
+				}
 			}
 		}
 		
 		if(isset($_FILES['formScanFile'])){
 			if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
-				if(isset($_POST['formScan']) && isset($_SESSION['superuser']) || !isset($_POST['formScan'])){
+				if(@imagecreatefromjpeg($_FILES['formScanFile']["tmp_name"]) == false){
+					echo "Please upload form scan in .jpg format.";
+					return;
+				}
+				
+				if($newCase || isset($_SESSION['superuser'])){
 					
 					if(isset($_POST['formScan'])){
 						unlink($_POST['formScan']);
 					}
-						
+
 					$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
 					if(!file_exists($scanDirPath))
 						mkdir($scanDirPath);
@@ -334,7 +349,6 @@ class ComplaintData{
 					if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
 						echo "FAIL!";
 						echo $_FILES['formScanFile']['tmp_name'];
-							
 					}
 					else{
 						$this->addData("formScan", $scanFileName);	

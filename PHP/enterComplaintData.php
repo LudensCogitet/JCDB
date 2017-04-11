@@ -3,6 +3,7 @@ require './ComplaintData.php';
 session_start();
 
 if(isset($_SESSION['username'])){
+$newModify = false;
 if(isset($_SESSION['complaint'])){
 	if(isset($_GET['newComplaint'])){
 		setcookie('complaintData',"",1);
@@ -18,6 +19,7 @@ if(isset($_SESSION['complaint'])){
 		}
 		else{
 			$formSettings = "'top'";
+			$newModify = true;
 		}
 		setcookie('complaintData',$_SESSION['complaint']->encodeData(),time()+10);
 	}
@@ -61,9 +63,9 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 </head>
 <body>
 <form id="complaintEntryForm" name="enterComplaintButton" action="submitComplaintData.php" method="POST" enctype="multipart/form-data">
-	<?php if(!isset($_GET['updateComplaint']) || isset($_SESSION['superuser'])){ ?>
+	<?php if(isset($_GET['newComplaint']) || $newModify == true || isset($_SESSION['superuser'])){ ?>
 	<div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
-		<h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" <?php echo $scanReq; ?>></input>
+		<h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" accept="image/jpeg" <?php echo $scanReq; ?>></input>
 	<?php } ?>
 	</div>
 	<div id="tableTarget"></div>
