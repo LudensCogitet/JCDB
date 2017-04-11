@@ -72,6 +72,19 @@ class ComplaintData{
 		}
 	}
 	
+	private function renameScan(){
+		$oldName = $this->getData('formScan');
+		$newName = "../formScans".$GLOBALS['currentYearCode']."/SCAN_".$this->getData('prefix').$this->getData('caseNumber').".jpg";
+		if(strstr($oldName,'TEMPIMG_') != false){
+			if(!rename($oldName,$newName)){
+				echo "Could not rename form scan '".$oldName."'";
+			}
+			else{
+				$this->addData('formScan',$newName);
+			}
+		}
+	}
+	
 	private function makeNewDatabase($dbConn){
 		$dbConn->query("CREATE DATABASE jcdb;");
 		$dbConn->select_db("jcdb");
@@ -106,10 +119,9 @@ class ComplaintData{
 			// If there is no prefix or case number, then generate a new complaint form record
 			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 				
-				$statement = $dbConn->prepare("INSERT INTO casehistory(formScan,prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
+				$statement = $dbConn->prepare("INSERT INTO casehistory(prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?)");
 				
 				$params = [];
-				$params[] = $this->getData('formScan');
 				$params[] = $GLOBALS['currentYearCode'];
 				$params[] = $this->getData('plaintiff');
 				$params[] = $this->getData('defendant');
@@ -128,6 +140,8 @@ class ComplaintData{
 				
 				$this->addData("prefix",$GLOBALS['currentYearCode']);
 				$this->addData("caseNumber",$row[0]);
+				$this->renameScan();
+				$dbConn->query("UPDATE casehistory SET formScan = '".$this->getData('formScan')."' WHERE prefix = ".$this->getData('prefix')." AND caseNumber = ".$this->getData('caseNumber'));
 				
 				// Add charges to the casestate database
 				$caseStateInsertParams[] = $this->getData('prefix');
@@ -200,6 +214,7 @@ class ComplaintData{
 					$caseStateInsertParams[] = $this->getData('prefix');
 					$caseStateInsertParams[] = $this->getData('caseNumber');
 					
+					$this->renameScan();
 					$queryString = $queryString."formScan = ?, ";
 					$queryParams[] = $this->getData("formScan");
 					
@@ -301,6 +316,10 @@ class ComplaintData{
 	}
 
 	function __construct(){
+		if(!isset($_SESSION["username"])){
+			echo "No user signed in";
+			return;
+		}
 		foreach(self::$multiFields as $field){
 		  $num = 1;
 			$array = [];
@@ -330,12 +349,12 @@ class ComplaintData{
 		
 		if(isset($_FILES['formScanFile'])){
 			if(is_uploaded_file($_FILES['formScanFile']["tmp_name"])){
-				if(@imagecreatefromjpeg($_FILES['formScanFile']["tmp_name"]) == false){
+				if(imagecreatefromjpeg($_FILES['formScanFile']["tmp_name"]) == false){
 					echo "Please upload form scan in .jpg format.";
 					return;
 				}
 				
-				if($newCase || isset($_SESSION['superuser'])){
+				if($this->newComplaint || isset($_SESSION['superuser'])){
 					
 					if(isset($_POST['formScan'])){
 						unlink($_POST['formScan']);
@@ -345,7 +364,7 @@ class ComplaintData{
 					if(!file_exists($scanDirPath))
 						mkdir($scanDirPath);
 						
-					$scanFileName = $scanDirPath."/".Date('U').".jpg";
+					$scanFileName = $scanDirPath."/TEMPIMG_".$_SESSION['username'].".jpg";
 					if(!move_uploaded_file($_FILES['formScanFile']['tmp_name'],$scanFileName)){
 						echo "FAIL!";
 						echo $_FILES['formScanFile']['tmp_name'];
