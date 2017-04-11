@@ -37,14 +37,22 @@
   height: 208px;
 }
 
+#hearingDate{
+	width: 628px;
+}
+
+#hearingNotes{
+	width: 628px;
+}
+
 #extraComplaint input{
 	width: 100%;
-  max-width: 764px;
+  max-width: 628px;
 }
 
 #extraComplaint textarea[name="hearingNotes"]{
   /*width: 760px;*/
 	width: 100%;
-  max-width: 761px;
+  max-width: 625px;
   /*height: 300px;*/
 }

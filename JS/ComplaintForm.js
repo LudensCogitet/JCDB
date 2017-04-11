@@ -208,11 +208,11 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 				'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNo"'+'></input>'+
 				'<tr>' +
 				'<th>Hearing Date (YYYY-MM-DD)</th>' +
-				'<td id="hearingDate" style="width: 767px;">' + makeInputFields("hearingDate") + '</td>' +
+				'<td id="hearingDate">' + makeInputFields("hearingDate") + '</td>' +
 				'</tr>' +
 				'<tr>' +
 				'<th>Hearing Notes</th>' +
-				'<td class="areaField" id="hearingNotes" style="width: 767px;"><textarea name="hearingNotes" '+hearingNotesReq+'>' + data["hearingNotes"] + '</textarea></td>' +
+				'<td class="areaField" id="hearingNotes"><textarea name="hearingNotes" '+hearingNotesReq+'>' + data["hearingNotes"] + '</textarea></td>' +
 				'</tr>' +
 				'</table>';
 		}
