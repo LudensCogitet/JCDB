@@ -193,7 +193,7 @@ class ComplaintData{
 						foreach(self::$hearingFields as $field){
 							if(isset($this->data[$field])){
 								$queryString = $queryString.$field." = ?, ";
-								$queryParams[] = $this->getData($field,'string');
+								$queryParams[] = $this->getData($field);
 						}
 					}
 					
