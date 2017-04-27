@@ -45,18 +45,13 @@ finally:
     dbConn.close()
 
 print("Writing config file...")
-f = open("./config.ini","w")
+f = open("/JCDBconfig.ini","w")
 f.write("SQL_HOST = 'localhost'\n")
 f.write("SQL_DB = 'jcdb'\n")
 f.write("SQL_VIEW_USER = 'viewer'\n")
 f.write("SQL_MODIFY_USER = 'modifier'\n")
 f.write("SQL_MODIFY_PASS = '"+modifyPass+"'\n")
 f.write("TEMP_SETUP_PASS = '"+tempPass+"'")
-f.close()
-
-print("Setting Apache environment variable...")
-f = open(input("location of Apache server httpd.conf: ")+"/httpd.conf",'a')
-f.write("\nSetEnv CONFIG_PATH \""+getPath()+"/config.ini\"")
 f.close()
 
 print("Setup complete. Please use username 'temp' with password: '"+tempPass+"' to add a new superuser right away.")

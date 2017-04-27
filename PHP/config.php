@@ -1,5 +1,5 @@
 <?php
 if(!isset($GLOBALS['config'])){
-	$GLOBALS['config'] = parse_ini_file(getenv('CONFIG_PATH'));
+	$GLOBALS['config'] = parse_ini_file("/JCDBconfig.ini");
 }
 ?>
