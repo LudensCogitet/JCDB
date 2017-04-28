@@ -237,7 +237,7 @@ function DatabaseRow(rawData,rowArray){
 	
 		if(Object.keys(sendData).length != 0){
 			console.log("HERE!", sendData);
-			$.ajax({url:"../PHP/updateDB.php",
+			$.ajax({url:"PHP/updateDB.php",
 							method: "POST",
 							data: {prefix: data["prefix"],
 										 rowID: data["rowID"],

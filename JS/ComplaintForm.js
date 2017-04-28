@@ -2,7 +2,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
   var multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 
 	if (Array.isArray(data)) {
-			$.ajax({url:"../PHP/displayComplaint.php",
+			$.ajax({url:"PHP/displayComplaint.php",
 					type: "POST",
 					data: {"prefix": data[0], 
 							 "caseNum": data[1]},
@@ -39,7 +39,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 
 		$(target).prepend(jqueryElement);
 		if(data != "new" && formDisplayButton == true){
-			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='../PHP/scanDisplay.php' type='post'>"+
+			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='PHP/scanDisplay.php' type='post'>"+
 														"<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
 														"<div style='float:right' class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
 				
