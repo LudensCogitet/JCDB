@@ -1,6 +1,6 @@
 <head>
-<link rel="stylesheet" type="text/css" href="../CSS/UI.css">
-<link rel="stylesheet" type="text/css" href="../CSS/usersDisplay.css">
+<link rel="stylesheet" type="text/css" href="CSS/UI.css">
+<link rel="stylesheet" type="text/css" href="CSS/usersDisplay.css">
 </head>
 <div class="centerBox" style="width:300px;">
 <?php
@@ -81,7 +81,7 @@
 <input style="display:none;" type="submit"></input>
 </form>
 <div class="UIButton buttonMedium" onclick="document.newUserButton.submit();">Add User</div><br>
-<div class="UIButton buttonMedium" onclick="location.href='../index.php';">Return To Database</div>
+<div class="UIButton buttonMedium" onclick="location.href='index.php';">Return To Database</div>
 <div id="usersBox">
 <table style="text-align: center;">
 <th>Username</th>

@@ -1,5 +1,5 @@
 <head>
-<link rel="stylesheet" type="text/css" href="../CSS/UI.css">
+<link rel="stylesheet" type="text/css" href="CSS/UI.css">
 <script>
 document.onreadystatechange = function(){
 	if(document.readyState == "complete")
@@ -72,5 +72,5 @@ document.onreadystatechange = function(){
 <input style='display:none;' type="submit"></input>
 </form>
 <div class="UIButton buttonMedium" onclick="document.loginButton.submit();">Log In</div><br>
-<div class="UIButton buttonMedium" onclick="location.href='../index.php';">Back To Database</div>
+<div class="UIButton buttonMedium" onclick="location.href='index.php';">Back To Database</div>
 </div>
