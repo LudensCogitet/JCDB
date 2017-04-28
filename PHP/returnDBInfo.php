@@ -16,7 +16,7 @@
 		$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
 											";dbname=".$GLOBALS['config']['SQL_DB'],
 											$GLOBALS['config']['SQL_VIEW_USER'],
-											"",
+											$GLOBALS['config']['SQL_VIEW_PASS'],
 											[PDO::ATTR_PERSISTENT => true]);
   
 		if($searchCriteria == "all"){
