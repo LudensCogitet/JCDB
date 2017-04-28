@@ -4,7 +4,7 @@
 </head>
 <div class="centerBox" style="width:300px;">
 <?php
-	require './config.php';
+	require 'PHP/config.php';
 	session_start();
 	try{
 	$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].

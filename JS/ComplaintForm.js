@@ -39,7 +39,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 
 		$(target).prepend(jqueryElement);
 		if(data != "new" && formDisplayButton == true){
-			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='PHP/scanDisplay.php' type='post'>"+
+			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='scanDisplay.php' type='post'>"+
 														"<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
 														"<div style='float:right' class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
 				

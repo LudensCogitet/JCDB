@@ -1,5 +1,5 @@
 <?php 
-require './ComplaintData.php';
+require 'PHP/ComplaintData.php';
 session_start();
 
 if(isset($_SESSION['username'])){
@@ -28,12 +28,12 @@ if(isset($_SESSION['complaint'])){
 ?>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="../CSS/UI.css">
-  <link rel="stylesheet" type="text/css" href="../CSS/ComplaintForm.css">
-  <script src="../JS/formatting.js"></script>
-	<script src="../JS/jquery-3.1.1.min.js"></script>
-	<script src="../JS/jquery.cookie.js"></script>
-  <script src="../JS/ComplaintForm.js"></script>
+	<link rel="stylesheet" type="text/css" href="CSS/UI.css">
+  <link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
+  <script src="JS/formatting.js"></script>
+	<script src="JS/jquery-3.1.1.min.js"></script>
+	<script src="JS/jquery.cookie.js"></script>
+  <script src="JS/ComplaintForm.js"></script>
   <script>
 $(document).ready(function(){
 <?php 
@@ -73,7 +73,7 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 </form>
 <div id="menu">
 	<div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>
-	<div class="UIButton buttonMedium" onclick="location.href='../index.php';">Back to Database</div>
+	<div class="UIButton buttonMedium" onclick="location.href='index.php';">Back to Database</div>
 </div>
 </body>
 </html>

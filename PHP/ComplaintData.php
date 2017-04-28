@@ -1,6 +1,6 @@
 <?php
-require './getYearCode.php';
-require './config.php';
+require 'PHP/getYearCode.php';
+require 'PHP/config.php';
 
 function sanitize($var){
 	$var = trim($var);
@@ -360,7 +360,7 @@ class ComplaintData{
 						unlink($_POST['formScan']);
 					}
 
-					$scanDirPath = "../formScans".$GLOBALS['currentYearCode'];
+					$scanDirPath = "formScans".$GLOBALS['currentYearCode'];
 					if(!file_exists($scanDirPath))
 						mkdir($scanDirPath);
 						

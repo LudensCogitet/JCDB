@@ -133,7 +133,7 @@
 	if(isset($_SESSION['username'])){
 ?>
 <span id="updateComplaintButton">
-<form id="updateComplaintForm" name="updateComplaintForm" method='GET' action='PHP/enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
+<form id="updateComplaintForm" name="updateComplaintForm" method='GET' action='enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
 			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
 </span>
 <?php 
@@ -146,7 +146,7 @@
 <?php 
 	if(!isset($_SESSION['username'])){
 ?>
-		<div class="UIButton buttonShort" onclick="location.href='PHP/login.php'">Log In</div>
+		<div class="UIButton buttonShort" onclick="location.href='login.php'">Log In</div>
 <?php 
 	}
 	else{	
@@ -160,7 +160,7 @@
 		if(isset($_SESSION['superuser']))
 		{
 ?>
-		<div class="UIButton buttonShort" onclick="location.href='./PHP/manageUsers.php'">Manage Users</div>
+		<div class="UIButton buttonShort" onclick="location.href='manageUsers.php'">Manage Users</div>
 
 <?php
 		}
@@ -172,7 +172,7 @@
 	<div class="UIButton buttonShort" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
 	<div class="UIButton buttonShort" onclick='window.print()' class="noPrint">Print</div>
 	<?php if(isset($_SESSION['username'])){ ?>
-		<div class="UIButton buttonShort" onclick='window.location.href="PHP/enterComplaintData.php?newComplaint=true"' class="noPrint">Add New Complaint</div>
+		<div class="UIButton buttonShort" onclick='window.location.href="enterComplaintData.php?newComplaint=true"' class="noPrint">Add New Complaint</div>
 		<div class="UIButton buttonShort" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
 	<?php } ?>
 </div>

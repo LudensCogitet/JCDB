@@ -1,13 +1,13 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../CSS/submitCaseData.css">
-<link rel="stylesheet" type="text/css" href="../CSS/ComplaintForm.css">
-<link rel="stylesheet" type="text/css" href="../CSS/UI.css">
-<script src="../JS/jquery-3.1.1.min.js"></script>
-<script src="../JS/jquery.cookie.js"></script>
-<script src="../JS/ComplaintForm.js"></script>
+<link rel="stylesheet" type="text/css" href="CSS/submitCaseData.css">
+<link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
+<link rel="stylesheet" type="text/css" href="CSS/UI.css">
+<script src="JS/jquery-3.1.1.min.js"></script>
+<script src="JS/jquery.cookie.js"></script>
+<script src="JS/ComplaintForm.js"></script>
 <?php
-require './ComplaintData.php';
+require 'PHP/ComplaintData.php';
 
 session_start();
 if(isset($_SESSION['username'])){
@@ -31,7 +31,7 @@ $(document).ready(function(){
 <input type="submit" name="confirm"></input>
 </form>
 <div class='UIButton buttonMedium' onclick='document.submissionAction.confirm.click()'>Confirm</div>
-<div class='UIButton buttonMedium' onclick="location.href='./enterComplaintData.php?modifyComplaint=true';">Modify</div>
+<div class='UIButton buttonMedium' onclick="location.href='enterComplaintData.php?modifyComplaint=true';">Modify</div>
 </body>
 </html>
 <?php
@@ -46,8 +46,8 @@ $(document).ready(function(){
 <?php 
 		unset($_SESSION['complaint']);
 ?>
-<div class='UIButton buttonMedium' onclick="location.href='./enterComplaintData.php?newComplaint=true';">Submit A New Complaint</div><br>
-<div class='UIButton buttonMedium' onclick="location.href='../index.php';">Return To Database</div>
+<div class='UIButton buttonMedium' onclick="location.href='enterComplaintData.php?newComplaint=true';">Submit A New Complaint</div><br>
+<div class='UIButton buttonMedium' onclick="location.href='index.php';">Return To Database</div>
 </div>
 </body>
 </html>

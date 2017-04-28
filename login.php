@@ -9,7 +9,7 @@ document.onreadystatechange = function(){
 </head>
 <div class="centerBox">
 <?php
-	require './config.php';
+	require 'PHP/config.php';
 	if(isset($_POST['username']) && isset($_POST['password'])){
 		session_start();
 		if(isset($_SESSION['username'])){
