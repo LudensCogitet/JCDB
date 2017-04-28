@@ -49,7 +49,7 @@ finally:
     dbConn.close()
 
 print("Writing config file...")
-f = open("/JCDBconfig.ini","w")
+f = open("JCDBconfig.ini","w")
 f.write("SQL_HOST = 'localhost'\n")
 f.write("SQL_DB = 'JCDB_"+suffix+"'\n")
 f.write("SQL_VIEW_USER = 'VIEWER_"+suffix+"'\n")
