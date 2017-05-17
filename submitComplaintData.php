@@ -7,7 +7,8 @@
 <script src="JS/jquery.cookie.js"></script>
 <script src="JS/ComplaintForm.js"></script>
 <?php
-require 'PHP/ComplaintData.php';
+require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
+require_once 'PHP/ComplaintData.php';
 
 session_start();
 if(isset($_SESSION['username'])){
@@ -20,7 +21,7 @@ if(isset($_SESSION['username'])){
 <script>
 $(document).ready(function(){
 	complaintForm('#tableTarget',$.cookie('complaintData'),'both','both');
-	
+
 	$("#tableTarget").before($("<img id='formScan' src='"+$.cookie('formScan')+"'>"));
 });
 </script>
@@ -42,8 +43,8 @@ $(document).ready(function(){
 <body>
 <div class='centerBox'>
 <div class='noteBox'><?php echo $_SESSION['complaint']->submitToDatabase(); ?></div><br>
-		
-<?php 
+
+<?php
 		unset($_SESSION['complaint']);
 ?>
 <div class='UIButton buttonMedium' onclick="location.href='enterComplaintData.php?newComplaint=true';">Submit A New Complaint</div><br>
@@ -51,7 +52,7 @@ $(document).ready(function(){
 </div>
 </body>
 </html>
-<?php	
+<?php
 		}
 	}
 ?>

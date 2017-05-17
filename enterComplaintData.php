@@ -1,5 +1,6 @@
-<?php 
-require 'PHP/ComplaintData.php';
+<?php
+require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
+require_once 'PHP/ComplaintData.php';
 session_start();
 
 if(isset($_SESSION['username'])){
@@ -36,7 +37,7 @@ if(isset($_SESSION['complaint'])){
   <script src="JS/ComplaintForm.js"></script>
   <script>
 $(document).ready(function(){
-<?php 
+<?php
 $submissionButtonName = "Submit Complaint";
 if(isset($_GET['newComplaint'])){
 	$scanReq = 'required';
@@ -69,7 +70,7 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 	<?php } ?>
 	</div>
 	<div id="tableTarget"></div>
-	<input style="display: none;" name='submit' type="submit"></input>  
+	<input style="display: none;" name='submit' type="submit"></input>
 </form>
 <div id="menu">
 	<div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>

@@ -1,5 +1,5 @@
 <?php
-	require './config.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 	session_start();
 	
 	if(isset($_SESSION['username'])){
@@ -7,10 +7,10 @@
 			$changes = json_decode($_POST['changes']);
 		
 			try{
-				$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
-													";dbname=".$GLOBALS['config']['SQL_DB'],
-													$GLOBALS['config']['SQL_MODIFY_USER'],
-													$GLOBALS['config']['SQL_MODIFY_PASS'],
+				$dbConn = new PDO("mysql:host=".$GLOBALS['_JCDB_config']['SQL_HOST'].
+													";dbname=".$GLOBALS['_JCDB_config']['SQL_DB'],
+													$GLOBALS['_JCDB_config']['SQL_MODIFY_USER'],
+													$GLOBALS['_JCDB_config']['SQL_MODIFY_PASS'],
 													[PDO::ATTR_PERSISTENT => true]);
 			
 				$queryString = "UPDATE casestate SET ";

@@ -3,12 +3,16 @@ import random
 import os
 
 def randPass(length = 32):
-    return ''.join(random.choices("ABCDEFGHIJKLMNOP"+\
-                                 "QRSTUVWQXYZabcde"+\
-                                 "fghijklmnopqrstu"+\
-                                 "vwxyz123456789",k=length))
+    newPass = ''
+    for i in range(length):
+        newPass = ''.join((newPass,random.choice("ABCDEFGHIJKLMNOP"+\
+                                                 "QRSTUVWQXYZabcde"+\
+                                                 "fghijklmnopqrstu"+\
+                                                 "vwxyz123456789")))
+    return newPass
+
 def getPath():
-    return os.path.dirname(__file__).replace('\\','/')
+    return os.path.dirname(os.path.abspath(__file__)).replace('\\','/')
 
 modifyPass = randPass()
 viewPass = randPass()
@@ -19,7 +23,7 @@ try:
     dbConn = pymysql.connect(host=input("mySQL server host: "),
                              user=input("admin username: "),
                              password=input("admin password: "))
-    
+
     with dbConn.cursor() as cursor:
         print("Adding database...")
         cursor.execute("CREATE DATABASE jcdb")
@@ -32,17 +36,17 @@ try:
 
         print("Adding temporary user...")
         cursor.execute("INSERT INTO users(username,password,superuser) VALUES ('temp','"+tempPass+"',1)")
-        
+
         print("Adding internal database users for table manipulation...")
         cursor.execute("CREATE USER JCDB_viewer@'localhost' IDENTIFIED BY '"+viewPass+"'")
         cursor.execute("GRANT SELECT ON jcdb.casestate TO JCDB_viewer@'localhost'")
         cursor.execute("GRANT SELECT ON jcdb.casehistory TO JCDB_viewer@'localhost'")
-        
+
         cursor.execute("CREATE USER JCDB_modifier@'localhost' IDENTIFIED BY '"+modifyPass+"'")
         cursor.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON jcdb.casestate TO JCDB_modifier@'localhost'")
         cursor.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON jcdb.casehistory TO JCDB_modifier@'localhost'")
         cursor.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON jcdb.users TO JCDB_modifier@'localhost'")
-        
+
 finally:
     dbConn.close()
 
@@ -59,8 +63,8 @@ with open("JCDB_configs/JCDBconfig.ini","w") as f:
 	f.close()
 
 print("Setting config path environment variable...")
-with open(input("location of Apache server httpd.conf: ")+"/httpd.conf",'a') as f: 
-	f.write("\nSetEnv JCDB_CONFIG_PATH \""+getPath()+"/JCDB_configs/")
+with open(input("location of Apache server httpd.conf: ")+"/httpd.conf",'a') as f:
+	f.write("\nSetEnv JCDB_CONFIG_PATH \""+getPath()+"/JCDB_configs/\"")
 	f.close()
 
 print("Setup complete. Please use username 'temp' with password: '"+tempPass+"' to add a new superuser right away.")

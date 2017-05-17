@@ -9,7 +9,7 @@ document.onreadystatechange = function(){
 </head>
 <div class="centerBox">
 <?php
-	require 'PHP/config.php';
+	require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 	if(isset($_POST['username']) && isset($_POST['password'])){
 		session_start();
 		if(isset($_SESSION['username'])){
@@ -27,10 +27,10 @@ document.onreadystatechange = function(){
 		$_POST['username'] = htmlspecialchars($_POST['username']);
 		$_POST['password'] = htmlspecialchars($_POST['password']);
 		try{
-			$dbConn = new PDO("mysql:host=".$GLOBALS['config']['SQL_HOST'].
-												";dbname=".$GLOBALS['config']['SQL_DB'],
-												$GLOBALS['config']['SQL_MODIFY_USER'],
-												$GLOBALS['config']['SQL_MODIFY_PASS'],
+			$dbConn = new PDO("mysql:host=".$GLOBALS['_JCDB_config']['SQL_HOST'].
+												";dbname=".$GLOBALS['_JCDB_config']['SQL_DB'],
+												$GLOBALS['_JCDB_config']['SQL_MODIFY_USER'],
+												$GLOBALS['_JCDB_config']['SQL_MODIFY_PASS'],
 												[PDO::ATTR_PERSISTENT => true]);
 			
 			$statement = $dbConn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1;");
@@ -38,7 +38,7 @@ document.onreadystatechange = function(){
 			echo "<div class='noteBox'>";
 			if($statement->rowCount() > 0){
 				$row = $statement->fetch(PDO::FETCH_ASSOC);
-				if(password_verify($_POST['password'],$row['password']) || $_POST['password'] == $GLOBALS['config']['TEMP_SETUP_PASS']){
+				if(password_verify($_POST['password'],$row['password']) || $_POST['password'] == $GLOBALS['_JCDB_config']['TEMP_SETUP_PASS']){
 					$_SESSION['username'] = $row['username'];
 					if($row['superuser'] == 1)
 						$_SESSION['superuser'] = true;
