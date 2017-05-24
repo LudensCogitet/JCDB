@@ -28,6 +28,16 @@
 	width: 75px;
 }
 
+.danger{
+	background-color: red;
+	color: white;
+}
+
+.danger:hover{
+	background-color: yellow;
+	color: black;
+}
+
 .centerBox{
 	text-align: center;
 	width:400px;

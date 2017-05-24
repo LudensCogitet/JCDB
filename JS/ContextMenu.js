@@ -1,20 +1,20 @@
 function contextMenu(target,targetDiv,options){
 	if(target != null)
 		target = $(target);
-	
+
 	targetDiv = $(targetDiv);
 	console.log("THIS HERE",options);
-	
+
   function theBusiness(){
 		targetDiv.empty();
-	 
+
 		for(let i = 0; i < options.length; i++){
 			if(options[i].length == 1){
 				targetDiv.append($("<div class='menuHeading'>"+options[i]+"</div>"));
 			}
 			else if(options[i].length == 2){
 				var newOption = $("<div class='menuOption'>"+options[i][0]+"</div>");
-    
+
 				if(options[i][1] != null){
 					newOption.click(function(event){
 					event.stopPropagation();
@@ -26,7 +26,7 @@ function contextMenu(target,targetDiv,options){
 		}
 
 	}
-	
+
 	var offsetX;
 	var offsetY;
 	if(event.pageX !== undefined && event.pageY !== undefined){
@@ -36,20 +36,22 @@ function contextMenu(target,targetDiv,options){
 	else{
 		offsetX = $(window).width() / 2 - targetDiv.width() / 2;
 		offsetY = $(window).height() / 2 - targetDiv.height()/2;
-		
+
 	}
-	
+
 	targetDiv.css("left",offsetX+"px");
 	targetDiv.css("top",offsetY+"px");
 	targetDiv.show();
 	console.log("AND THEN THIS",options);
 	}
-	
+
 	if(target != null){
 		target.click(function(event){
-		event.stopPropagation();
-		$(".contextMenuStyle").not("#contextMenu").remove();
-		theBusiness();
+			if(_highlightKeyDown == false){
+				event.stopPropagation();
+				$(".contextMenuStyle").not("#contextMenu").remove();
+				theBusiness();
+			}
 		});
 	}
 	else{
@@ -62,7 +64,7 @@ function toggleTextField(target,type,action){
 		if($(target).children(type).length == 0){
 						var inputVal = $(target).html();
 						var inputField = null;
-					
+
 						if(type == "input"){
 							inputField = $("<input type='text'></input>");
 							inputField.val(inputVal);
@@ -71,19 +73,19 @@ function toggleTextField(target,type,action){
 							inputField = $("<textarea></textarea");
 							inputField.append(inputVal);
 						}
-					
+
 						$(target).html(inputField);
-					
+
 						$(target).children().keydown(function(event){
 							if(event.keyCode == 13){
 								var value = $(this).val();
 								console.log(value);
-								
+
 								action(value);
 								$(this).parent().html(value);
-							}		
+							}
 						});
-								
+
 						$(target).children().focus();
 						$(target).children().select();
 					}
@@ -91,7 +93,7 @@ function toggleTextField(target,type,action){
 						var e = $.Event("keydown");
 						e.keyCode = 13;
 						$(target).children().trigger(e);
-					}	
+					}
 }
 
 var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],

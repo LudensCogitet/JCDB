@@ -2,26 +2,27 @@
 	*{
 			font-size: 12px;
 		}
-	
+
 	.printHeading{
 		text-align: center;
 		display: block !important;
 	}
-	
+
 	.printHeading, .printHeading *{
 		font-size: 24px;
 	}
-	
+
 	.noPrint, .noPrint *{
 		display: none !important;
+	}
+
+	#tableContainer{
+		width: 100% !important;
 	}
 }
 
 #tableContainer{
 	margin: auto;
-}
-
-#tableContainer{
 	width: 65%;
 }
 
@@ -35,14 +36,14 @@
 }
 
 #mainTable th, #mainTable td{
-  font-size: 1em;	
+  font-size: 1em;
   border: 2px solid black;
   padding: 2px;
   text-align: center;
   cursor: pointer;
 }
 
-#mainTable th:hover, #mainTable td:hover, #contextMenu .menuOption:hover{
+#mainTable th:hover, #mainTable td:hover, .contextMenuStyle .menuOption:hover{
 	color: white;
 	background-color: black;
 }
@@ -148,8 +149,12 @@
 	float: right;
 	clear: both;
 }
-	
+
 .noteBox{
 	border: 2px solid black;
 	width: 125px;
+}
+
+.sentence{
+	max-width: 300px;
 }

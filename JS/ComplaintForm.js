@@ -4,7 +4,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 	if (Array.isArray(data)) {
 			$.ajax({url:"PHP/displayComplaint.php",
 					type: "POST",
-					data: {"prefix": data[0], 
+					data: {"prefix": data[0],
 							 "caseNum": data[1]},
 					success: function(result){
 						theBusiness(result);
@@ -22,10 +22,10 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 		if(workWith != null){
 			workWith = JSON.parse(workWith)
 			workWith = convertFields(workWith);
-						
+
 			data = workWith;
 		}
-		
+
 		var jqueryElement = null;
 		var jqueryInputFields = null;
 
@@ -41,12 +41,12 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 		if(data != "new" && formDisplayButton == true){
 			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='scanDisplay.php' type='post'>"+
 														"<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
-														"<div style='float:right' class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
-				
+														"<div class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
+
 			$(target).append(scanDisplayForm);
 		}
 	}
-	
+
 	function convertFields(object){
 		for(let i = 0; i < multiFields.length; i++){
 					if(typeof object[multiFields[i]] === "string"){
@@ -59,24 +59,24 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 
 				if(object["hearingNotes"] == null)
 					object["hearingNotes"] = "";
-				
+
 				if(object["prefix"] == -1)
 					object["prefix"] = "";
-				
+
 				if(object["caseNumber"] == -1)
 					object["caseNumber"] = "";
-		
+
 		return object;
 	}
-	
+
 	function makeInputFields(typeOfData) {
 		var coda = '" required></input>';
-		
+
 		if(typeOfData == "witness" || (typeOfData == "hearingDate" && bottomRequired == false))
 			coda = '"></input>';
-		
+
 		var emptyInput = '<input type="text" name="' + typeOfData + '-1" data-repro="false"'+coda;
-		
+
     if(data != "new"){
 			if (Array.isArray(data[typeOfData]) && data[typeOfData].length > 0) {
 				var repro = "true";
@@ -84,9 +84,9 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 				for (let i = 0; i < data[typeOfData].length; i++) {
 					if (i == data[typeOfData].length - 1)
 						repro = "false";
-				
+
 					returnString += '<input type="text" name="' + typeOfData + '-' + (i + 1) + '" data-repro="' + repro + '" value="' + data[typeOfData][i] + coda;
-				}    
+				}
 				return returnString;
 			}
 			else{
@@ -115,7 +115,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 				$(newField).blur(formatCheck);
 				$(newField).focus();
 				return newField;
-			} 
+			}
 			else if (event == "up" || event.keyCode == 38 || (event.keyCode == 8 && $(this).val() == "")) {
 			if($(this).attr('readonly') != 'readonly'){
 				event.preventDefault();
@@ -130,7 +130,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 			}
 		}
 	}
-	
+
 	function formatCheck(event){
 		if(!checkInputFormat($(this).parent().attr('id'),$(this).val())){
 			$(this).val("");
@@ -140,38 +140,38 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
   function compileString() {
 
     var complaintString = '<table class="complaintTable" id="mainComplaint">';
-		
+
 		var prefix = "";
 		var caseNumber = "";
 		var whatHappened = "";
 		var hearingNotesReq = "required";
-		
+
 		if(bottomRequired == false)
 			hearingNotesReq = "";
-	
-		
+
+
 		if(data != "new"){
 			if(data["prefix"] != ""){
 				prefix = data["prefix"];
 				complaintString += '<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>';
 			}
-			
+
 			if(data["caseNumber"] != ""){
 				caseNumber = data["caseNumber"];
 				complaintString += '<input type="hidden" value="'+data["caseNumber"]+'" name="caseNumber"'+'></input>';
 			}
-			
+
 			if(data["formScan"] != ""){
 				complaintString += '<input type="hidden" value="'+data["formScan"]+'" name="formScan"'+'></input>';
 			}
-			
+
 			if(data["whatHappened"] != ""){
 				whatHappened = data["whatHappened"];
 			}
 		}
-		
 
-		
+
+
 		complaintString += '<tr>' +
       '<th>Case No.</th>' +
       '<td class="textField" id="caseNumber">' + prefix + '-' + caseNumber + '</td>' +
@@ -233,7 +233,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
         jqueryInputFields.children("textarea").removeAttr("readonly");
     }
   }
-  
+
 	this.markReadOnly = function(val) {
     readOnly = val;
   }

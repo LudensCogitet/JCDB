@@ -20,33 +20,34 @@
 <script src="JS/tableFunctions.js"></script>
 <script>
 	var dbSearchCriteria = {};
-	
+
 	var dataSet = [];
 	var rowObjects = {"array": [],
 										"caseNumber": {}};
 	var limits = {"offset": 0,
 								"count": 30};
-	
+
 	var upArrow = $("<span class='arrow up noPrint'>&#x25B2;</span>");
 	var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
-	
+
 	function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
+		  DatabaseRow.autoFillDoNotAsk = [];
 			var returnPromise = new Promise(function(resolve,reject){
 			var check = false;
 			if(typeof criteria == "object"){
 				if(Object.keys(criteria).length == 0)
 					criteria = "all"
 			}
-			
+
 			console.log(criteria);
 			if(type == "overwrite"){
 				limits['offset'] = 0;
 			}
-			
+
 			$.ajax({url:"PHP/returnDBInfo.php",
 				method: "GET",
 				data:{"criteria": JSON.stringify(criteria),
-							"limits": JSON.stringify(limits)}, 
+							"limits": JSON.stringify(limits)},
 				success: function(result){
 					console.log(result);
 					result = JSON.parse(result);
@@ -56,9 +57,9 @@
 					else{
 						$("#loadMore").hide();
 					}
-					
+
 					dataSet = result[1];
-					
+
 					if(type == "overwrite"){
 						rowObjects = makeTable(dataSet);
 					}
@@ -78,7 +79,7 @@
 
   $(document).ready(function(){
 		mainTable = document.getElementById("mainTable");
-		
+
 		headingMenuSetup("prefixAndCaseNumber");
 		headingMenuSetup("plaintiff");
 		headingMenuSetup("defendant");
@@ -89,8 +90,8 @@
 		headingMenuSetup("verdict");
 		headingMenuSetup("sentence");
 		headingMenuSetup("sentenceStatus");
-		
-		$("#updateDBButton").click(function(){	
+
+		$("#updateDBButton").click(function(){
 			if(confirm('Are you sure?')){
 				for(let i = 0; i < rowObjects["array"].length; i++){
 					console.log("SENDING CHANGES");
@@ -98,24 +99,24 @@
 				}
 			}
 		});
-		
+
 		getDBInfo();
-  
+
 		function windowClose(){
 			$(this).parent().hide();
 			$(this).siblings().children(":not(#updateComplaintButton)").remove();
 			localStorage.removeItem('lastFormData');
 		}
-		
+
 		$("#caseInfoClose").click(windowClose);
-		
+
 		$("html").click(function(){
 			$("#contextMenu").hide();
 			$(".contextMenuStyle").not("#contextMenu").remove();
 			console.log("HIDE TRIGGERED");
 		});
-		
-		
+
+
 		//$("#maintTable tbody").height($(window).height());
 		//$(window).resize(function(){$("#mainTable tbody").height(0);$("#mainTable tbody").height($(window).height());});
 		//$("#mainTable").height($(window).height());
@@ -136,20 +137,20 @@
 <form id="updateComplaintForm" name="updateComplaintForm" method='GET' action='enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
 			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
 </span>
-<?php 
-	} 
+<?php
+	}
 ?>
 		</div>
 	</div>
 <div id="currentFilters" class="filtersBox noPrint"></div>
 <div class='loginBox noPrint'>
-<?php 
+<?php
 	if(!isset($_SESSION['username'])){
 ?>
 		<div class="UIButton buttonShort" onclick="location.href='login.php'">Log In</div>
-<?php 
+<?php
 	}
-	else{	
+	else{
 		echo "<div class='noteBox'>Logged in as ".$_SESSION['username']."</div>";
 ?>
 		<form method="POST" name="logoutButton">

@@ -4,27 +4,38 @@ require_once 'PHP/ComplaintData.php';
 session_start();
 
 if(isset($_SESSION['username'])){
+$deleteOption = false;
 $newModify = false;
 if(isset($_SESSION['complaint'])){
 	if(isset($_GET['newComplaint'])){
 		setcookie('complaintData',"",1);
 	}
-	else if(isset($_GET['modifyComplaint'])){
-		if($_SESSION['complaint']->getData('caseNumber') != -1){
-			if(isset($_SESSION['superuser'])){
-				$formSettings = "'both',false,true,false";
+	else
+	{
+		if(isset($_GET['modifyComplaint'])){
+			if($_SESSION['complaint']->getData('caseNumber') != -1){
+				if(isset($_SESSION['superuser'])){
+					$deleteOption = true;
+					$formSettings = "'both',false,true,false";
+				}
+				else{
+					$formSettings = "'both','top',true";
+				}
 			}
 			else{
-				$formSettings = "'both','top',true";
+				$formSettings = "'top'";
+				$newModify = true;
 			}
+			setcookie('complaintData',$_SESSION['complaint']->encodeData(),time()+10);
 		}
-		else{
-			$formSettings = "'top'";
-			$newModify = true;
-		}
-		setcookie('complaintData',$_SESSION['complaint']->encodeData(),time()+10);
 	}
 	unset($_SESSION['complaint']);
+}
+
+if(isset($_GET['updateComplaint'])){
+	if(isset($_SESSION['superuser'])){
+		$deleteOption = true;
+	}
 }
 ?>
 <html>
@@ -71,9 +82,17 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 	</div>
 	<div id="tableTarget"></div>
 	<input style="display: none;" name='submit' type="submit"></input>
+	<?php if($deleteOption == true){
+		echo '<input style="display: none;" name="deleteComplaint" type="submit"></input>';
+	}
+	?>
 </form>
 <div id="menu">
 	<div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>
+	<?php if($deleteOption == true){
+					echo '<div style="float: right" class="UIButton buttonMedium danger" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
+				}
+	?>
 	<div class="UIButton buttonMedium" onclick="location.href='index.php';">Back to Database</div>
 </div>
 </body>
