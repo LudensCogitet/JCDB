@@ -120,10 +120,18 @@ class ComplaintData{
 			// If there is no prefix or case number, then generate a new complaint form record
 			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 
-				$statement = $dbConn->prepare("INSERT INTO casehistory(prefix,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?)");
+        $statement = $dbConn->query("SELECT caseNumber FROM casehistory WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
+
+        $row = $statement->fetch(PDO::FETCH_NUM);
+
+        $this->addData("prefix",$GLOBALS['currentYearCode']);
+        $this->addData("caseNumber",($row[0]+1));
+
+				$statement = $dbConn->prepare("INSERT INTO casehistory(prefix,caseNumber,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
 				$params = [];
-				$params[] = $GLOBALS['currentYearCode'];
+				$params[] = $this->getData('prefix');
+        $params[] = $this->getData('caseNumber');
 				$params[] = $this->getData('plaintiff');
 				$params[] = $this->getData('defendant');
 				$params[] = $this->getData('witness');
@@ -135,12 +143,6 @@ class ComplaintData{
 
 				$statement->execute($params);
 
-				$statement = $dbConn->query("SELECT caseNumber FROM casehistory WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
-
-				$row = $statement->fetch(PDO::FETCH_NUM);
-
-				$this->addData("prefix",$GLOBALS['currentYearCode']);
-				$this->addData("caseNumber",$row[0]);
 				$this->renameScan();
 				$dbConn->query("UPDATE casehistory SET formScan = '".$this->getData('formScan')."' WHERE prefix = ".$this->getData('prefix')." AND caseNumber = ".$this->getData('caseNumber'));
 

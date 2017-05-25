@@ -1,9 +1,9 @@
-function contextMenu(target,targetDiv,options){
+function contextMenu(target,targetDiv,options, center = false){
 	if(target != null)
 		target = $(target);
 
 	targetDiv = $(targetDiv);
-	console.log("THIS HERE",options);
+	//console.log("THIS HERE",options);
 
   function theBusiness(){
 		targetDiv.empty();
@@ -18,7 +18,7 @@ function contextMenu(target,targetDiv,options){
 				if(options[i][1] != null){
 					newOption.click(function(event){
 					event.stopPropagation();
-					console.log("OPTIONS I 0",options[i][0])
+					//console.log("OPTIONS I 0",options[i][0])
 					options[i][1](targetDiv,target,options[i][0]);
 				});
 			}
@@ -29,7 +29,8 @@ function contextMenu(target,targetDiv,options){
 
 	var offsetX;
 	var offsetY;
-	if(event.pageX !== undefined && event.pageY !== undefined){
+	if(event.pageX !== undefined && event.pageY !== undefined && center == false){
+		//console.log("CENTER", center);
 		offsetX = event.pageX;
 		offsetY = event.pageY;
 	}
@@ -42,7 +43,7 @@ function contextMenu(target,targetDiv,options){
 	targetDiv.css("left",offsetX+"px");
 	targetDiv.css("top",offsetY+"px");
 	targetDiv.show();
-	console.log("AND THEN THIS",options);
+	//console.log("AND THEN THIS",options);
 	}
 
 	if(target != null){
@@ -60,7 +61,7 @@ function contextMenu(target,targetDiv,options){
 }
 
 function toggleTextField(target,type,action){
-	console.log("here");
+	//console.log("here");
 		if($(target).children(type).length == 0){
 						var inputVal = $(target).html();
 						var inputField = null;
@@ -79,7 +80,7 @@ function toggleTextField(target,type,action){
 						$(target).children().keydown(function(event){
 							if(event.keyCode == 13){
 								var value = $(this).val();
-								console.log(value);
+								//console.log(value);
 
 								action(value);
 								$(this).parent().html(value);

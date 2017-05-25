@@ -39,7 +39,7 @@
 					criteria = "all"
 			}
 
-			console.log(criteria);
+			//console.log(criteria);
 			if(type == "overwrite"){
 				limits['offset'] = 0;
 			}
@@ -49,7 +49,7 @@
 				data:{"criteria": JSON.stringify(criteria),
 							"limits": JSON.stringify(limits)},
 				success: function(result){
-					console.log(result);
+					//console.log(result);
 					result = JSON.parse(result);
 					if(result[0] == true){
 						$("#loadMore").show();
@@ -94,7 +94,7 @@
 		$("#updateDBButton").click(function(){
 			if(confirm('Are you sure?')){
 				for(let i = 0; i < rowObjects["array"].length; i++){
-					console.log("SENDING CHANGES");
+					//console.log("SENDING CHANGES");
 					rowObjects["array"][i].sendChanges();
 				}
 			}
@@ -113,7 +113,7 @@
 		$("html").click(function(){
 			$("#contextMenu").hide();
 			$(".contextMenuStyle").not("#contextMenu").remove();
-			console.log("HIDE TRIGGERED");
+			//console.log("HIDE TRIGGERED");
 		});
 
 
@@ -124,8 +124,8 @@
 </script>
 </head>
 <body>
-	<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="currentDate"></span></div>
-	<div id="hearingListHeading" style="display: none;">Judicial Committee<br>JC Report<br><span class="currentDate"></span></div>
+	<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="useDate"></span></div>
+	<div id="hearingListHeading" style="display: none;">Judicial Committee<br>JC Report<br><span class="useDate"></span></div>
 	<div id="contextMenu" class="contextMenuStyle noPrint"></div>
 	<div id="caseInfo" class="noPrint">
 		<div id="caseInfoClose" class="UIButton fixedElClose">Close</div>
@@ -135,7 +135,7 @@
 ?>
 <span id="updateComplaintButton">
 <form id="updateComplaintForm" name="updateComplaintForm" method='GET' action='enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
-			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
+			<div style='float:left' class="UIButton buttonLong danger" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
 </span>
 <?php
 	}
@@ -169,7 +169,7 @@
 ?>
 </div>
 <div class="menuBox noPrint">
-	<div class="UIButton buttonShort" onclick="makeReport('pendingList');" class="noPrint">Print Hearing List</div>
+	<div class="UIButton buttonShort" onclick="arguments[0].stopPropagation(); makeReport('pendingList');" class="noPrint">Print Hearing List</div>
 	<div class="UIButton buttonShort" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
 	<div class="UIButton buttonShort" onclick='window.print()' class="noPrint">Print</div>
 	<?php if(isset($_SESSION['username'])){ ?>

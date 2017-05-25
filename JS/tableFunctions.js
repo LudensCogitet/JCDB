@@ -5,9 +5,9 @@ function dressUpColumnName(name){
 	}
 	else{
 		returnString = name.charAt(0).toUpperCase() + name.slice(1);;
-	
+
 		var breakPoint = name.search(/[A-Z]/);
-	
+
 		if(breakPoint != -1){
 			returnString = returnString.slice(0,breakPoint) + " " + returnString.slice(breakPoint);
 		}
@@ -19,44 +19,88 @@ function makeReport(kind){
 	var heading;
 	var criteria;
 
-	var currentDate = new Date();
-
-	if(kind == "pendingList")
-		currentDate.setDate(currentDate.getDate() + 1);
-	
-	var dateString = currentDate.getFullYear()+"-";
-	
-	if(currentDate.getMonth() < 10)
-		dateString += "0";
-		
-	dateString += (currentDate.getMonth()+1)+"-";
-	
-	if(currentDate.getDate() < 10)
-		dateString += "0";
-		
-	dateString += currentDate.getDate();
-	
-	$(".currentDate").html(dateString);
+	var useDate = new Date();
 
 	if(kind == "pendingList"){
-		heading = "#pendingListHeading";
-		criteria = {"status": "pndg"};
+		var newMenu = $("<div class='contextMenuStyle'>");
+		var inputDiv = $("<div id='pendingListInputDiv' style='text-align: center; margin-bottom: 2px; font-size: 20px'>"+
+											"<input id='pendingYear' onclick='arguments[0].stopPropagation()' style='width: 2.7em' type='text' placeholder='YYYY'>"+
+											"<input id='pendingMonth' onclick='arguments[0].stopPropagation()' style='width: 1.8em' type='text' placeholder='MM'>"+
+											"<input id='pendingDay' onclick='arguments[0].stopPropagation()' style='width: 1.6em' type='text' placeholder='DD'>"+
+										 "</div>");
+		$("html").append(newMenu);
+		var options = [["Enter Date", function(cMenuDiv,clickable,optionaVal){
+										var year = cMenuDiv.find("#pendingYear").val();
+										var month = cMenuDiv.find("#pendingMonth").val();
+										var day = cMenuDiv.find("#pendingDay").val();
+
+										var newDate = new Date(parseInt(year),parseInt(month)-1,parseInt(day));
+
+										if(isNaN(newDate.getTime())){
+												 alert("Please enter a valid year, month, and day.");
+										}
+									  else{
+											useDate.setTime(newDate);
+											cMenuDiv.remove();
+											goToPrint();
+										}
+									}],
+									["Use Next Weekday",function(cMenuDiv,clickable,optionaVal){
+											switch(useDate.getDay()){
+												case 5:
+													useDate.setDate(useDate.getDate() + 3);
+												break;
+												case 6:
+													useDate.setDate(useDate.getDate() + 2);
+												break;
+												default:
+													useDate.setDate(useDate.getDate() + 1);
+											}
+											cMenuDiv.remove()
+											goToPrint();
+										}]];
+		contextMenu(null,newMenu,options,'center');
+		newMenu.prepend(inputDiv);
 	}
-	else if(kind == "hearingListDaily"){
-		heading = "#hearingListHeading";
-		criteria = {"hearingDate": dateString};
+	else{
+		goToPrint();
 	}
 
-	$(heading).addClass("printHeading");
-	getDBInfo(criteria,'overwrite',{'offset':0,'count':500}).then(function(){
-		if(kind == "pendingList")
-			$(".pndgInvis").addClass("noPrint");
-		window.print();
-		getDBInfo(dbSearchCriteria);
-		$(heading).removeClass("printHeading");
-		$(heading).css("display","none");
-		$(".pndgInvis").removeClass("noPrint");
-	});
+	function goToPrint(){
+		var dateString = useDate.getFullYear()+"-";
+
+		if(useDate.getMonth() < 10)
+			dateString += "0";
+
+		dateString += (useDate.getMonth()+1)+"-";
+
+		if(useDate.getDate() < 10)
+			dateString += "0";
+
+		dateString += useDate.getDate();
+
+		$(".useDate").html(dateString);
+
+		if(kind == "pendingList"){
+			heading = "#pendingListHeading";
+			criteria = {"status": "pndg"};
+		}
+		else if(kind == "hearingListDaily"){
+			heading = "#hearingListHeading";
+			criteria = {"hearingDate": dateString};
+		}
+
+		$(heading).addClass("printHeading");
+		getDBInfo(criteria,'overwrite',{'offset':0,'count':500}).then(function(){
+			if(kind == "pendingList")
+				$(".pndgInvis").addClass("noPrint");
+			window.print();
+			getDBInfo(dbSearchCriteria);
+			$(heading).removeClass("printHeading");
+			$(heading).css("display","none");
+			$(".pndgInvis").removeClass("noPrint");
+		});
+	}
 }
 
 function makeFilter(key,value){
@@ -74,7 +118,7 @@ function makeFilter(key,value){
 	else{
 		dbSearchCriteria[key] = value;
 	}
-	
+
 	var closeButton = $("<span class='filterCloseButton'>&#10006;</span>");
 	closeButton.click(function(){
 		if(key == "prefixAndCaseNumber"){
@@ -84,11 +128,11 @@ function makeFilter(key,value){
 		}
 		else
 			delete dbSearchCriteria[key];
-		
+
 		getDBInfo(dbSearchCriteria);
 		$(this).parent().remove();
 	});
-	
+
 	var filter = $("<span class='filterDisplay noPrint' id ='"+key+"Filter'></span>");
 	if(value == "")
 		filter.html(dressUpColumnName(key)+": (blank)");
@@ -103,11 +147,11 @@ var currentSort = {column: "prefixAndCaseNumber",
 									 dir:		 "desc"};
 
 function sortRows(column = null, dir = null, column2 = "defendant"){
-	
+
 	function sortBy(column,retVal,a,b){
 		var aVal;
 		var bVal;
-		
+
 		if(column == "prefixAndCaseNumber"){
 			aVal = parseInt(a.getCellValue("prefix")+a.getCellValue("caseNumber"));
 			bVal = parseInt(b.getCellValue("prefix")+b.getCellValue("caseNumber"));
@@ -115,7 +159,7 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 		else if(column == "hearingDate"){
 			aVal = parseInt(a.getCellValue(column).replace(/[^0-9]/g,""));
 			bVal = parseInt(b.getCellValue(column).replace(/[^0-9]/g,""));
-			
+
 			if(isNaN(aVal))
 				aVal = 0;
 			if(isNaN(bVal))
@@ -125,16 +169,16 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 			aVal = a.getCellValue(column).toLowerCase().split(", ");
 			aVal.sort();
 			aVal = aVal.join("");
-		
+
 			bVal = b.getCellValue(column).toLowerCase().split(", ");
 			bVal.sort();
 			bVal = bVal.join("");
 		}
 		else{
-			aVal = a.getCellValue(column).toLowerCase(); 
+			aVal = a.getCellValue(column).toLowerCase();
 			bVal = b.getCellValue(column).toLowerCase();
 		}
-		
+
 		if(aVal < bVal)
 			return retVal;
 		else if(aVal > bVal)
@@ -142,7 +186,7 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 		else
 			return 0;
 	}
-	
+
 	if(column == null){
 		column = currentSort.column;
 		dir = currentSort.dir;
@@ -151,18 +195,18 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 		currentSort.column = column;
 		currentSort.dir = dir;
 	}
-	
+
 	if(column == null){
 		return;
 	}
-		
+
 	var retVal;
-	
+
 	if(dir == "desc")
 		retVal = 1;
 	else if(dir == "asc")
 		retVal = -1;
-	
+
 	rowObjects["array"].sort(function(a,b){
 		var returnVal = sortBy(column,retVal,a,b);
 		if(returnVal == 0){
@@ -170,7 +214,7 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 		}
 		return returnVal;
 	});
-	
+
 	$(".arrow").remove();
 
 	if(dir == "asc"){
@@ -186,13 +230,13 @@ function makeTable(dataSet,rowObjects = null){
 		rowObjects = {"array": [],
 									"caseNumber": {}};
 	}
-	
+
 	for(let i = 0; i < dataSet.length; i++){
 		let dbRow = new DatabaseRow(dataSet[i],rowObjects);
 		let prefixAndCaseNumber = dbRow.getCellValue("prefixAndCaseNumber");
-		
+
 		rowObjects["array"].push(dbRow);
-		
+
 		if(Array.isArray(rowObjects["caseNumber"][prefixAndCaseNumber])){
 			rowObjects["caseNumber"][prefixAndCaseNumber].push(dbRow);
 		}
@@ -206,12 +250,12 @@ function makeTable(dataSet,rowObjects = null){
 
 function fillTable(table, type = "overwrite"){
 	$("#updateDBButton").hide();
-	
+
 	if(type == "overwrite"){
 		while(table.rows.length > 0)
 			table.deleteRow(-1);
 	}
-		
+
 	for(let i = 0; i < rowObjects["array"].length; i++){
 		$(table).append(rowObjects["array"][i].returnRow());
 	}
@@ -231,10 +275,10 @@ function headingMenuSetup(column){
 		}
 	}
 	else{
-		searchFunc = function(cMenuDiv,clickable,optionVal){		
+		searchFunc = function(cMenuDiv,clickable,optionVal){
 			var newMenu = $("<div class='contextMenuStyle'>");
 			$("html").append(newMenu);
-			
+
 			var options = [];
 			fillMultiChoiceMenu(options,column,function(cMenuDiv,clickable,optionVal){
 				makeFilter(column,optionVal);
@@ -242,11 +286,11 @@ function headingMenuSetup(column){
 				$("#contextMenu").hide();
 				cMenuDiv.remove();
 			});
-			
+
 			contextMenu(null,newMenu,options);
 		}
 	}
- 
+
  var options = [["Search", searchFunc],
 								["Sort By"],["asc",function(cMenuDiv){
 																					cMenuDiv.hide();
@@ -262,7 +306,7 @@ function headingMenuSetup(column){
 																					fillTable(mainTable.tBodies[0]);
 																					//$(mainTable.rows[0].cells[columnIndex[column]]).append(downArrow.clone());
 																				}]];
-																				
+
 		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
 	}
 

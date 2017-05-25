@@ -59,7 +59,7 @@ function DatabaseRow(rawData,rowArray){
 			myCells.push($("<td>"));
 			var currentCell = myCells[myCells.length-1];
 			if(hearingFields[key]){
-				console.log("ADDING PDNGINVIS");
+				//console.log("ADDING PDNGINVIS");
 				currentCell.addClass("pndgInvis");
 				currentCell.addClass(key);
 			}
@@ -87,7 +87,7 @@ function DatabaseRow(rawData,rowArray){
 				if(initialData[key] != data[key]){
 					entriesChanged[key] = true;
 					DatabaseRow.numChanged++;
-					console.log(DatabaseRow.numChanged);
+					//console.log(DatabaseRow.numChanged);
 					if(!updateButton.is(":visible")){
 						updateButton.show();
 					}
@@ -139,7 +139,7 @@ function DatabaseRow(rawData,rowArray){
 		}
 
 		if(doAsk && myCase.length > 1){
-			console.log(key, "THIS IS THE KEY");
+			//console.log(key, "THIS IS THE KEY");
 			var newMenu = $("<div class='contextMenuStyle'>");
 			$("html").append(newMenu);
 
@@ -156,7 +156,7 @@ function DatabaseRow(rawData,rowArray){
 														}],
 										["No",function(cMenuDiv,clickable,optionVal){
 															if(!(myCaseNumber in DatabaseRow.autoFillDoNotAsk)){
-																console.log("HIIIIII!")
+																//console.log("HIIIIII!")
 																DatabaseRow.autoFillDoNotAsk[myCaseNumber] = [];
 															}
 
@@ -180,7 +180,7 @@ function DatabaseRow(rawData,rowArray){
 		fillMultiChoiceMenu(options,key,function(cMenuDiv,clickable,optionVal){
 				cMenuDiv.hide();
 				var assignVal = optionVal;
-				console.log("ASSIGN VAL",assignVal)
+				//console.log("ASSIGN VAL",assignVal)
 				if(assignVal === "(blank)"){
 					assignVal = "";
 				}
@@ -211,7 +211,7 @@ function DatabaseRow(rawData,rowArray){
 												}
 											});
 										}],["Filter By",function(cMenuDiv,clickable,optionVal){
-										console.log("FILTER BY"+data[key]);
+										//console.log("FILTER BY"+data[key]);
 										 cMenuDiv.hide();
 										 makeFilter(key,data[key]);
 										 getDBInfo(dbSearchCriteria);
@@ -221,7 +221,7 @@ function DatabaseRow(rawData,rowArray){
 	}
 
 	this.returnRow = function(){
-		console.log(myRow);
+		//console.log(myRow);
 		return myRow;
 	}
 
@@ -261,7 +261,7 @@ function DatabaseRow(rawData,rowArray){
 		});
 
 		if(Object.keys(sendData).length != 0){
-			console.log("HERE!", sendData);
+			//console.log("HERE!", sendData);
 			$.ajax({url:"PHP/updateDB.php",
 							method: "POST",
 							data: {prefix: data["prefix"],

@@ -102,14 +102,14 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
     if (event == "down" || event.keyCode == 40 || event.keyCode == 13 && $(this).data("repro") == false) {
 				event.preventDefault();
 				$(this).data("repro", true);
-				console.log();
+				//console.log();
 				var wholeName = $(this).attr("name");
 				var name = wholeName.slice(0, wholeName.indexOf("-"));
 				var num = parseInt(wholeName.substr(wholeName.indexOf("-") + 1));
-				console.log(name);
-				console.log(num);
+				//console.log(name);
+				//console.log(num);
 				var newField = $("<input type='text' name=" + name + "-" + (num + 1) + " data-repro='false' required>");
-				console.log(newField);
+				//console.log(newField);
 				$(this).parent().append(newField);
 				$(newField).keydown(reproduceField);
 				$(newField).blur(formatCheck);
