@@ -94,12 +94,12 @@
 }
 
 .emphasize{
-	background-color: yellow;
+	background-color: yellow !important;
 }
 
 .de_emphasize{
 	border-color: lightgrey !important;
-	color: lightgrey;
+	color: lightgrey !important;
 }
 
 .filterDisplay{
