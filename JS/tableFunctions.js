@@ -146,7 +146,14 @@ function makeFilter(key,value){
 var currentSort = {column: "prefixAndCaseNumber",
 									 dir:		 "desc"};
 
-function sortRows(column = null, dir = null, column2 = "defendant"){
+function sortRows(column = null, dir = null, column2 = "default"){
+
+	if(column2 == "default"){
+		if(column == "prefixAndCaseNumber")
+			column2 = "defendant";
+		else
+			column2 = "prefixAndCaseNumber";
+	}
 
 	function sortBy(column,retVal,a,b){
 		var aVal;
@@ -207,10 +214,14 @@ function sortRows(column = null, dir = null, column2 = "defendant"){
 	else if(dir == "asc")
 		retVal = -1;
 
+	var retVal2 = -1;
+	if(column2 == "prefixAndCaseNumber")
+		retVal2 = 1;
+
 	rowObjects["array"].sort(function(a,b){
 		var returnVal = sortBy(column,retVal,a,b);
 		if(returnVal == 0){
-			returnVal = sortBy(column2,retVal,a,b);
+			returnVal = sortBy(column2,retVal2,a,b);
 		}
 		return returnVal;
 	});
@@ -256,7 +267,15 @@ function fillTable(table, type = "overwrite"){
 			table.deleteRow(-1);
 	}
 
+	var lastValue = null;
+
 	for(let i = 0; i < rowObjects["array"].length; i++){
+		if(i != 0 &&
+			lastValue != rowObjects["array"][i].getCellValue(currentSort.column)){
+				$(table).append($("<tr style='border: none; height: 10px' />"));
+			}
+			lastValue = rowObjects["array"][i].getCellValue(currentSort.column);
+
 		$(table).append(rowObjects["array"][i].returnRow());
 	}
 	return true;

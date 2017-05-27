@@ -156,6 +156,10 @@
 	width: 125px;
 }
 
+.rowTopMargin{
+	margin-top: 5px;
+}
+
 .sentence{
 	max-width: 300px;
 }

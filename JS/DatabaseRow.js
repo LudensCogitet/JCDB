@@ -130,7 +130,7 @@ function DatabaseRow(rawData,rowArray){
 		var myCase = rowObjects["caseNumber"][myCaseNumber];
 
 		var doAsk = true;
-		if(key == 'sentence'){
+		if(key == 'sentence' || data[key] == 'cmpl'){
 			doAsk = false;
 		}
 		else if(myCaseNumber in DatabaseRow.autoFillDoNotAsk){
@@ -143,13 +143,32 @@ function DatabaseRow(rawData,rowArray){
 			var newMenu = $("<div class='contextMenuStyle'>");
 			$("html").append(newMenu);
 
-			var fillWith = key == 'sentenceStatus' && data[key] == 'impsd' ? 'mrgd' : data[key];
+			var fillWith = ''; key == 'sentenceStatus' && data[key] == 'impsd' ? 'mrgd' : data[key];
+			var fillWithText = '';
+			var fillWithFunction = null;
 
-			var options = [["Auto-fill "+dressUpColumnName(key)+" with \""+fillWith+"\" for this case?"],
+			if(data[key] == 'impsd'){
+				fillWith = 'mrgd';
+				fillWithText = ' for this defendant?';
+				fillWithFunction = function(cell){
+													 	if(cell.getCellValue('defendant') == data['defendant']){
+															cell.setCellValue(key,fillWith);
+														}
+													 }
+			}
+			else{
+				fillWith = data[key];
+				fillWithText = ' for this case?';
+				fillWithFunction = function(cell){
+														cell.setCellValue(key,fillWith);
+													 }
+			}
+
+			var options = [["Auto-fill "+dressUpColumnName(key)+" with \""+fillWith+"\""+fillWithText],
 										["Yes",	function(cMenuDiv,clickable,optionVal){
 															for(let i = 0; i < myCase.length; i++){
 																if(myCase[i].getCellValue(key) != data[key])
-																	myCase[i].setCellValue(key,fillWith);
+																	fillWithFunction(myCase[i]);
 															}
 															$("#contextMenu").hide();
 															cMenuDiv.remove();
@@ -221,7 +240,6 @@ function DatabaseRow(rawData,rowArray){
 	}
 
 	this.returnRow = function(){
-		//console.log(myRow);
 		return myRow;
 	}
 

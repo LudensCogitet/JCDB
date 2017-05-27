@@ -134,8 +134,8 @@
 	if(isset($_SESSION['username'])){
 ?>
 <span id="updateComplaintButton">
-<form id="updateComplaintForm" name="updateComplaintForm" method='GET' action='enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
-			<div style='float:left' class="UIButton buttonLong danger" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
+<form id="updateComplaintForm" name="updateComplaintForm" method='GET' target='_blank' action='enterComplaintData.php'><input style='display: none;' type='submit' name='updateComplaint'></input></form>
+			<div style='float:left' class="UIButton buttonLong" onclick="document.updateComplaintForm.updateComplaint.click();">Update Complaint</div>
 </span>
 <?php
 	}
@@ -174,7 +174,7 @@
 	<div class="UIButton buttonShort" onclick='window.print()' class="noPrint">Print</div>
 	<?php if(isset($_SESSION['username'])){ ?>
 		<div class="UIButton buttonShort" onclick='window.location.href="enterComplaintData.php?newComplaint=true"' class="noPrint">Add New Complaint</div>
-		<div class="UIButton buttonShort" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
+		<div class="UIButton buttonShort danger" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
 	<?php } ?>
 </div>
 <div id="tableContainer">
