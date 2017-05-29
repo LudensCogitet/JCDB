@@ -8,19 +8,19 @@
 <script src="JS/ComplaintForm.js"></script>
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
-require_once 'PHP/ComplaintData.php';
+require_once 'PHP/CaseData.php';
 
 session_start();
 if(isset($_SESSION['username'])){
 
 	if(!isset($_SESSION['complaint'])){
-		$_SESSION['complaint'] = new ComplaintData();
-		setcookie('complaintData',$_SESSION['complaint']->encodeData(),time()+2);
+		$_SESSION['complaint'] = new CaseData();
+		setcookie('CaseData',$_SESSION['complaint']->encodeData(),time()+2);
 		setcookie('formScan',$_SESSION['complaint']->getData('formScan'),time()+2);
 ?>
 <script>
 $(document).ready(function(){
-	complaintForm('#tableTarget',$.cookie('complaintData'),'both','both');
+	complaintForm('#tableTarget',$.cookie('CaseData'),'both','both');
 
 	$("#tableTarget").before($("<img id='formScan' src='"+$.cookie('formScan')+"'>"));
 });
@@ -32,7 +32,7 @@ $(document).ready(function(){
 <input type="submit" name="confirm"></input>
 </form>
 <div class='UIButton buttonMedium' onclick='document.submissionAction.confirm.click()'>Confirm</div>
-<div class='UIButton buttonMedium' onclick="location.href='enterComplaintData.php?modifyComplaint=true';">Modify</div>
+<div class='UIButton buttonMedium' onclick="location.href='enterCaseData.php?modifyComplaint=true';">Modify</div>
 </body>
 </html>
 <?php
@@ -47,7 +47,7 @@ $(document).ready(function(){
 <?php
 		unset($_SESSION['complaint']);
 ?>
-<div class='UIButton buttonMedium' onclick="location.href='enterComplaintData.php?newComplaint=true';">Submit A New Complaint</div><br>
+<div class='UIButton buttonMedium' onclick="location.href='enterCaseData.php?newComplaint=true';">Submit A New Complaint</div><br>
 <div class='UIButton buttonMedium' onclick="location.href='index.php';">Return To Database</div>
 </div>
 </body>

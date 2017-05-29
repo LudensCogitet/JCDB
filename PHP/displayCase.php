@@ -9,7 +9,7 @@
 												$GLOBALS['_JCDB_config']['SQL_VIEW_PASS'],
 												[PDO::ATTR_PERSISTENT => true]);
 
-			$statement = $dbConn->prepare("SELECT * FROM casehistory WHERE prefix = ? AND caseNumber = ? LIMIT 1;");
+			$statement = $dbConn->prepare("SELECT * FROM caseforms WHERE prefix = ? AND caseNumber = ? LIMIT 1;");
 			$statement->execute([$_REQUEST['prefix'],$_REQUEST['caseNum']]);
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 		}

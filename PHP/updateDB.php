@@ -13,7 +13,7 @@
 													$GLOBALS['_JCDB_config']['SQL_MODIFY_PASS'],
 													[PDO::ATTR_PERSISTENT => true]);
 			
-				$queryString = "UPDATE casestate SET ";
+				$queryString = "UPDATE casestatus SET ";
 				$queryParams = [];
 			
 				$i = 0;

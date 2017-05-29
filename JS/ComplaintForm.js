@@ -2,7 +2,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
   var multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 
 	if (Array.isArray(data)) {
-			$.ajax({url:"PHP/displayComplaint.php",
+			$.ajax({url:"PHP/displayCase.php",
 					type: "POST",
 					data: {"prefix": data[0],
 							 "caseNum": data[1]},

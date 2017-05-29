@@ -10,7 +10,7 @@ function sanitize($var){
 
 $currentYearCode = getYearCode();
 
-class ComplaintData{
+class CaseData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
 	public static $otherFields = ["whatHappened","hearingNotes"];
 	public static $hearingFields = ["hearingDate","hearingNotes"];
@@ -89,8 +89,8 @@ class ComplaintData{
 	private function makeNewDatabase($dbConn){
 		$dbConn->query("CREATE DATABASE jcdb;");
 		$dbConn->select_db("jcdb");
-		$dbConn->query("CREATE TABLE casehistory(prefix INTEGER, caseNumber INTEGER AUTO_INCREMENT PRIMARY KEY, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, hearingDate TEXT, hearingNotes TEXT);");
-		$dbConn->query("CREATE TABLE casestate(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY);");
+		$dbConn->query("CREATE TABLE caseforms(prefix INTEGER, caseNumber INTEGER AUTO_INCREMENT PRIMARY KEY, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, hearingDate TEXT, hearingNotes TEXT);");
+		$dbConn->query("CREATE TABLE casestatus(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY);");
 	}
 
 	public function submitToDatabase(){
@@ -114,20 +114,20 @@ class ComplaintData{
 				return;
 			}
 
-			$caseStateInsertString = "INSERT INTO casestate(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES(?,?,'pndg',?,?,?,?)";
-			$caseStateInsertParams = [$this->getData('plaintiff'),$this->getData('witness')];
+			$casestatusInsertString = "INSERT INTO casestatus(plaintiff,witness,status,prefix,caseNumber,charge,defendant) VALUES(?,?,'pndg',?,?,?,?)";
+			$casestatusInsertParams = [$this->getData('plaintiff'),$this->getData('witness')];
 
 			// If there is no prefix or case number, then generate a new complaint form record
 			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 
-        $statement = $dbConn->query("SELECT caseNumber FROM casehistory WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
+        $statement = $dbConn->query("SELECT caseNumber FROM caseforms WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
 
         $row = $statement->fetch(PDO::FETCH_NUM);
 
         $this->addData("prefix",$GLOBALS['currentYearCode']);
         $this->addData("caseNumber",($row[0]+1));
 
-				$statement = $dbConn->prepare("INSERT INTO casehistory(prefix,caseNumber,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
+				$statement = $dbConn->prepare("INSERT INTO caseforms(prefix,caseNumber,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
 				$params = [];
 				$params[] = $this->getData('prefix');
@@ -144,24 +144,24 @@ class ComplaintData{
 				$statement->execute($params);
 
 				$this->renameScan();
-				$dbConn->query("UPDATE casehistory SET formScan = '".$this->getData('formScan')."' WHERE prefix = ".$this->getData('prefix')." AND caseNumber = ".$this->getData('caseNumber'));
+				$dbConn->query("UPDATE caseforms SET formScan = '".$this->getData('formScan')."' WHERE prefix = ".$this->getData('prefix')." AND caseNumber = ".$this->getData('caseNumber'));
 
-				// Add charges to the casestate database
-				$caseStateInsertParams[] = $this->getData('prefix');
-				$caseStateInsertParams[] = $this->getData('caseNumber');
+				// Add charges to the casestatus database
+				$casestatusInsertParams[] = $this->getData('prefix');
+				$casestatusInsertParams[] = $this->getData('caseNumber');
 
 				$charges = $this->getData("charge","array");
 				$defendants = $this->getData("defendant","array");
 
 
-				$statement = $dbConn->prepare($caseStateInsertString);
+				$statement = $dbConn->prepare($casestatusInsertString);
 
 				try{
 					$dbConn->beginTransaction();
 
 					foreach($charges as $charge){
 						foreach($defendants as $defendant){
-							$statement->execute(array_merge($caseStateInsertParams,[$charge,$defendant]));
+							$statement->execute(array_merge($casestatusInsertParams,[$charge,$defendant]));
 							}
 						}
 					$dbConn->commit();
@@ -179,9 +179,9 @@ class ComplaintData{
 			else{		// Otherwise, update an existing complaint form record
 
 				if($this->deleteCase == true && isset($_SESSION["superuser"])){	// Or just delete it, if that's what the user wants
-					$statement = $dbConn->prepare("DELETE FROM casehistory WHERE caseNumber = ? AND prefix = ?");
+					$statement = $dbConn->prepare("DELETE FROM caseforms WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
-					$statement = $dbConn->prepare("DELETE FROM casestate WHERE caseNumber = ? AND prefix = ?");
+					$statement = $dbConn->prepare("DELETE FROM casestatus WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					unlink($this->getData("formScan"));
 					$dbConn = null;
@@ -189,7 +189,7 @@ class ComplaintData{
 					return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
 				}
 
-				$queryString = "UPDATE casehistory SET ";
+				$queryString = "UPDATE caseforms SET ";
 				$queryParams = [];
 
 				if(!isset($_SESSION['superuser'])){
@@ -214,8 +214,8 @@ class ComplaintData{
 					$dbConn = null;
 				}
 				else{
-					$caseStateInsertParams[] = $this->getData('prefix');
-					$caseStateInsertParams[] = $this->getData('caseNumber');
+					$casestatusInsertParams[] = $this->getData('prefix');
+					$casestatusInsertParams[] = $this->getData('caseNumber');
 
 					$this->renameScan();
 					$queryString = $queryString."formScan = ?, ";
@@ -245,21 +245,21 @@ class ComplaintData{
 					$statement = $dbConn->prepare($queryString);
 					$statement->execute($queryParams);
 
-					// Update the charges in the casestate database
+					// Update the charges in the casestatus database
 
-					$statement = $dbConn->prepare("UPDATE casestate SET plaintiff = ?, witness = ? WHERE prefix = ? AND caseNumber = ?");
-					$statement->execute($caseStateInsertParams);
+					$statement = $dbConn->prepare("UPDATE casestatus SET plaintiff = ?, witness = ? WHERE prefix = ? AND caseNumber = ?");
+					$statement->execute($casestatusInsertParams);
 
 					$defendants = $this->getData("defendant","array");
 					$charges = $this->getData("charge","array");
 
-					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ? AND prefix = ?");
+					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestatus WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 
 					$rows = $statement->fetchAll(PDO::FETCH_NUM);
 
 					$dbConn->beginTransaction();
-					$statement = $dbConn->prepare("DELETE FROM casestate WHERE charge = ? AND defendant = ? AND caseNumber = ? AND prefix = ?");
+					$statement = $dbConn->prepare("DELETE FROM casestatus WHERE charge = ? AND defendant = ? AND caseNumber = ? AND prefix = ?");
 
 					foreach($rows as $row){
 						$match = false;
@@ -281,13 +281,13 @@ class ComplaintData{
 					}
 					$dbConn->commit();
 
-					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestate WHERE caseNumber = ? AND prefix = ?");
+					$statement = $dbConn->prepare("SELECT charge, defendant FROM casestatus WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 
 					$rows = $statement->fetchAll(PDO::FETCH_NUM);
 
 					$dbConn->beginTransaction();
-					$statement = $dbConn->prepare($caseStateInsertString);
+					$statement = $dbConn->prepare($casestatusInsertString);
 
 					foreach($charges as $charge){
 						foreach($defendants as $defendant){
@@ -299,7 +299,7 @@ class ComplaintData{
 								}
 							}
 							if($match == false){
-								$statement->execute(array_merge($caseStateInsertParams, [$charge,$defendant]));
+								$statement->execute(array_merge($casestatusInsertParams, [$charge,$defendant]));
 							}
 						}
 					}

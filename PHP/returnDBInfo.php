@@ -20,13 +20,13 @@
 											[PDO::ATTR_PERSISTENT => true]);
 
 		if($searchCriteria == "all"){
-			$sqlResult = $dbConn->query("SELECT SQL_CALC_FOUND_ROWS * FROM casestate ORDER BY caseNumber DESC LIMIT ".$limits->offset.",".$limits->count);
+			$sqlResult = $dbConn->query("SELECT SQL_CALC_FOUND_ROWS * FROM casestatus ORDER BY caseNumber DESC LIMIT ".$limits->offset.",".$limits->count);
 			$foundRows = $dbConn->query("SELECT FOUND_ROWS()");
 		}
 		else{
 			$params = [];
 
-			$queryString = "SELECT SQL_CALC_FOUND_ROWS * FROM casestate WHERE prefix LIKE ?";
+			$queryString = "SELECT SQL_CALC_FOUND_ROWS * FROM casestatus WHERE prefix LIKE ?";
 			$params[] = $prefix;
 
 			foreach($searchCriteria as $key => $val){

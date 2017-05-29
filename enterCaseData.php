@@ -1,6 +1,6 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
-require_once 'PHP/ComplaintData.php';
+require_once 'PHP/CaseData.php';
 session_start();
 
 if(isset($_SESSION['username'])){
@@ -8,7 +8,7 @@ $deleteOption = false;
 $newModify = false;
 if(isset($_SESSION['complaint'])){
 	if(isset($_GET['newComplaint'])){
-		setcookie('complaintData',"",1);
+		setcookie('CaseData',"",1);
 	}
 	else
 	{
@@ -26,7 +26,7 @@ if(isset($_SESSION['complaint'])){
 				$formSettings = "'top'";
 				$newModify = true;
 			}
-			setcookie('complaintData',$_SESSION['complaint']->encodeData(),time()+10);
+			setcookie('CaseData',$_SESSION['complaint']->encodeData(),time()+10);
 		}
 	}
 	unset($_SESSION['complaint']);
@@ -56,7 +56,7 @@ if(isset($_GET['newComplaint'])){
 }
 else if(isset($_GET['modifyComplaint'])){
 	$scanReq = '';
-	echo "complaintForm('#tableTarget',$.cookie('complaintData'),".$formSettings.");";
+	echo "complaintForm('#tableTarget',$.cookie('CaseData'),".$formSettings.");";
 	$submissionButtonName = "Resubmit Complaint";
 }
 else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET['caseNumber'])){
@@ -74,7 +74,7 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 </script>
 </head>
 <body>
-<form id="complaintEntryForm" name="enterComplaintButton" action="submitComplaintData.php" method="POST" enctype="multipart/form-data">
+<form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
 	<?php if(isset($_GET['newComplaint']) || $newModify == true || isset($_SESSION['superuser'])){ ?>
 	<div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
 		<h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" accept="image/jpeg" <?php echo $scanReq; ?>></input>
