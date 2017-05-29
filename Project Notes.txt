@@ -44,8 +44,8 @@ Main site:
 		*Collect info into ComplaintFormData object
 		*Present for review and confirmation
 		*Confirm entry
-		*Store data in caseforms table
-		*Retrieve prefix+caseNumber from caseforms table
+		*Store data in caseentries table
+		*Retrieve prefix+caseNumber from caseentries table
 		*Use data + retrieved prefix+caseNumber to generate 
 		 caseStatus entries (1 per charge per defendant)
 <link> Browse DB

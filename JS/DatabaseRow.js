@@ -43,7 +43,7 @@ function DatabaseRow(rawData,rowArray){
 
 	myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
 	myCells[0].click(function(){
-		complaintForm("#caseTarget",[data['prefix'],data['caseNumber']],"both","both",true);
+		complaintForm("#caseTarget",[data['prefix'],data['caseNumber']],true,true);
 		$("#updateComplaintForm").append("<input type='hidden' name='prefix' value='"+data['prefix']+"'>");
 		$("#updateComplaintForm").append("<input type='hidden' name='caseNumber' value='"+data['caseNumber']+"'>");
 		$("#caseInfo").show();

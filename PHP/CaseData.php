@@ -12,8 +12,6 @@ $currentYearCode = getYearCode();
 
 class CaseData{
 	public static $multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
-	public static $otherFields = ["whatHappened","hearingNotes"];
-	public static $hearingFields = ["hearingDate","hearingNotes"];
 
 	private $newComplaint = true;
 
@@ -27,9 +25,7 @@ class CaseData{
 					 "dateOfIncident" => "",
 					 "timeOfIncident" => "",
 					 "location"  	  => "",
-					 "whatHappened"   => "",
-					 "hearingDate"			=> "",
-					 "hearingNotes"		=>	""];
+					 "whatHappened"   => ""];
 
 	private $deleteCase = false;
 
@@ -86,13 +82,6 @@ class CaseData{
 		}
 	}
 
-	private function makeNewDatabase($dbConn){
-		$dbConn->query("CREATE DATABASE jcdb;");
-		$dbConn->select_db("jcdb");
-		$dbConn->query("CREATE TABLE caseforms(prefix INTEGER, caseNumber INTEGER AUTO_INCREMENT PRIMARY KEY, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, hearingDate TEXT, hearingNotes TEXT);");
-		$dbConn->query("CREATE TABLE casestatus(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY);");
-	}
-
 	public function submitToDatabase(){
 		try{
 			if(!isset($_SESSION["username"])){
@@ -120,14 +109,14 @@ class CaseData{
 			// If there is no prefix or case number, then generate a new complaint form record
 			if($this->getData("prefix") == -1 && $this->getData("caseNumber") == -1){
 
-        $statement = $dbConn->query("SELECT caseNumber FROM caseforms WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
+        $statement = $dbConn->query("SELECT caseNumber FROM caseentries WHERE prefix = ".$GLOBALS['currentYearCode']." ORDER BY caseNumber DESC LIMIT 1");
 
         $row = $statement->fetch(PDO::FETCH_NUM);
 
         $this->addData("prefix",$GLOBALS['currentYearCode']);
         $this->addData("caseNumber",($row[0]+1));
 
-				$statement = $dbConn->prepare("INSERT INTO caseforms(prefix,caseNumber,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
+				$statement = $dbConn->prepare("INSERT INTO caseentries(prefix,caseNumber,plaintiff,defendant,witness,dateOfIncident,timeOfIncident,location,charge,whatHappened) VALUES (?,?,?,?,?,?,?,?,?,?)");
 
 				$params = [];
 				$params[] = $this->getData('prefix');
@@ -144,7 +133,7 @@ class CaseData{
 				$statement->execute($params);
 
 				$this->renameScan();
-				$dbConn->query("UPDATE caseforms SET formScan = '".$this->getData('formScan')."' WHERE prefix = ".$this->getData('prefix')." AND caseNumber = ".$this->getData('caseNumber'));
+				$dbConn->query("UPDATE caseentries SET formScan = '".$this->getData('formScan')."' WHERE prefix = ".$this->getData('prefix')." AND caseNumber = ".$this->getData('caseNumber'));
 
 				// Add charges to the casestatus database
 				$casestatusInsertParams[] = $this->getData('prefix');
@@ -179,7 +168,7 @@ class CaseData{
 			else{		// Otherwise, update an existing complaint form record
 
 				if($this->deleteCase == true && isset($_SESSION["superuser"])){	// Or just delete it, if that's what the user wants
-					$statement = $dbConn->prepare("DELETE FROM caseforms WHERE caseNumber = ? AND prefix = ?");
+					$statement = $dbConn->prepare("DELETE FROM caseentries WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					$statement = $dbConn->prepare("DELETE FROM casestatus WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
@@ -189,31 +178,10 @@ class CaseData{
 					return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
 				}
 
-				$queryString = "UPDATE caseforms SET ";
+				$queryString = "UPDATE caseentries SET ";
 				$queryParams = [];
 
-				if(!isset($_SESSION['superuser'])){
-						foreach(self::$hearingFields as $field){
-							if(isset($this->data[$field])){
-								$queryString = $queryString.$field." = ?, ";
-								$queryParams[] = $this->getData($field);
-						}
-					}
-
-					if(strrpos($queryString, ", "))
-						$queryString = substr($queryString,0,-2);
-
-					$queryString = $queryString." WHERE caseNumber = ? AND prefix = ?";
-					$queryParams[] = $this->getData("caseNumber");
-					$queryParams[] = $this->getData("prefix");
-
-					$statement = $dbConn->prepare($queryString);
-					$statement->execute($queryParams);
-
-					$statement = null;
-					$dbConn = null;
-				}
-				else{
+				if(isset($_SESSION['superuser'])){
 					$casestatusInsertParams[] = $this->getData('prefix');
 					$casestatusInsertParams[] = $this->getData('caseNumber');
 
@@ -228,11 +196,9 @@ class CaseData{
 						}
 					}
 
-					foreach(self::$otherFields as $field){
-						if(isset($this->data[$field])){
-							$queryString = $queryString.$field." = ?, ";
-							$queryParams[] = $this->getData($field);
-						}
+					if(isset($this->data["whatHappened"])){
+						$queryString = $queryString."whatHappened = ?, ";
+						$queryParams[] = $this->getData("whatHappened");
 					}
 
 					if(strrpos($queryString, ", "))
@@ -333,11 +299,7 @@ class CaseData{
 			$this->addData($field,$array);
 		}
 
-		foreach(self::$otherFields as $field){
-			if(isset($_POST[$field])){
-				$this->addData($field,$_POST[$field]);
-			}
-		}
+		$this->addData('whatHappened',$_POST['whatHappened']);
 
 		if(isset($_POST["prefix"])){
 			$this->addData("prefix",$_POST["prefix"]);

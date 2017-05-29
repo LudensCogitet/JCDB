@@ -1,12 +1,14 @@
-function complaintForm(target, data = "new", display = "top", readOnly = false, formDisplayButton = false, bottomRequired = true) {
-  var multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location","hearingDate"];
+function complaintForm(target, data = "new", readOnly = false, formDisplayButton = false) {
+  var multiFields = ["plaintiff","defendant","witness","charge","dateOfIncident","timeOfIncident","location"];
 
 	if (Array.isArray(data)) {
 			$.ajax({url:"PHP/displayCase.php",
 					type: "POST",
 					data: {"prefix": data[0],
-							 "caseNum": data[1]},
+							   "caseNum": data[1],
+                 "complaint": true},
 					success: function(result){
+            console.log("displayCase return",result);
 						theBusiness(result);
 					}
 			});
@@ -35,7 +37,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 		jqueryInputFields = jqueryElement.children().children().children();
 		jqueryInputFields.children("input[type='text']").keydown(reproduceField);
 		jqueryInputFields.children().blur(formatCheck);
-		setReadOnly(readOnly,jqueryInputFields);
+		setReadOnly(jqueryInputFields);
 
 		$(target).prepend(jqueryElement);
 		if(data != "new" && formDisplayButton == true){
@@ -54,12 +56,6 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 					}
 				}
 
-				if(object["hearingDate"] == null)
-					object["hearingDate"] = "";
-
-				if(object["hearingNotes"] == null)
-					object["hearingNotes"] = "";
-
 				if(object["prefix"] == -1)
 					object["prefix"] = "";
 
@@ -72,7 +68,7 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 	function makeInputFields(typeOfData) {
 		var coda = '" required></input>';
 
-		if(typeOfData == "witness" || (typeOfData == "hearingDate" && bottomRequired == false))
+		if(typeOfData == "witness")
 			coda = '"></input>';
 
 		var emptyInput = '<input type="text" name="' + typeOfData + '-1" data-repro="false"'+coda;
@@ -144,11 +140,6 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 		var prefix = "";
 		var caseNumber = "";
 		var whatHappened = "";
-		var hearingNotesReq = "required";
-
-		if(bottomRequired == false)
-			hearingNotesReq = "";
-
 
 		if(data != "new"){
 			if(data["prefix"] != ""){
@@ -169,8 +160,6 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
 				whatHappened = data["whatHappened"];
 			}
 		}
-
-
 
 		complaintString += '<tr>' +
       '<th>Case No.</th>' +
@@ -202,35 +191,13 @@ function complaintForm(target, data = "new", display = "top", readOnly = false, 
       '</tr>' +
       '</table>';
 
-		if(data != "new" && display == "both"){
-			complaintString += '<table class="complaintTable" id="extraComplaint">' +
-				'<input type="hidden" value="'+data["prefix"]+'" name="prefix"'+'></input>'+
-				'<input type="hidden" value="'+data["caseNumber"]+'" name="caseNo"'+'></input>'+
-				'<tr>' +
-				'<th>Hearing Date (YYYY-MM-DD)</th>' +
-				'<td id="hearingDate">' + makeInputFields("hearingDate") + '</td>' +
-				'</tr>' +
-				'<tr>' +
-				'<th>Hearing Notes</th>' +
-				'<td class="areaField" id="hearingNotes"><textarea name="hearingNotes" '+hearingNotesReq+'>' + data["hearingNotes"] + '</textarea></td>' +
-				'</tr>' +
-				'</table>';
-		}
-		return complaintString;
+    return complaintString;
 	}
 
-  function setReadOnly(val,jqueryInputFields) {
-    if (val == "top") {
-        jqueryInputFields.children("#mainComplaint input[type='text']").attr("readonly", "readonly");
-        jqueryInputFields.children("#mainComplaint textarea").attr("readonly", "readonly");
-    }
-	  else if(val == "both"){
-		jqueryInputFields.children("input[type='text']").attr("readonly", "readonly");
-        jqueryInputFields.children("textarea").attr("readonly", "readonly");
-	  }
-	  else {
-        jqueryInputFields.children("input[type='text']").removeAttr("readonly");
-        jqueryInputFields.children("textarea").removeAttr("readonly");
+  function setReadOnly(jqueryInputFields) {
+    if(readOnly == true){
+      jqueryInputFields.children("#mainComplaint input[type='text']").attr("readonly", "readonly");
+      jqueryInputFields.children("#mainComplaint textarea").attr("readonly", "readonly");
     }
   }
 

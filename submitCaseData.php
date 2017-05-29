@@ -20,7 +20,7 @@ if(isset($_SESSION['username'])){
 ?>
 <script>
 $(document).ready(function(){
-	complaintForm('#tableTarget',$.cookie('CaseData'),'both','both');
+	complaintForm('#tableTarget',$.cookie('CaseData'),true,false);
 
 	$("#tableTarget").before($("<img id='formScan' src='"+$.cookie('formScan')+"'>"));
 });

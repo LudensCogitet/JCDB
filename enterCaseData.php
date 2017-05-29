@@ -1,11 +1,13 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 require_once 'PHP/CaseData.php';
+require_once 'PHP/displayCase.php';
 session_start();
 
 if(isset($_SESSION['username'])){
 $deleteOption = false;
 $newModify = false;
+$caseDoesExist = false;
 if(isset($_SESSION['complaint'])){
 	if(isset($_GET['newComplaint'])){
 		setcookie('CaseData',"",1);
@@ -14,12 +16,13 @@ if(isset($_SESSION['complaint'])){
 	{
 		if(isset($_GET['modifyComplaint'])){
 			if($_SESSION['complaint']->getData('caseNumber') != -1){
+				$caseDoesExist = true;
 				if(isset($_SESSION['superuser'])){
 					$deleteOption = true;
-					$formSettings = "'both',false,true,false";
+					$formSettings = "false,true";
 				}
 				else{
-					$formSettings = "'both','top',true";
+					$formSettings = "true,true";
 				}
 			}
 			else{
@@ -32,11 +35,12 @@ if(isset($_SESSION['complaint'])){
 	unset($_SESSION['complaint']);
 }
 
-if(isset($_GET['updateComplaint'])){
-	if(isset($_SESSION['superuser'])){
-		$deleteOption = true;
+	if(isset($_GET['updateComplaint'])){
+		$caseDoesExist = true;
+		if(isset($_SESSION['superuser'])){
+			$deleteOption = true;
+		}
 	}
-}
 ?>
 <html>
 <head>
@@ -52,22 +56,37 @@ $(document).ready(function(){
 $submissionButtonName = "Submit Complaint";
 if(isset($_GET['newComplaint'])){
 	$scanReq = 'required';
-	echo "complaintForm('#tableTarget');";
+	echo "complaintForm('#complaintTarget');";
 }
 else if(isset($_GET['modifyComplaint'])){
 	$scanReq = '';
-	echo "complaintForm('#tableTarget',$.cookie('CaseData'),".$formSettings.");";
+	echo "complaintForm('#complaintTarget',$.cookie('CaseData'),".$formSettings.");";
 	$submissionButtonName = "Resubmit Complaint";
 }
 else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET['caseNumber'])){
 	$scanReq = '';
 	if(isset($_SESSION['superuser'])){
-		echo "complaintForm('#tableTarget',[".$_GET['prefix'].",".$_GET['caseNumber']."],'both',false,true,false);";
+		echo "complaintForm('#complaintTarget',[".$_GET['prefix'].",".$_GET['caseNumber']."],false,true);";
 	}
 	else{
-		echo "complaintForm('#tableTarget',[".$_GET['prefix'].",".$_GET['caseNumber']."],'both','top',true);";
+		echo "complaintForm('#complaintTarget',[".$_GET['prefix'].",".$_GET['caseNumber']."],true,true);";
 	}
 	$submissionButtonName = "Update Complaint";
+}
+
+if($caseDoesExist){
+	?>
+				$("#showNotes").click(function(){
+					if($('#caseNoteTarget').is(':hidden')){
+						$('#caseNoteTarget').show();
+						$(this).text('Hide Case Notes');
+					}
+					else{
+						$('#caseNoteTarget').hide();
+						$(this).text('Show Case Notes');
+					}
+				});
+<?php
 }
 ?>
 });
@@ -80,7 +99,29 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 		<h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" accept="image/jpeg" <?php echo $scanReq; ?>></input>
 	<?php } ?>
 	</div>
-	<div id="tableTarget"></div>
+	<div id="complaintTarget"></div>
+	<?php if($caseDoesExist == true){ ?>
+		<div style="display: none;" id="caseNoteTarget">
+			<?php
+				$caseNotes = grabCaseNotes($_GET['prefix'],$_GET['caseNumber']);
+				foreach($caseNotes as $note){
+					echo "<table class='complaintTable'>";
+					echo "<thead><th>Case Note</th></thead>";
+					echo "<tbody>";
+					echo "<tr><td>Date</td><td><b>".$note['timeEntered']."</b></td></tr>";
+					echo "<tr><td colspan=2 style='width: 600px'>".$note['note']."</td></tr>";
+					echo "<tr><td>Taken By</td><td><b>".$note['author']."</b></td></tr>";
+					echo "</tbody>";
+					echo "</table>";
+				}
+			?>
+		</div>
+		<?php
+			if(count($caseNotes) > 0){
+				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
+			}
+		}
+		?>
 	<input style="display: none;" name='submit' type="submit"></input>
 	<?php if($deleteOption == true){
 		echo '<input style="display: none;" name="deleteComplaint" type="submit"></input>';
@@ -90,7 +131,7 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 <div id="menu">
 	<div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>
 	<?php if($deleteOption == true){
-					echo '<div style="float: right" class="UIButton buttonMedium danger" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
+					echo '<div style="float: right" class="UIButton buttonMedium" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
 				}
 	?>
 	<div class="UIButton buttonMedium" onclick="location.href='index.php';">Back to Database</div>
