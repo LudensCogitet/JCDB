@@ -25,7 +25,8 @@ class CaseData{
 					 "dateOfIncident" => "",
 					 "timeOfIncident" => "",
 					 "location"  	  => "",
-					 "whatHappened"   => ""];
+					 "whatHappened"   => "",
+				 	 "caseNote"		=> false];
 
 	private $deleteCase = false;
 
@@ -34,7 +35,11 @@ class CaseData{
 			return false;
 		}
 		else{
-			if(is_array($entry)){
+			if($field == 'caseNote'){
+				$this->data['caseNote'] = ['date' => $entry[0], 'note' => $entry[1], 'author' => $entry[2]];
+				return true;
+			}
+			else if(is_array($entry)){
 				$this->data[$field] = sanitize(implode(', ',$entry));
 				return true;
 			}
@@ -178,10 +183,27 @@ class CaseData{
 					return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." deleted.";
 				}
 
-				$queryString = "UPDATE caseentries SET ";
-				$queryParams = [];
+				//Add the new caseNote
+				if($this->getData('caseNote') !== false){
+					$statement = $dbConn->prepare("INSERT INTO casenotes(prefix,caseNumber,timeEntered,note,author) VALUES (?,?,?,?,?)");
+
+					$caseNoteData = $this->getData('caseNote');
+
+					$params = [];
+					$params[] = $this->getData('prefix');
+					$params[] = $this->getData('caseNumber');
+					$params[] = $caseNoteData['date'];
+					$params[] = $caseNoteData['note'];
+					$params[] = $caseNoteData['author'];
+
+					$statement->execute($params);
+					$statement = null;
+				}
 
 				if(isset($_SESSION['superuser'])){
+					$queryString = "UPDATE caseentries SET ";
+					$queryParams = [];
+
 					$casestatusInsertParams[] = $this->getData('prefix');
 					$casestatusInsertParams[] = $this->getData('caseNumber');
 
@@ -270,12 +292,11 @@ class CaseData{
 						}
 					}
 					$dbConn->commit();
-
-					$statement = null;
-					$dbConn = null;
 				}
 
-				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
+				$statement = null;
+				$dbConn = null;
+				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNote")['note']." updated.";
 			}
 		}
 		catch(Exception $e){
@@ -300,6 +321,12 @@ class CaseData{
 		}
 
 		$this->addData('whatHappened',$_POST['whatHappened']);
+
+		if(isset($_POST['newCaseNoteContent'])){
+			if($_POST['newCaseNoteContent'] != ''){
+				$this->addData('caseNote',[$_POST['newCaseNoteDate'],$_POST['newCaseNoteContent'], $_POST['newCaseNoteAuthor']]);
+			}
+		}
 
 		if(isset($_POST["prefix"])){
 			$this->addData("prefix",$_POST["prefix"]);

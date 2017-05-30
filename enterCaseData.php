@@ -86,6 +86,16 @@ if($caseDoesExist){
 						$(this).text('Show Case Notes');
 					}
 				});
+
+				$(".deleteCaseNote").click(function(){
+					$.ajax({url:"PHP/deleteCaseNote.php",
+							type: "POST",
+							data: {'rowID': $(this).data('rowid')},
+							success: function(result){
+								$('#caseNoteTarget').append("<div>lol</div>"); //find('#'+$(this).data('rowid')).remove();
+							}
+					});
+				});
 <?php
 }
 ?>
@@ -105,7 +115,7 @@ if($caseDoesExist){
 			<?php
 				$caseNotes = grabCaseNotes($_GET['prefix'],$_GET['caseNumber']);
 				foreach($caseNotes as $note){
-					echo "<table class='complaintTable'>";
+					echo "<table class='complaintTable' id='".$note['rowID']."' style='margin-bottom: 20px;'>";
 					echo "<thead><th>Case Note</th></thead>";
 					echo "<tbody>";
 					echo "<tr><td>Date</td><td><b>".$note['timeEntered']."</b></td></tr>";
@@ -113,6 +123,9 @@ if($caseDoesExist){
 					echo "<tr><td>Taken By</td><td><b>".$note['author']."</b></td></tr>";
 					echo "</tbody>";
 					echo "</table>";
+					if(isset($_SESSION['superuser'])){
+						echo "<div class='UIButton buttonMedium deleteCaseNote' data-rowid='".$note['rowID']."'>Delete Note</div>";
+					}
 				}
 			?>
 		</div>
@@ -120,10 +133,21 @@ if($caseDoesExist){
 			if(count($caseNotes) > 0){
 				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
 			}
+
+			echo "<table class='complaintTable'>";
+			echo "<thead><th>New Case Note</th></thead>";
+			echo "<tbody>";
+			echo "<tr><td><b>Date</b></td><td><input readonly type='text' name='newCaseNoteDate' value='".Date('Y-m-d')."'></input></td></tr>";
+			echo "<tr><td colspan=2 style='width: 600px; height: 300px;'><textarea name='newCaseNoteContent' style='width: 100%; height: 100%;'></textarea></td></tr>";
+			echo "<tr><td><b>Taken By</b></td><td><input readonly type='text' name='newCaseNoteAuthor' value='".$_SESSION['username']."'></input></td></tr>";
+			echo "</tbody>";
+			echo "</table>";
+
 		}
 		?>
 	<input style="display: none;" name='submit' type="submit"></input>
-	<?php if($deleteOption == true){
+	<?php
+	if($deleteOption == true){
 		echo '<input style="display: none;" name="deleteComplaint" type="submit"></input>';
 	}
 	?>

@@ -40,7 +40,7 @@
 												$GLOBALS['_JCDB_config']['SQL_VIEW_PASS'],
 												[PDO::ATTR_PERSISTENT => true]);
 
-			$statement = $dbConn->prepare("SELECT * FROM casenotes WHERE prefix = ? AND caseNumber = ? ORDER BY timeEntered ASC;");
+			$statement = $dbConn->prepare("SELECT * FROM casenotes WHERE prefix = ? AND caseNumber = ? ORDER BY timeEntered ASC, rowID ASC;");
 			$statement->execute([$prefix,$caseNum]);
 			$caseNotes = $statement->fetchALL(PDO::FETCH_ASSOC);
 		}
