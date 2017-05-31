@@ -27,7 +27,26 @@ $(document).ready(function(){
 </script>
 </head>
 <body>
+<h1 style='border-bottom: 2px solid black'> Review Case Entry</h1>
+<?php
+if($_SESSION['complaint']->setToDelete() == true){
+	echo "<h4 style='color: red'>This case and all related entries will be deleted!</h4>";
+}
+?>
 <div id="tableTarget"></div>
+<?php
+$note = $_SESSION['complaint']->getData('caseNote');
+if($note !== false){
+	echo "<table class='complaintTable'>";
+	echo "<thead><th>Case Note</th></thead>";
+	echo "<tbody>";
+	echo "<tr><td>Date</td><td><b>".$note['date']."</b></td></tr>";
+	echo "<tr><td colspan=2 style='width: 600px'>".$note['note']."</td></tr>";
+	echo "<tr><td>Taken By</td><td><b>".$note['author']."</b></td></tr>";
+	echo "</tbody>";
+	echo "</table>";
+}
+?>
 <form name='submissionAction' style="display: none;" method="POST">
 <input type="submit" name="confirm"></input>
 </form>

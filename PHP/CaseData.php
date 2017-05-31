@@ -36,7 +36,7 @@ class CaseData{
 		}
 		else{
 			if($field == 'caseNote'){
-				$this->data['caseNote'] = ['date' => $entry[0], 'note' => $entry[1], 'author' => $entry[2]];
+				$this->data['caseNote'] = ['date' => $entry[0], 'note' => nl2br($entry[1]), 'author' => $entry[2]];
 				return true;
 			}
 			else if(is_array($entry)){
@@ -71,6 +71,10 @@ class CaseData{
 				return explode(', ',$this->data[$field]);
 			}
 		}
+	}
+
+	public function setToDelete(){
+		return $this->deleteCase;
 	}
 
 	private function renameScan(){
@@ -176,6 +180,8 @@ class CaseData{
 					$statement = $dbConn->prepare("DELETE FROM caseentries WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					$statement = $dbConn->prepare("DELETE FROM casestatus WHERE caseNumber = ? AND prefix = ?");
+					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
+					$statement = $dbConn->prepare("DELETE FROM casenotes WHERE caseNumber = ? AND prefix = ?");
 					$statement->execute([$this->getData("caseNumber"),$this->getData("prefix")]);
 					unlink($this->getData("formScan"));
 					$dbConn = null;
@@ -333,7 +339,7 @@ class CaseData{
 			if(isset($_POST["caseNumber"])){
 				$this->addData("caseNumber",$_POST["caseNumber"]);
 				$this->newComplaint = false;
-				if(isset($_POST["deleteComplaint"])){
+				if(isset($_POST["deleteComplaint"]) && isset($_SESSION['superuser'])){
 					$this->deleteCase = true;
 				}
 			}
