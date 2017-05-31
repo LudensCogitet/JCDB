@@ -117,10 +117,25 @@ function complaintForm(target, data = "new", readOnly = false, formDisplayButton
 				event.preventDefault();
         console.log('lol');
 				var lastObj = $(this).prev("input");
-				var nextObj = $(this).next("input");
-				if (lastObj.length != 0 && nextObj.length == 0) {
-					lastObj.data("repro", false);
-				}
+        if(lastObj.length == 0){
+          return;
+        }
+        else{
+          var nextObjs = $(this).nextAll("input");
+  				if (nextObjs.length == 0) {
+  					lastObj.data("repro", false);
+  				}
+          else{
+            nextObjs.each(function (index){
+              var $this = $(this);
+              var wholeName = $this.attr("name");
+      				var name = wholeName.slice(0, wholeName.indexOf("-"));
+      				var num = parseInt(wholeName.substr(wholeName.indexOf("-") +1)) -1;
+              console.log(wholeName,name,num);
+              $this.attr("name", name+"-"+num);
+            });
+          }
+        }
         lastObj.focus();
         $(this).remove();
         return lastObj;
