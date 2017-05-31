@@ -115,14 +115,15 @@ function complaintForm(target, data = "new", readOnly = false, formDisplayButton
 			else if (event == "up" || event.keyCode == 38 || (event.keyCode == 8 && $(this).val() == "")) {
 			if($(this).attr('readonly') != 'readonly'){
 				event.preventDefault();
+        console.log('lol');
 				var lastObj = $(this).prev("input");
 				var nextObj = $(this).next("input");
 				if (lastObj.length != 0 && nextObj.length == 0) {
 					lastObj.data("repro", false);
-					lastObj.focus();
-					$(this).remove();
-					return lastObj;
 				}
+        lastObj.focus();
+        $(this).remove();
+        return lastObj;
 			}
 		}
 	}

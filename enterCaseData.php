@@ -17,6 +17,7 @@ if(isset($_SESSION['complaint'])){
 		if(isset($_GET['modifyComplaint'])){
 			if($_SESSION['complaint']->getData('caseNumber') != -1){
 				$caseDoesExist = true;
+				$caseNotes = grabCaseNotes($_SESSION['complaint']->getData('prefix'),$_SESSION['complaint']->getData('caseNumber'));
 				if(isset($_SESSION['superuser'])){
 					$deleteOption = true;
 					$formSettings = "false,true";
@@ -37,6 +38,7 @@ if(isset($_SESSION['complaint'])){
 
 	if(isset($_GET['updateComplaint'])){
 		$caseDoesExist = true;
+		$caseNotes = grabCaseNotes($_GET['prefix'],$_GET['caseNumber']);
 		if(isset($_SESSION['superuser'])){
 			$deleteOption = true;
 		}
@@ -88,13 +90,16 @@ if($caseDoesExist){
 				});
 
 				$(".deleteCaseNote").click(function(){
-					$.ajax({url:"PHP/deleteCaseNote.php",
-							type: "POST",
-							data: {'rowID': $(this).data('rowid')},
-							success: function(result){
-								$('#caseNoteTarget').append("<div>lol</div>"); //find('#'+$(this).data('rowid')).remove();
-							}
-					});
+					var $me = $(this);
+					if(confirm('Are you sure?')){
+						$.ajax({url:"PHP/deleteCaseNote.php",
+								type: "POST",
+								data: {'rowID': $(this).data('rowid')},
+								success: function(result){
+									$me.parent().replaceWith('<div style="color: red"><b>DELETED</b></div>');
+								}
+						});
+					}
 				});
 <?php
 }
@@ -113,8 +118,8 @@ if($caseDoesExist){
 	<?php if($caseDoesExist == true){ ?>
 		<div style="display: none;" id="caseNoteTarget">
 			<?php
-				$caseNotes = grabCaseNotes($_GET['prefix'],$_GET['caseNumber']);
 				foreach($caseNotes as $note){
+					echo "<div>";
 					echo "<table class='complaintTable' id='".$note['rowID']."' style='margin-bottom: 20px;'>";
 					echo "<thead><th>Case Note</th></thead>";
 					echo "<tbody>";
@@ -126,6 +131,7 @@ if($caseDoesExist){
 					if(isset($_SESSION['superuser'])){
 						echo "<div class='UIButton buttonMedium deleteCaseNote' data-rowid='".$note['rowID']."'>Delete Note</div>";
 					}
+					echo "</div>";
 				}
 			?>
 		</div>

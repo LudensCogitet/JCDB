@@ -302,7 +302,7 @@ class CaseData{
 
 				$statement = null;
 				$dbConn = null;
-				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNote")['note']." updated.";
+				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
 			}
 		}
 		catch(Exception $e){
