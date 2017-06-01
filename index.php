@@ -66,6 +66,7 @@
 					else{
 						rowObjects = makeTable(dataSet,rowObjects);
 					}
+					console.log(rowObjects);
 					sortRows();
 					fillTable(mainTable.tBodies[0],type);
 					resolve("Yay");
@@ -97,6 +98,7 @@
 					//console.log("SENDING CHANGES");
 					rowObjects["array"][i].sendChanges();
 				}
+				$(this).hide();
 			}
 		});
 

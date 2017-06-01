@@ -148,13 +148,6 @@ var currentSort = {column: "prefixAndCaseNumber",
 
 function sortRows(column = null, dir = null, column2 = "default"){
 
-	if(column2 == "default"){
-		if(column == "prefixAndCaseNumber")
-			column2 = "defendant";
-		else
-			column2 = "prefixAndCaseNumber";
-	}
-
 	function sortBy(column,retVal,a,b){
 		var aVal;
 		var bVal;
@@ -201,6 +194,13 @@ function sortRows(column = null, dir = null, column2 = "default"){
 	else{
 		currentSort.column = column;
 		currentSort.dir = dir;
+	}
+
+	if(column2 == "default"){
+		if(column == "prefixAndCaseNumber")
+			column2 = "defendant";
+		else
+			column2 = "prefixAndCaseNumber";
 	}
 
 	if(column == null){
@@ -260,12 +260,10 @@ function makeTable(dataSet,rowObjects = null){
 }
 
 function fillTable(table, type = "overwrite"){
-	$("#updateDBButton").hide();
-
-	if(type == "overwrite"){
+	//if(type == "overwrite"){
 		while(table.rows.length > 0)
 			table.deleteRow(-1);
-	}
+	//}
 
 	var lastValue = null;
 

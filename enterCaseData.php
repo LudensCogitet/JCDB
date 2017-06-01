@@ -18,6 +18,8 @@ if(isset($_SESSION['complaint'])){
 			if($_SESSION['complaint']->getData('caseNumber') != -1){
 				$caseDoesExist = true;
 				$caseNotes = grabCaseNotes($_SESSION['complaint']->getData('prefix'),$_SESSION['complaint']->getData('caseNumber'));
+				$caseInfo = grabCase($_SESSION['complaint']->getData('prefix'),$_SESSION['complaint']->getData('caseNumber'));
+
 				if(isset($_SESSION['superuser'])){
 					$deleteOption = true;
 					$formSettings = "false,true";
@@ -39,6 +41,8 @@ if(isset($_SESSION['complaint'])){
 	if(isset($_GET['updateComplaint'])){
 		$caseDoesExist = true;
 		$caseNotes = grabCaseNotes($_GET['prefix'],$_GET['caseNumber']);
+		$caseInfo = grabCase($_GET['prefix'],$_GET['caseNumber']);
+
 		if(isset($_SESSION['superuser'])){
 			$deleteOption = true;
 		}
@@ -89,6 +93,17 @@ if($caseDoesExist){
 					}
 				});
 
+				$("#showContempts").click(function(){
+					if($('#contemptTarget').is(':hidden')){
+						$('#contemptTarget').show();
+						$(this).text('Hide Contempt Charges');
+					}
+					else{
+						$('#contemptTarget').hide();
+						$(this).text('Show Contempt Charges');
+					}
+				});
+
 				$(".deleteCaseNote").click(function(){
 					var $me = $(this);
 					if(confirm('Are you sure?')){
@@ -100,6 +115,38 @@ if($caseDoesExist){
 								}
 						});
 					}
+				});
+
+				$(".deleteContempt").click(function(){
+					var $me = $(this);
+					if(confirm('Are you sure?')){
+						$.ajax({url:"PHP/deleteContempt.php",
+								type: "POST",
+								data: {'entryRowID': $me.data('entryrowid'),
+											 'statusRowID': $me.data('statusrowid')},
+								success: function(result){
+									$me.parent().replaceWith('<div style="color: red"><b>DELETED</b></div>');
+								}
+						});
+					}
+				});
+
+				$("#addContempt").click(function(){
+					$("#newContemptTarget").prepend(
+						"<div>"+
+						"<table class='complaintTable' style='margin-bottom: 20px;'>"+
+						"<thead><th>New Contempt Charge</th></thead>"+
+						"<tbody>"+
+						"<tr><td><b>Plaintiff</b></td><td><input required type='text' name='newContemptPlaintiff' value='JC'></input></td></tr>"+
+						"<tr><td><b>Defendant</b></td><td><input required type='text' name='newContemptDefendant'></input></td></tr>"+
+						"<tr><td><b>Charge</b></td><td><input type='radio' name='newContemptCharge' value='contempt' checked>Contempt</input>"+
+						"<input type='radio' name='contemptCharge' value='exile'>Exile</input>"+
+						"</td></tr>"+
+						"<tr><td><b>Date</b></td><td><input required readonly type='text' name='newContemptDate' value='"+new Date().toISOString().split("T")[0]+"'></input></td></tr>"+
+						"</tbody>"+
+						"</table>"
+					);
+					$(this).hide();
 				});
 <?php
 }
@@ -115,7 +162,39 @@ if($caseDoesExist){
 	<?php } ?>
 	</div>
 	<div id="complaintTarget"></div>
-	<?php if($caseDoesExist == true){ ?>
+	<?php if($caseDoesExist == true){
+		echo '<div id="newContemptTarget">';
+		echo '<div class="UIButton buttonMedium" id="addContempt">Add Contempt</div>';
+		echo '</div>';
+		if(count($caseInfo) > 1){
+		?>
+		<div class="UIButton buttonMedium" id="showContempts">Show Contempt Charges</div>
+		<div style="display: none;" id="contemptTarget">
+		<?php
+			$contemptStatus = grabContemptStatus($caseInfo[0]['prefix'],$caseInfo[0]['caseNumber']);
+			var_dump($contemptStatus);
+			for($i = 1; $i < count($caseInfo); $i++){
+				echo "<div>";
+				echo "<table class='complaintTable' id='".$caseInfo[$i]['rowID']."' style='margin-bottom: 20px;'>";
+				echo "<thead><th>".ucfirst($caseInfo[$i]['charge'])."</th></thead>";
+				echo "<tbody>";
+				echo "<tr><td>Defendant</td><td><b>".$caseInfo[$i]['defendant']."</b></td></tr>";
+				if(count($caseInfo[$i]['witness']) > 0){
+						echo "<tr><td>Witnesses</td><td><b>".$caseInfo[$i]['witness']."</b></td></tr>";
+				}
+				echo "<tr><td>Date filed</td><td><b>".$caseInfo[$i]['dateOfIncident']."</b></td></tr>";
+				echo "<tr><td>Status</td><td><b>".$contemptStatus[$i-1]['status']."</b></td></tr>";
+				echo "</tbody>";
+				echo "</table>";
+				if(isset($_SESSION['superuser'])){
+					echo "<div class='UIButton buttonMedium deleteContempt' data-entryrowid=".$caseInfo[$i]['rowID']." data-statusrowid=".$contemptStatus[$i-1]['rowID'].">Delete ".ucfirst($caseInfo[$i]['charge'])."</div>";
+				}
+				echo "</div>";
+			}
+		}
+		?>
+	</div>
+
 		<div style="display: none;" id="caseNoteTarget">
 			<?php
 				foreach($caseNotes as $note){
@@ -125,7 +204,7 @@ if($caseDoesExist){
 					echo "<tbody>";
 					echo "<tr><td>Date</td><td><b>".$note['timeEntered']."</b></td></tr>";
 					echo "<tr><td colspan=2 style='width: 600px'>".$note['note']."</td></tr>";
-					echo "<tr><td>Taken By</td><td><b>".$note['author']."</b></td></tr>";
+					echo "<tr><td>Taken by</td><td><b>".$note['author']."</b></td></tr>";
 					echo "</tbody>";
 					echo "</table>";
 					if(isset($_SESSION['superuser'])){
@@ -139,7 +218,6 @@ if($caseDoesExist){
 			if(count($caseNotes) > 0){
 				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
 			}
-
 			echo "<table class='complaintTable'>";
 			echo "<thead><th>New Case Note</th></thead>";
 			echo "<tbody>";
@@ -148,7 +226,6 @@ if($caseDoesExist){
 			echo "<tr><td><b>Taken By</b></td><td><input readonly type='text' name='newCaseNoteAuthor' value='".$_SESSION['username']."'></input></td></tr>";
 			echo "</tbody>";
 			echo "</table>";
-
 		}
 		?>
 	<input style="display: none;" name='submit' type="submit"></input>

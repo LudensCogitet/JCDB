@@ -15,18 +15,21 @@ class CaseData{
 
 	private $newComplaint = true;
 
-	private $data = ["formScan"		  => "",
-					 "prefix"				=> -1,
-					 "caseNumber"	  => -1,
-					 "plaintiff" 	  => "",
-					 "defendant" 	  => "",
+	private $data = [
+					 "formScan"		  	=> "",
+					 "prefix"					=> -1,
+					 "caseNumber"	  	=> -1,
+					 "plaintiff" 	  	=> "",
+					 "defendant" 	  	=> "",
 					 "witness"				=> "",
 					 "charge"					=> "",
 					 "dateOfIncident" => "",
 					 "timeOfIncident" => "",
-					 "location"  	  => "",
+					 "location"  	  	=> "",
 					 "whatHappened"   => "",
-				 	 "caseNote"		=> false];
+				 	 "caseNote"				=> false,
+				 	 "contempt"				=> false
+				 ];
 
 	private $deleteCase = false;
 
@@ -37,6 +40,10 @@ class CaseData{
 		else{
 			if($field == 'caseNote'){
 				$this->data['caseNote'] = ['date' => $entry[0], 'note' => nl2br($entry[1]), 'author' => $entry[2]];
+				return true;
+			}
+			else if($field == 'contempt'){
+				$this->data['contempt'] = ['date' => $entry[0], 'charge' => nl2br($entry[1]), 'defendant' => $entry[2], 'plaintiff' => $entry[3]];
 				return true;
 			}
 			else if(is_array($entry)){
@@ -206,7 +213,29 @@ class CaseData{
 					$statement = null;
 				}
 
-				if(isset($_SESSION['superuser'])){
+				// Add new contempt
+				if($this->getData('contempt') !== false){
+					$statement = $dbConn->prepare("INSERT INTO caseentries(prefix,caseNumber,plaintiff,defendant,charge,dateOfIncident) VALUES (?,?,?,?,?,?)");
+
+					$contemptData = $this->getData('contempt');
+
+					$params = [];
+					$params[] = $this->getData('prefix');
+					$params[] = $this->getData('caseNumber');
+					$params[] = $contemptData['plaintiff'];
+					$params[] = $contemptData['defendant'];
+					$params[] = $contemptData['charge'];
+
+					$statement->execute(array_merge($params,[$contemptData['date']]));
+					$statement = null;
+
+					$statement = $dbConn->prepare("INSERT INTO casestatus(prefix,caseNumber,plaintiff,defendant,charge,status) VALUES(?,?,?,?,?,'pndg')");
+					$statement->execute($params);
+
+					$statement = null;
+				}
+
+				if(isset($_SESSION['superuser']) && $this->getData('contempt') == false){
 					$queryString = "UPDATE caseentries SET ";
 					$queryParams = [];
 
@@ -302,6 +331,7 @@ class CaseData{
 
 				$statement = null;
 				$dbConn = null;
+				
 				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
 			}
 		}
@@ -316,6 +346,7 @@ class CaseData{
 			echo "No user signed in";
 			return;
 		}
+
 		foreach(self::$multiFields as $field){
 		  $num = 1;
 			$array = [];
@@ -332,6 +363,10 @@ class CaseData{
 			if($_POST['newCaseNoteContent'] != ''){
 				$this->addData('caseNote',[$_POST['newCaseNoteDate'],$_POST['newCaseNoteContent'], $_POST['newCaseNoteAuthor']]);
 			}
+		}
+
+		if(isset($_POST['newContemptCharge'])){
+			$this->addData('contempt',[$_POST['newContemptDate'],$_POST['newContemptCharge'], $_POST['newContemptDefendant'], $_POST['newContemptPlaintiff']]);
 		}
 
 		if(isset($_POST["prefix"])){

@@ -37,7 +37,6 @@ function contextMenu(target,targetDiv,options, center = false){
 	else{
 		offsetX = $(window).width() / 2 - targetDiv.width() / 2;
 		offsetY = $(window).height() / 2 - targetDiv.height()/2;
-
 	}
 
 	targetDiv.css("left",offsetX+"px");
