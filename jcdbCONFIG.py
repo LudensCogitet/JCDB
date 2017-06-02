@@ -31,7 +31,7 @@ try:
 
         print("Adding tables...")
         cursor.execute("CREATE TABLE caseentries(prefix INTEGER, caseNumber INTEGER, formScan TEXT, plaintiff TEXT, defendant TEXT, witness TEXT, dateOfIncident TEXT, timeOfIncident TEXT, location TEXT, charge TEXT, whatHappened TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY)")
-        cursor.execute("CREATE TABLE casestatus(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY)")
+        cursor.execute("CREATE TABLE casestatus(prefix INTEGER, caseNumber INTEGER, plaintiff TEXT, defendant TEXT, witness TEXT, charge TEXT, status TEXT, hearingDate TEXT, verdict TEXT, sentence TEXT, sentenceStatus TEXT, notes TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY)")
         cursor.execute("CREATE TABLE casenotes(prefix INTEGER, caseNumber INTEGER, timeEntered TEXT, author VARCHAR(255), note TEXT, rowID INTEGER AUTO_INCREMENT PRIMARY KEY)")
         cursor.execute("CREATE TABLE users(username VARCHAR(255) UNIQUE, password TEXT, superuser TINYINT(1), rowID INTEGER AUTO_INCREMENT PRIMARY KEY)")
 

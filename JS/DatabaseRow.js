@@ -4,7 +4,7 @@ $(window).keyup(function(event){if(event.which == 72)_highlightKeyDown = false;}
 
 function DatabaseRow(rawData,rowArray){
 
-	var textEntryFields 	=		["hearingDate","sentence"];
+	var textEntryFields 	=		["hearingDate","sentence","notes"];
 
 	var entriesChanged = {"plaintiff":			false,
 												"defendant":			false,
@@ -14,7 +14,8 @@ function DatabaseRow(rawData,rowArray){
 												"verdict": 				false,
 												"sentenceStatus":	false,
 												"hearingDate": 		false,
-												"sentence": 			false};
+												"sentence": 			false,
+												"notes":					false};
 
 	var initialData = {
 		"prefix": 				rawData[0],
@@ -28,7 +29,8 @@ function DatabaseRow(rawData,rowArray){
 		"verdict":				rawData[8],
 		"sentence":				rawData[9],
 		"sentenceStatus":	rawData[10],
-		"rowID":					rawData[11]};
+		"notes":					rawData[11],
+		"rowID":					rawData[12]};
 
 	Object.keys(initialData).forEach(function(key){
 		if(initialData[key] == null){
@@ -130,7 +132,7 @@ function DatabaseRow(rawData,rowArray){
 		var myCase = rowObjects["caseNumber"][myCaseNumber];
 
 		var doAsk = true;
-		if(key == 'sentence' || data[key] == 'cmpl'){
+		if(key == 'sentence' || data[key] == 'cmpl' || data['charge'] == 'Exile' || data['charge'] == 'Contempt'){
 			doAsk = false;
 		}
 		else if(myCaseNumber in DatabaseRow.autoFillDoNotAsk){
@@ -143,24 +145,35 @@ function DatabaseRow(rawData,rowArray){
 			var newMenu = $("<div class='contextMenuStyle'>");
 			$("html").append(newMenu);
 
-			var fillWith = ''; key == 'sentenceStatus' && data[key] == 'impsd' ? 'mrgd' : data[key];
+			var fillWith = ''; //key == 'sentenceStatus' && data[key] == 'impsd' ? 'mrgd' : data[key];
 			var fillWithText = '';
 			var fillWithFunction = null;
 
-			if(data[key] == 'impsd'){
+			var numChargesForDefendant = myCase.filter(function(el){
+				return el.getCellValue('defendant') == data['defendant'] &&
+							 el.getCellValue('charge') != 'Exile' &&
+							 el.getCellValue('charge') != 'Contempt';
+			}).length;
+			console.log(numChargesForDefendant);
+
+			if(data[key] == 'impsd' && numChargesForDefendant > 1){
 				fillWith = 'mrgd';
 				fillWithText = ' for this defendant?';
-				fillWithFunction = function(cell){
-													 	if(cell.getCellValue('defendant') == data['defendant']){
-															cell.setCellValue(key,fillWith);
+				fillWithFunction = function(row){
+													 	if(row.getCellValue('defendant') == data['defendant'] &&
+															 row.getCellValue('charge') != 'Exile' &&
+															 row.getCellValue('charge') != 'Contempt'){
+															row.setCellValue(key,fillWith);
 														}
 													 }
 			}
 			else{
 				fillWith = data[key];
 				fillWithText = ' for this case?';
-				fillWithFunction = function(cell){
-														cell.setCellValue(key,fillWith);
+				fillWithFunction = function(row){
+														if(row.getCellValue('charge') != 'Exile' && row.getCellValue('charge') != 'Contempt'){
+															row.setCellValue(key,fillWith);
+														}
 													 }
 			}
 

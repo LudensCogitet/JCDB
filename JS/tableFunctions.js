@@ -327,4 +327,4 @@ function headingMenuSetup(column){
 		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
 	}
 
-var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9};
+var columnIndex = {"prefixAndCaseNumber":0,"plaintiff":1,"defendant":2,"witness":3,"charge":4,"status":5,"hearingDate":6,"verdict":7,"sentence":8,"sentenceStatus":9,"notes":10};

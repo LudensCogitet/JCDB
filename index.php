@@ -91,6 +91,7 @@
 		headingMenuSetup("verdict");
 		headingMenuSetup("sentence");
 		headingMenuSetup("sentenceStatus");
+		headingMenuSetup("notes");
 
 		$("#updateDBButton").click(function(){
 			if(confirm('Are you sure?')){
@@ -183,7 +184,7 @@
 	<table id="mainTable">
 		<thead id="mainTableHead">
 			<tr>
-				<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th class='pndgInvis'>Status</th><th class='pndgInvis'>Hearing Date</th><th class='pndgInvis'>Verdict</th><th class='pndgInvis'>Sentence</th><th class='pndgInvis'>Sentence Status</th>
+				<th>Case No.</th><th>Plaintiff(s)</th><th>Defendant</th><th>Witness(es)</th><th>Charge</th><th class='pndgInvis'>Status</th><th class='pndgInvis'>Hearing Date</th><th class='pndgInvis'>Verdict</th><th class='pndgInvis'>Sentence</th><th class='pndgInvis'>Sentence Status</th><th class='pndgInvis'>Notes</th>
 			</tr>
 		</thead>
 		<tbody>

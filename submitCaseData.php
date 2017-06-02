@@ -36,13 +36,26 @@ if($_SESSION['complaint']->setToDelete() == true){
 <div id="tableTarget"></div>
 <?php
 $note = $_SESSION['complaint']->getData('caseNote');
+$contempt = $_SESSION['complaint']->getData('contempt');
 if($note !== false){
-	echo "<table class='complaintTable'>";
+	echo "<table class='complaintTable' style='margin-bottom: 20px;'>";
 	echo "<thead><th>Case Note</th></thead>";
 	echo "<tbody>";
 	echo "<tr><td>Date</td><td><b>".$note['date']."</b></td></tr>";
 	echo "<tr><td colspan=2 style='width: 600px'>".$note['note']."</td></tr>";
 	echo "<tr><td>Taken By</td><td><b>".$note['author']."</b></td></tr>";
+	echo "</tbody>";
+	echo "</table>";
+}
+
+if($contempt !== false){
+	echo "<table class='complaintTable' style='margin-bottom: 20px;'>";
+	echo "<thead><th>Contempt Charge</th><th style='border: none;'></thead>";
+	echo "<tbody>";
+	echo "<tr><td><b>Plaintiff</b></td><td>".$contempt['plaintiff']."</td></tr>";
+	echo "<tr><td><b>Defendant</b></td><td>".$contempt['defendant']."</td></tr>";
+	echo "<tr><td><b>Charge</b></td><td>".$contempt['charge']."</td></tr>";
+	echo "<tr><td><b>Date</b></td><td>".$contempt['date']."</td></tr>";
 	echo "</tbody>";
 	echo "</table>";
 }

@@ -117,4 +117,5 @@ var hearingFields = 	{"status": 				true,
 												"verdict": 				true,
 												"sentenceStatus":	true,
 												"hearingDate": 		true,
-												"sentence": 			true};
+												"sentence": 			true,
+												"notes":					true};

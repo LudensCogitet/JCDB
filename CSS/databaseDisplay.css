@@ -1,4 +1,13 @@
 @media print{
+	.emphasize{
+		background-color: yellow !important;
+	}
+
+	.de_emphasize{
+		border-color: lightgrey !important;
+		color: lightgrey !important;
+	}
+	
 	*{
 			font-size: 12px;
 		}

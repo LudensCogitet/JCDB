@@ -135,17 +135,24 @@ if($caseDoesExist){
 					$("#newContemptTarget").prepend(
 						"<div>"+
 						"<table class='complaintTable' style='margin-bottom: 20px;'>"+
-						"<thead><th>New Contempt Charge</th></thead>"+
+						"<thead><th>New Contempt Charge</th><th style='border: none;'><div class='UIButton buttonSmall cancelContempt'> Cancel </div></th></thead>"+
 						"<tbody>"+
 						"<tr><td><b>Plaintiff</b></td><td><input required type='text' name='newContemptPlaintiff' value='JC'></input></td></tr>"+
 						"<tr><td><b>Defendant</b></td><td><input required type='text' name='newContemptDefendant'></input></td></tr>"+
-						"<tr><td><b>Charge</b></td><td><input type='radio' name='newContemptCharge' value='contempt' checked>Contempt</input>"+
-						"<input type='radio' name='contemptCharge' value='exile'>Exile</input>"+
+						"<tr><td><b>Charge</b></td><td><input type='radio' name='newContemptCharge' value='Contempt' checked>Contempt</input>"+
+						"<input type='radio' name='newContemptCharge' value='Exile'>Exile</input>"+
 						"</td></tr>"+
 						"<tr><td><b>Date</b></td><td><input required readonly type='text' name='newContemptDate' value='"+new Date().toISOString().split("T")[0]+"'></input></td></tr>"+
 						"</tbody>"+
-						"</table>"
+						"</table>"+
+						"</div>"
 					);
+
+					$(".cancelContempt").click(function(){
+						console.log("got here");
+						$(this).parent().parent().parent().parent().remove();
+						$("#addContempt").show();
+					});
 					$(this).hide();
 				});
 <?php
@@ -172,7 +179,6 @@ if($caseDoesExist){
 		<div style="display: none;" id="contemptTarget">
 		<?php
 			$contemptStatus = grabContemptStatus($caseInfo[0]['prefix'],$caseInfo[0]['caseNumber']);
-			var_dump($contemptStatus);
 			for($i = 1; $i < count($caseInfo); $i++){
 				echo "<div>";
 				echo "<table class='complaintTable' id='".$caseInfo[$i]['rowID']."' style='margin-bottom: 20px;'>";
