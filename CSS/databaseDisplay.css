@@ -175,17 +175,29 @@
 }
 
 .dropdown{
+	display: inline-block;
 	position: fixed;
 	right: 0;
-	display: inline-block;
 	z-index: 1000;
 }
 
-.dropdownContent{
+.dropdownSubmenu{
+	display: inline-block;
+	position: relative;
+}
+
+.dropdownContent, .dropdownContentSubmenu{
 	display: none;
-	position: absolute;
 }
 
 .dropdown:hover .dropdownContent{
 	display: block;
+	position: absolute;
+}
+
+.dropdownSubmenu:hover .dropdownContentSubmenu{
+	display: inline-block;
+ 	position: absolute;
+ 	right: 100%;
+ 	top: 0;
 }

@@ -22,9 +22,14 @@ function indexMenu(){
    		               "<div class='UIButton buttonShort' onclick='document.logoutButton.submit();'>Log out</div>";
   }
 
-  $printOptions = "<div class='UIButton buttonShort' onclick='arguments[0].stopPropagation(); makeReport(\"pendingList\");'>Print Hearing List</div>".
-                  "<div class='UIButton buttonShort' onclick='makeReport(\"hearingListDaily\");'>Print Daily JC Report</div>".
-                  "<div class='UIButton buttonShort' onclick='window.print()'>Print</div>";
+  $printOptions = "<div class='dropdownSubmenu'>".
+                    "<div class='UIButton buttonShort'>Print</div>".
+                    "<div class='dropdownContentSubmenu'>".
+                      "<div class='UIButton buttonShort' onclick='arguments[0].stopPropagation(); makeReport(\"pendingList\");'>Print Hearing List</div>".
+                      "<div class='UIButton buttonShort' onclick='makeReport(\"hearingListDaily\");'>Print Daily JC Report</div>".
+                      "<div class='UIButton buttonShort' onclick='window.print()'>Print</div>".
+                    "</div>".
+                  "</div>";
 
   $complaintOptions = "";
   if(isset($_SESSION['username'])){
