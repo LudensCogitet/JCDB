@@ -7,7 +7,7 @@
 		border-color: lightgrey !important;
 		color: lightgrey !important;
 	}
-	
+
 	*{
 			font-size: 12px;
 		}
@@ -32,7 +32,7 @@
 
 #tableContainer{
 	margin: auto;
-	width: 65%;
+	width: 90%;
 }
 
 #loadMore{
@@ -163,6 +163,7 @@
 .noteBox{
 	border: 2px solid black;
 	width: 125px;
+	background-color: white;
 }
 
 .rowTopMargin{
@@ -171,4 +172,20 @@
 
 .sentence{
 	max-width: 300px;
+}
+
+.dropdown{
+	position: fixed;
+	right: 0;
+	display: inline-block;
+	z-index: 1000;
+}
+
+.dropdownContent{
+	display: none;
+	position: absolute;
+}
+
+.dropdown:hover .dropdownContent{
+	display: block;
 }

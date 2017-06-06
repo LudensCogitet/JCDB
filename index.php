@@ -2,7 +2,10 @@
 <html>
 <head>
 <?php
+	require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 	session_start();
+	require_once 'PHP/configIndexMenu.php';
+
 	if(isset($_POST['LOGOUT'])){
 		setcookie(session_name(),session_id(),1);
 		session_unset();
@@ -145,41 +148,8 @@
 ?>
 		</div>
 	</div>
+<?php indexMenu(); ?>
 <div id="currentFilters" class="filtersBox noPrint"></div>
-<div class='loginBox noPrint'>
-<?php
-	if(!isset($_SESSION['username'])){
-?>
-		<div class="UIButton buttonShort" onclick="location.href='login.php'">Log In</div>
-<?php
-	}
-	else{
-		echo "<div class='noteBox'>Logged in as ".$_SESSION['username']."</div>";
-?>
-		<form method="POST" name="logoutButton">
-			<input type="hidden" name="LOGOUT"></input>
-		</form>
-		<div class="UIButton buttonShort" onclick="document.logoutButton.submit();">Log out</div>
-<?php
-		if(isset($_SESSION['superuser']))
-		{
-?>
-		<div class="UIButton buttonShort" onclick="location.href='manageUsers.php'">Manage Users</div>
-
-<?php
-		}
-	}
-?>
-</div>
-<div class="menuBox noPrint">
-	<div class="UIButton buttonShort" onclick="arguments[0].stopPropagation(); makeReport('pendingList');" class="noPrint">Print Hearing List</div>
-	<div class="UIButton buttonShort" onclick="makeReport('hearingListDaily');" class="noPrint">Print Daily JC Report</div>
-	<div class="UIButton buttonShort" onclick='window.print()' class="noPrint">Print</div>
-	<?php if(isset($_SESSION['username'])){ ?>
-		<div class="UIButton buttonShort" onclick='window.location.href="enterCaseData.php?newComplaint=true"' class="noPrint">Add New Complaint</div>
-		<div class="UIButton buttonShort danger" id="updateDBButton" style="float:right;" class="noPrint">Update Database</div>
-	<?php } ?>
-</div>
 <div id="tableContainer">
 	<table id="mainTable">
 		<thead id="mainTableHead">
