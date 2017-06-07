@@ -79,111 +79,60 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 	}
 	$submissionButtonName = "Update Complaint";
 }
-
-if($caseDoesExist){
-	?>
-				$("#showNotes").click(function(){
-					if($('#caseNoteTarget').is(':hidden')){
-						$('#caseNoteTarget').show();
-						$(this).text('Hide Case Notes');
-					}
-					else{
-						$('#caseNoteTarget').hide();
-						$(this).text('Show Case Notes');
-					}
-				});
-
-				$("#showContempts").click(function(){
-					if($('#contemptTarget').is(':hidden')){
-						$('#contemptTarget').show();
-						$(this).text('Hide Contempt Charges');
-					}
-					else{
-						$('#contemptTarget').hide();
-						$(this).text('Show Contempt Charges');
-					}
-				});
-
-				$(".deleteCaseNote").click(function(){
-					var $me = $(this);
-					if(confirm('Are you sure?')){
-						$.ajax({url:"PHP/deleteCaseNote.php",
-								type: "POST",
-								data: {'rowID': $(this).data('rowid')},
-								success: function(result){
-									$me.parent().replaceWith('<div style="color: red"><b>DELETED</b></div>');
-								}
-						});
-					}
-				});
-
-				$(".deleteContempt").click(function(){
-					var $me = $(this);
-					if(confirm('Are you sure?')){
-						$.ajax({url:"PHP/deleteContempt.php",
-								type: "POST",
-								data: {'entryRowID': $me.data('entryrowid'),
-											 'statusRowID': $me.data('statusrowid')},
-								success: function(result){
-									$me.parent().replaceWith('<div style="color: red"><b>DELETED</b></div>');
-								}
-						});
-					}
-				});
-
-				$("#addContempt").click(function(){
-					$("#newContemptTarget").prepend(
-						"<div>"+
-						"<table class='complaintTable' style='margin-bottom: 20px;'>"+
-						"<thead><th>New Contempt Charge</th><th style='border: none;'><div class='UIButton buttonSmall cancelContempt'> Cancel </div></th></thead>"+
-						"<tbody>"+
-						"<tr><td><b>Plaintiff</b></td><td><input required type='text' name='newContemptPlaintiff' value='JC'></input></td></tr>"+
-						"<tr><td><b>Defendant</b></td><td><input required type='text' name='newContemptDefendant'></input></td></tr>"+
-						"<tr><td><b>Charge</b></td><td><input type='radio' name='newContemptCharge' value='Contempt' checked>Contempt</input>"+
-						"<input type='radio' name='newContemptCharge' value='Exile'>Exile</input>"+
-						"</td></tr>"+
-						"<tr><td><b>Date</b></td><td><input required readonly type='text' name='newContemptDate' value='"+new Date().toISOString().split("T")[0]+"'></input></td></tr>"+
-						"</tbody>"+
-						"</table>"+
-						"</div>"
-					);
-
-					$(".cancelContempt").click(function(){
-						console.log("got here");
-						$(this).parent().parent().parent().parent().remove();
-						$("#addContempt").show();
-					});
-					$(this).hide();
-				});
-<?php
-}
 ?>
 });
 </script>
+<?php
+	if($caseDoesExist){
+		echo "<script src='JS/enterCaseDataJqueryFunctions.js'></script>";
+	}
+?>
 </head>
 <body>
+	<?php
+	  if($caseDoesExist){
+			echo '<div class="dropdown">';
+				echo '<div class="UIButton buttonMedium">Menu</div>';
+				echo '<div class="dropdownContent">';
+
+			if(count($caseNotes) > 0)
+				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
+
+			if(count($caseInfo) > 1)
+				echo '<div class="UIButton buttonMedium" id="showContempts">Show Contempt Charges</div>';
+
+			echo '<div class="UIButton buttonMedium" id="addContempt">Add Contempt</div>';
+
+			if($deleteOption == true){
+				echo '<div class="UIButton buttonMedium danger" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
+			}
+			echo '</div></div>';
+		}
+	?>
+</div>
+</div>
 <form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
 	<?php if(isset($_GET['newComplaint']) || $newModify == true || isset($_SESSION['superuser'])){ ?>
-	<div style="margin-left: 2px; margin-bottom: 5px; padding: 3px 0px 3px 3px; border: 2px solid black; width: 423px;">
+	<div style="margin-bottom: 5px; border: 2px solid black; width: 300px; padding-left: 5px;">
 		<h4 style="margin-top: 0px;">Complaint Form Scan<h4><p><input id="formScanInput" type="file" name="formScanFile" accept="image/jpeg" <?php echo $scanReq; ?>></input>
 	<?php } ?>
 	</div>
 	<div id="complaintTarget"></div>
 	<?php if($caseDoesExist == true){
 		echo '<div id="newContemptTarget">';
-		echo '<div class="UIButton buttonMedium" id="addContempt">Add Contempt</div>';
 		echo '</div>';
-		if(count($caseInfo) > 1){
 		?>
-		<div class="UIButton buttonMedium" id="showContempts">Show Contempt Charges</div>
 		<div style="display: none;" id="contemptTarget">
 		<?php
 			$contemptStatus = grabContemptStatus($caseInfo[0]['prefix'],$caseInfo[0]['caseNumber']);
 			for($i = 1; $i < count($caseInfo); $i++){
-				echo "<div>";
-				echo "<table class='complaintTable' id='".$caseInfo[$i]['rowID']."' style='margin-bottom: 20px;'>";
-				echo "<thead><th>".ucfirst($caseInfo[$i]['charge'])."</th></thead>";
-				echo "<tbody>";
+				echo "<div class='stackable'>";
+				echo "<table class='complaintTable' id='".$caseInfo[$i]['rowID']."'>";
+				echo "<thead><th colspan=2>".ucfirst($caseInfo[$i]['charge'])."</th>";
+				if(isset($_SESSION['superuser'])){
+					echo "<th style='text-align: right'><div class='UIButton buttonShort deleteContempt' data-entryrowid=".$caseInfo[$i]['rowID']." data-statusrowid=".$contemptStatus[$i-1]['rowID'].">Delete</div></th>";
+				}
+				echo "</thead><tbody>";
 				echo "<tr><td>Defendant</td><td><b>".$caseInfo[$i]['defendant']."</b></td></tr>";
 				if(count($caseInfo[$i]['witness']) > 0){
 						echo "<tr><td>Witnesses</td><td><b>".$caseInfo[$i]['witness']."</b></td></tr>";
@@ -192,46 +141,45 @@ if($caseDoesExist){
 				echo "<tr><td>Status</td><td><b>".$contemptStatus[$i-1]['status']."</b></td></tr>";
 				echo "</tbody>";
 				echo "</table>";
-				if(isset($_SESSION['superuser'])){
-					echo "<div class='UIButton buttonMedium deleteContempt' data-entryrowid=".$caseInfo[$i]['rowID']." data-statusrowid=".$contemptStatus[$i-1]['rowID'].">Delete ".ucfirst($caseInfo[$i]['charge'])."</div>";
-				}
 				echo "</div>";
 			}
-		}
 		?>
 	</div>
-
 		<div style="display: none;" id="caseNoteTarget">
 			<?php
 				foreach($caseNotes as $note){
-					echo "<div>";
-					echo "<table class='complaintTable' id='".$note['rowID']."' style='margin-bottom: 20px;'>";
-					echo "<thead><th>Case Note</th></thead>";
-					echo "<tbody>";
+					echo "<div class='stackable'>";
+					echo "<table class='complaintTable' id='".$note['rowID']."'>";
+					echo "<thead>";
+					if(isset($_SESSION['superuser'])){
+						echo "<th>Case Note</th><th style='text-align: right'><div class='UIButton buttonShort deleteCaseNote' data-rowid='".$note['rowID']."'>Delete</div></th>";
+					}
+					else{
+						echo "<th colspan=2>Case Note</th>";
+					}
+					echo "</th>";
+					echo "</thead><tbody>";
 					echo "<tr><td>Date</td><td><b>".$note['timeEntered']."</b></td></tr>";
-					echo "<tr><td colspan=2 style='width: 600px'>".$note['note']."</td></tr>";
+					echo "<tr><td colspan=2 style='font-family: arial; min-width: 300px; padding: 5px;'>".$note['note']."</td></tr>";
 					echo "<tr><td>Taken by</td><td><b>".$note['author']."</b></td></tr>";
 					echo "</tbody>";
 					echo "</table>";
-					if(isset($_SESSION['superuser'])){
-						echo "<div class='UIButton buttonMedium deleteCaseNote' data-rowid='".$note['rowID']."'>Delete Note</div>";
-					}
+
 					echo "</div>";
 				}
 			?>
 		</div>
 		<?php
-			if(count($caseNotes) > 0){
-				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
-			}
+			echo "<div class='stackable'>";
 			echo "<table class='complaintTable'>";
-			echo "<thead><th>New Case Note</th></thead>";
+			echo "<thead><th colspan=2>New Case Note</th></thead>";
 			echo "<tbody>";
 			echo "<tr><td><b>Date</b></td><td><input readonly type='text' name='newCaseNoteDate' value='".Date('Y-m-d')."'></input></td></tr>";
-			echo "<tr><td colspan=2 style='width: 600px; height: 300px;'><textarea name='newCaseNoteContent' style='width: 100%; height: 100%;'></textarea></td></tr>";
-			echo "<tr><td><b>Taken By</b></td><td><input readonly type='text' name='newCaseNoteAuthor' value='".$_SESSION['username']."'></input></td></tr>";
+			echo "<tr><td colspan=2 style='width: 600px; height: 400px;'><textarea name='newCaseNoteContent' style='width: 100%; height: 100%;'></textarea></td></tr>";
+			echo "<tr><td><b>Taken by</b></td><td><input readonly type='text' name='newCaseNoteAuthor' value='".$_SESSION['username']."'></input></td></tr>";
 			echo "</tbody>";
 			echo "</table>";
+			echo "</div>";
 		}
 		?>
 	<input style="display: none;" name='submit' type="submit"></input>
@@ -241,14 +189,7 @@ if($caseDoesExist){
 	}
 	?>
 </form>
-<div id="menu">
-	<div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>
-	<?php if($deleteOption == true){
-					echo '<div style="float: right" class="UIButton buttonMedium" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
-				}
-	?>
-	<div class="UIButton buttonMedium" onclick="location.href='index.php';">Back to Database</div>
-</div>
+<div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>
 </body>
 </html>
 <?php } ?>

@@ -39,14 +39,15 @@ function complaintForm(target, data = "new", readOnly = false, formDisplayButton
 		jqueryInputFields.children().blur(formatCheck);
 		setReadOnly(jqueryInputFields);
 
-		$(target).prepend(jqueryElement);
-		if(data != "new" && formDisplayButton == true){
-			var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='scanDisplay.php' type='post'>"+
-														"<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
-														"<div class='UIButton buttonLong' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
+    if(data != "new" && formDisplayButton == true){
+      var scanDisplayForm = "<form name='viewScanButton' target='_blank' action='scanDisplay.php' type='post'>"+
+                            "<input type='hidden' name='scanSrc' value='"+data["formScan"]+"'></form>"+
+                            "<div class='UIButton buttonMedium' onclick='document.viewScanButton.submit();'>View Complaint Scan</div>";
 
-			$(target).append(scanDisplayForm);
-		}
+      $(jqueryElement).find('#caseScanTarget').append(scanDisplayForm);
+    }
+
+		$(target).prepend(jqueryElement);
 	}
 
 	function convertFields(object){
@@ -177,9 +178,15 @@ function complaintForm(target, data = "new", readOnly = false, formDisplayButton
 			}
 		}
 
-		complaintString += '<tr>' +
-      '<th>Case No.</th>' +
-      '<td class="textField" id="caseNumber">' + prefix + '-' + caseNumber + '</td>' +
+    var caseNoTD = '<td class="textField" id="caseNumber">' + prefix + '-' + caseNumber + '</td>' +
+                    '<td colspan=2 style="text-align: center" id="caseScanTarget"></td>';
+    if(!formDisplayButton){
+      caseNoTD = '<td colspan=3 class="textField" id="caseNumber">' + prefix + '-' + caseNumber + '</td>';
+    }
+
+		complaintString += '<tr>'+
+      '<th>Case No.</th>'+
+      caseNoTD+
       '</tr>' +
       '<tr>' +
       '<th>Plaintiff</th>' +

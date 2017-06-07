@@ -24,24 +24,24 @@ function indexMenu(){
 
   $printOptions = "<div class='dropdownSubmenu'>".
                     "<div class='UIButton buttonShort'>Print</div>".
-                    "<div class='dropdownContentSubmenu'>".
-                      "<div class='UIButton buttonShort' onclick='arguments[0].stopPropagation(); makeReport(\"pendingList\");'>Print Hearing List</div>".
-                      "<div class='UIButton buttonShort' onclick='makeReport(\"hearingListDaily\");'>Print Daily JC Report</div>".
-                      "<div class='UIButton buttonShort' onclick='window.print()'>Print</div>".
+                    "<div style='top: -1px;' class='dropdownContentSubmenu'>".
+                      "<div class='UIButton buttonShort' onclick='arguments[0].stopPropagation(); makeReport(\"pendingList\");'>Hearing List</div>".
+                      "<div class='UIButton buttonShort' onclick='makeReport(\"hearingListDaily\");'>Daily JC Report</div>".
+                      "<div class='UIButton buttonShort' onclick='window.print()'>Current Table</div>".
                     "</div>".
                   "</div>";
 
   $complaintOptions = "";
   if(isset($_SESSION['username'])){
-   $complaintOptions = "<div class='UIButton buttonShort' onclick='window.location.href=\"enterCaseData.php?newComplaint=true\"'>Add New Complaint</div>";
+   $complaintOptions = "<div class='UIButton buttonShort' onclick='window.open(\"enterCaseData.php?newComplaint=true\")'>Add New Complaint</div>";
   }
 
-  $databaseOptions = "";
+  $updateButton = "";
   if(isset($_SESSION['username'])){
-   $databaseOptions = "<div class='UIButton buttonShort danger' id='updateDBButton'>Update Database</div>";
+   $updateButton = "<div style='position: fixed; right: 5px; z-index: 1001' class='UIButton buttonShort danger' id='updateDBButton'>Update Database</div>";
   }
 
-  $menu = $menu.$loginOptions.$printOptions.$complaintOptions.$databaseOptions."</div></div>";
+  $menu = $menu.$loginOptions.$printOptions.$complaintOptions."</div></div>".$updateButton;
 
   echo $menu;
 }

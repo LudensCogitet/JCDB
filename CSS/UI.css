@@ -1,12 +1,11 @@
 .UIButton{
 	display: inline-block;
 	cursor: pointer;
-	border: 3px solid black;
-	background-color:white;
+	border: 1px solid black;
+	background-color: white;
 	color: black;
 	text-align: center;
-	border-radius: 5px;
-	margin-bottom: 5px;
+	margin: 0;
 	font-weight: bold;
 }
 
@@ -29,12 +28,12 @@
 }
 
 .danger{
-	background-color: red;
+	background-color: rgb(200,0,0);
 	color: white;
 }
 
 .danger:hover{
-	background-color: yellow;
+	background-color: rgb(230,230,0);
 	color: black;
 }
 
@@ -51,7 +50,35 @@
 
 .noteBox{
 	display: inline-block;
-	border: 2px solid black;
+	border: 1px solid black;
 	width: 125px;
-	margin-bottom: 5px;
+	margin: 0;
+}
+
+.dropdown{
+	display: inline-block;
+	position: fixed;
+	right: 5px;
+	z-index: 1000;
+}
+
+.dropdownSubmenu{
+	display: inline-block;
+	position: relative;
+}
+
+.dropdownContent, .dropdownContentSubmenu{
+	display: none;
+}
+
+.dropdown:hover .dropdownContent{
+	display: block;
+	position: absolute;
+}
+
+.dropdownSubmenu:hover .dropdownContentSubmenu{
+	display: inline-block;
+ 	position: absolute;
+ 	right: 100%;
+ 	top: 0;
 }
