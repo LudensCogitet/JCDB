@@ -16,14 +16,14 @@ document.onreadystatechange = function(){
 			setcookie(session_name(),session_id(),1);
 			session_unset();
 			session_destroy();
-			
+
 			unset($_SESSION['username']);
 			if(isset($_SESSION['superuser'])){
 				unset($_SESSION['superuser']);
 			}
 			session_start();
 		}
-		
+
 		$_POST['username'] = htmlspecialchars($_POST['username']);
 		$_POST['password'] = htmlspecialchars($_POST['password']);
 		try{
@@ -32,7 +32,7 @@ document.onreadystatechange = function(){
 												$GLOBALS['_JCDB_config']['SQL_MODIFY_USER'],
 												$GLOBALS['_JCDB_config']['SQL_MODIFY_PASS'],
 												[PDO::ATTR_PERSISTENT => true]);
-			
+
 			$statement = $dbConn->prepare("SELECT * FROM users WHERE username = ? LIMIT 1;");
 			$statement->execute([$_POST['username']]);
 			echo "<div class='noteBox'>";
@@ -42,9 +42,9 @@ document.onreadystatechange = function(){
 					$_SESSION['username'] = $row['username'];
 					if($row['superuser'] == 1)
 						$_SESSION['superuser'] = true;
-				
-					echo "Logged in as<br>\"".$_SESSION['username']."\""; 
-					if(isset($_SESSION['superuser'])){ 
+
+					echo "Logged in as<br>\"".$_SESSION['username']."\"";
+					if(isset($_SESSION['superuser'])){
 						echo "<br>with extended privileges.";
 					}
 				}
@@ -71,6 +71,6 @@ document.onreadystatechange = function(){
 <div><input type="password" name="password" required></input></div>
 <input style='display:none;' type="submit"></input>
 </form>
-<div class="UIButton buttonMedium" onclick="document.loginButton.submit();">Log In</div><br>
-<div class="UIButton buttonMedium" onclick="location.href='index.php';">Back To Database</div>
+<div class="UIButton buttonMedium sideBySide" onclick="document.loginButton.submit();">Log In</div><br>
+<div class="UIButton buttonMedium sideBySide" onclick="location.href='index.php';">Back To Database</div>
 </div>
