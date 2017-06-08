@@ -63,8 +63,10 @@ if($contempt !== false){
 <form name='submissionAction' style="display: none;" method="POST">
 <input type="submit" name="confirm"></input>
 </form>
-<div class='UIButton buttonMedium' onclick='document.submissionAction.confirm.click()'>Confirm</div>
-<div class='UIButton buttonMedium' onclick="location.href='enterCaseData.php?modifyComplaint=true';">Modify</div>
+<div style='margin-top: 5px;'>
+<div class='UIButton buttonMedium sideBySide' onclick='document.submissionAction.confirm.click()'>Confirm</div>
+<div class='UIButton buttonMedium sideBySide' onclick="location.href='enterCaseData.php?modifyComplaint=true';">Modify</div>
+</div>
 </body>
 </html>
 <?php
@@ -79,8 +81,8 @@ if($contempt !== false){
 <?php
 		unset($_SESSION['complaint']);
 ?>
-<div class='UIButton buttonMedium' onclick="location.href='enterCaseData.php?newComplaint=true';">Submit A New Complaint</div><br>
-<div class='UIButton buttonMedium' onclick="location.href='index.php';">Return To Database</div>
+<div class='UIButton buttonMedium sideBySide' onclick="location.href='enterCaseData.php?newComplaint=true';">Submit A New Complaint</div><br>
+<div class='UIButton buttonMedium sideBySide' onclick="location.href='index.php';">Return To Database</div>
 </div>
 </body>
 </html>

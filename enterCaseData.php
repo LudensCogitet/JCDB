@@ -91,22 +91,20 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 <body>
 	<?php
 	  if($caseDoesExist){
-			echo '<div class="dropdown">';
-				echo '<div class="UIButton buttonMedium">Menu</div>';
-				echo '<div class="dropdownContent">';
+			echo '<div class="menu">';
 
-			if(count($caseNotes) > 0)
-				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
+			echo '<div class="UIButton buttonMedium sideBySide moveRight" id="addContempt">Add Contempt</div>';
 
 			if(count($caseInfo) > 1)
-				echo '<div class="UIButton buttonMedium" id="showContempts">Show Contempt Charges</div>';
+				echo '<div class="UIButton buttonMedium sideBySide moveRight" id="showContempts">Show Contempt Charges</div>';
 
-			echo '<div class="UIButton buttonMedium" id="addContempt">Add Contempt</div>';
+			if(count($caseNotes) > 0)
+				echo '<div class="UIButton buttonMedium sideBySide moveRight" id="showNotes">Show Case Notes</div>';
 
 			if($deleteOption == true){
-				echo '<div class="UIButton buttonMedium danger" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
+				echo '<div class="UIButton buttonMedium danger moveRight" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
 			}
-			echo '</div></div>';
+			echo '</div>';
 		}
 	?>
 </div>
@@ -128,9 +126,12 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 			for($i = 1; $i < count($caseInfo); $i++){
 				echo "<div class='stackable'>";
 				echo "<table class='complaintTable' id='".$caseInfo[$i]['rowID']."'>";
-				echo "<thead><th colspan=2>".ucfirst($caseInfo[$i]['charge'])."</th>";
 				if(isset($_SESSION['superuser'])){
+					echo "<thead><th>".ucfirst($caseInfo[$i]['charge'])."</th>";
 					echo "<th style='text-align: right'><div class='UIButton buttonShort deleteContempt' data-entryrowid=".$caseInfo[$i]['rowID']." data-statusrowid=".$contemptStatus[$i-1]['rowID'].">Delete</div></th>";
+				}
+				else{
+					echo "<thead><th colspan=2>".ucfirst($caseInfo[$i]['charge'])."</th>";
 				}
 				echo "</thead><tbody>";
 				echo "<tr><td>Defendant</td><td><b>".$caseInfo[$i]['defendant']."</b></td></tr>";
@@ -152,7 +153,7 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 					echo "<table class='complaintTable' id='".$note['rowID']."'>";
 					echo "<thead>";
 					if(isset($_SESSION['superuser'])){
-						echo "<th>Case Note</th><th style='text-align: right'><div class='UIButton buttonShort deleteCaseNote' data-rowid='".$note['rowID']."'>Delete</div></th>";
+						echo "<th>Case Note</th><th><div class='UIButton buttonShort deleteCaseNote' data-rowid='".$note['rowID']."'>Delete</div></th>";
 					}
 					else{
 						echo "<th colspan=2>Case Note</th>";

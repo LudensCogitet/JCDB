@@ -1,5 +1,4 @@
 .UIButton{
-	display: inline-block;
 	cursor: pointer;
 	border: 1px solid black;
 	background-color: white;
@@ -49,15 +48,23 @@
 }
 
 .noteBox{
+	position: relative;
 	display: inline-block;
 	border: 1px solid black;
 	width: 125px;
 	margin: 0;
+	font-family: arial;
+	font-size: 14pt;
+}
+
+.menu{
+	position: fixed;
+	width: 800px;
+	right: 5px;
 }
 
 .dropdown{
 	display: inline-block;
-	position: fixed;
 	right: 5px;
 	z-index: 1000;
 }
@@ -81,4 +88,12 @@
  	position: absolute;
  	right: 100%;
  	top: 0;
+}
+
+.sideBySide{
+	display: inline-block;
+}
+
+.moveRight{
+	float: right;
 }

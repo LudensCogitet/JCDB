@@ -91,7 +91,7 @@ function DatabaseRow(rawData,rowArray){
 					DatabaseRow.numChanged++;
 					//console.log(DatabaseRow.numChanged);
 					if(!updateButton.is(":visible")){
-						updateButton.show();
+						updateButton.css('display','inline-block');
 					}
 				}
 			}

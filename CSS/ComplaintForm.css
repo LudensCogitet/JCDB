@@ -19,7 +19,7 @@
 .complaintTable input[type="text"]{
   border: none;
   border-bottom: 1px solid black;
-  min-width: 300px;
+  min-width: 100%;
 }
 
 .complaintTable textarea{
