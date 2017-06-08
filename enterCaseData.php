@@ -93,17 +93,26 @@ else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET
 	  if($caseDoesExist){
 			echo '<div class="menu">';
 
-			echo '<div class="UIButton buttonMedium sideBySide moveRight" id="addContempt">Add Contempt</div>';
+			echo '<div style="inline-block" class="sideBySide moveRight">';
+			echo '<div class="UIButton buttonMedium" id="addContempt">Add Contempt</div>';
+			echo "<div class='UIButton buttonMedium' onclick='document.caseHistoryButton.submit();'>Printable Case Data</div>";
+			if($deleteOption == true){
+				echo '<div class="UIButton buttonMedium danger" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
+			}
+			echo "</div>";
 
+			echo '<div style="inline-block" class="sideBySide moveRight">';
 			if(count($caseInfo) > 1)
-				echo '<div class="UIButton buttonMedium sideBySide moveRight" id="showContempts">Show Contempt Charges</div>';
+				echo '<div class="UIButton buttonMedium" id="showContempts">Show Contempt Charges</div>';
 
 			if(count($caseNotes) > 0)
-				echo '<div class="UIButton buttonMedium sideBySide moveRight" id="showNotes">Show Case Notes</div>';
+				echo '<div class="UIButton buttonMedium" id="showNotes">Show Case Notes</div>';
+			echo '</div>';
 
-			if($deleteOption == true){
-				echo '<div class="UIButton buttonMedium danger moveRight" id="deleteButton" onclick="document.enterComplaintButton.deleteComplaint.click();">Delete Complaint</div>';
-			}
+			echo "<form style='display: none;' method='POST' name='caseHistoryButton' action='PHP/caseHistory.php' target='_blank'>";
+			echo "<input type='hidden' name='prefix' value='".$caseInfo[0]['prefix']."'></input>";
+			echo "<input type='hidden' name='caseNumber' value='".$caseInfo[0]['caseNumber']."'></input>";
+			echo "</form>";
 			echo '</div>';
 		}
 	?>

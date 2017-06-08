@@ -101,6 +101,7 @@
 #caseTarget{
 	display: inline-block;
 	float:left;
+	z-index: 1010;
 }
 
 #updateDBButton{
@@ -117,6 +118,7 @@
 }
 
 .filterDisplay{
+	background-color: white;
 	font-weight: bold;
 	margin-right: 5px;
 	margin-top: 2px;
@@ -140,8 +142,11 @@
 }
 
 .filtersBox{
+	display: inline-block;
 	height: 25px;
 	margin-bottom: 10px;
+	z-index: 1000;
+	position: relative;
 }
 
 .noteBox{
