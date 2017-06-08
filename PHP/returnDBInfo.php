@@ -49,7 +49,7 @@
 			}
 
 
-			$queryString = $queryString." LIMIT ".$limits->offset.",".$limits->count;
+			//$queryString = $queryString." LIMIT ".$limits->offset.",".$limits->count;
 
 			$statement = $dbConn->prepare($queryString);
 

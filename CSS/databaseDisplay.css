@@ -37,7 +37,6 @@
 
 #loadMore{
 	float: right;
-	margin-right: 2px;
 }
 
 #mainTable{
@@ -67,7 +66,7 @@
 	/*height: 90%;*/
 	overflow: hidden;
 	padding-bottom: 5px;
-	z-index: 100;
+	z-index: 1010;
 }
 
 #caseInfo table{
@@ -76,6 +75,7 @@
 
 .fixedElClose{
 	position: absolute;
+	z-index: 1020;
 	width: 48px !important;
 	top: 1px;
 	right: 1px;
@@ -99,9 +99,9 @@
 }
 
 #caseTarget{
+	position: relative;
 	display: inline-block;
 	float:left;
-	z-index: 1010;
 }
 
 #updateDBButton{
