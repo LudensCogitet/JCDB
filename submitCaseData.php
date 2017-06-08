@@ -38,7 +38,7 @@ if($_SESSION['complaint']->setToDelete() == true){
 $note = $_SESSION['complaint']->getData('caseNote');
 $contempt = $_SESSION['complaint']->getData('contempt');
 if($note !== false){
-	echo "<table class='complaintTable' style='margin-bottom: 20px;'>";
+	echo "<table class='complaintTable stackable'>";
 	echo "<thead><th>Case Note</th></thead>";
 	echo "<tbody>";
 	echo "<tr><td>Date</td><td><b>".$note['date']."</b></td></tr>";
@@ -49,7 +49,7 @@ if($note !== false){
 }
 
 if($contempt !== false){
-	echo "<table class='complaintTable' style='margin-bottom: 20px;'>";
+	echo "<table class='complaintTable stackable'>";
 	echo "<thead><th>Contempt Charge</th><th style='border: none;'></thead>";
 	echo "<tbody>";
 	echo "<tr><td><b>Plaintiff</b></td><td>".$contempt['plaintiff']."</td></tr>";
