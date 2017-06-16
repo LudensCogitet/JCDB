@@ -38,7 +38,7 @@ if(isset($_SESSION['complaint'])){
 	unset($_SESSION['complaint']);
 }
 
-	if(isset($_GET['updateComplaint'])){
+	if(isset($_GET['updateCase'])){
 		$caseDoesExist = true;
 		$caseNotes = grabCaseNotes($_GET['prefix'],$_GET['caseNumber']);
 		$caseInfo = grabCase($_GET['prefix'],$_GET['caseNumber']);
@@ -69,7 +69,7 @@ else if(isset($_GET['modifyComplaint'])){
 	echo "complaintForm('#complaintTarget',$.cookie('CaseData'),".$formSettings.");";
 	$submissionButtonName = "Resubmit Complaint";
 }
-else if(isset($_GET['updateComplaint']) && isset($_GET['prefix']) && isset($_GET['caseNumber'])){
+else if(isset($_GET['updateCase']) && isset($_GET['prefix']) && isset($_GET['caseNumber'])){
 	$scanReq = '';
 	if(isset($_SESSION['superuser'])){
 		echo "complaintForm('#complaintTarget',[".$_GET['prefix'].",".$_GET['caseNumber']."],false,true);";

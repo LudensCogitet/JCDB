@@ -46,8 +46,8 @@ function DatabaseRow(rawData,rowArray){
 	myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
 	myCells[0].click(function(){
 		complaintForm("#caseTarget",[data['prefix'],data['caseNumber']],true,true);
-		$("#updateComplaintForm").append("<input type='hidden' name='prefix' value='"+data['prefix']+"'>");
-		$("#updateComplaintForm").append("<input type='hidden' name='caseNumber' value='"+data['caseNumber']+"'>");
+		$("#updateCaseForm").append("<input type='hidden' name='prefix' value='"+data['prefix']+"'>");
+		$("#updateCaseForm").append("<input type='hidden' name='caseNumber' value='"+data['caseNumber']+"'>");
 		$("#caseInfo").show();
 	});
 	addHighlightOptions(myCells[0],"prefixAndCaseNumber");
