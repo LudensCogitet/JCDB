@@ -22,7 +22,7 @@ function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
       limits['offset'] = 0;
     }
 
-    $.ajax({url:"PHP/returnDBInfo.php",
+    $.ajax({url:"PHP/index/returnDBInfo.php",
       method: "GET",
       data:{"criteria": JSON.stringify(criteria),
             "limits": JSON.stringify(limits)},
