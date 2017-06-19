@@ -43,6 +43,7 @@ try:
         cursor.execute("GRANT SELECT ON jcdb.casestatus TO JCDB_viewer@'localhost'")
         cursor.execute("GRANT SELECT ON jcdb.caseentries TO JCDB_viewer@'localhost'")
         cursor.execute("GRANT SELECT ON jcdb.casenotes TO JCDB_viewer@'localhost'")
+        cursor.execute("GRANT SELECT ON jcdb.users TO JCDB_viewer@'localhost'")
 
         cursor.execute("CREATE USER JCDB_modifier@'localhost' IDENTIFIED BY '"+modifyPass+"'")
         cursor.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON jcdb.casestatus TO JCDB_modifier@'localhost'")
