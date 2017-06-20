@@ -6,6 +6,8 @@
 	text-align: center;
 	margin: 0;
 	font-weight: bold;
+	font-family: times;
+	font-size: 1em;
 }
 
 .UIButton:hover{
@@ -92,6 +94,10 @@
 
 .sideBySide{
 	display: inline-block;
+}
+
+.stackable{
+	margin-top: 5px;
 }
 
 .moveRight{

@@ -24,8 +24,7 @@
 		<div><input id="highlightOnLoad" type="text" name="username" required></input></div>
 		<div>Password</div>
 		<div><input type="password" name="password" required></input></div>
-		<input style='display:none;' type="submit"></input>
+		<button type="submit" class="UIButton buttonMedium stackable">Log In</button>
 	</form>
-	<div class="UIButton buttonMedium sideBySide" onclick="document.loginButton.submit();">Log In</div><br>
 	<div class="UIButton buttonMedium sideBySide" onclick="location.href='index.php';">Back To Database</div>
 </div>

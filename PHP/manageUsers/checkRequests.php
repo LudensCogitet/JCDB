@@ -23,17 +23,21 @@
         echo "</div>";
       }
       else if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['passwordConfirm'])){
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+        $passwordConfirm = $_POST['passwordConfirm'];
+
         echo "<div class='noteBox'>";
-        $_POST['username'] = htmlspecialchars($_POST['username']);
-        $_POST['password'] = htmlspecialchars($_POST['password']);
-        $_POST['passwordConfirm'] = htmlspecialchars($_POST['passwordConfirm']);
+        $username = htmlspecialchars($username);
+        $password = htmlspecialchars($password);
+        $passwordConfirm = htmlspecialchars($passwordConfirm);
 
         if(isset($_SESSION['superuser'])){
-          if($_POST['password'] != $_POST['passwordConfirm']){
+          if($password != $passwordConfirm){
             echo "Passwords do not match.";
           }
           else{
-              $pHash = password_hash($_POST['password'],PASSWORD_DEFAULT);
+              $pHash = password_hash($password,PASSWORD_DEFAULT);
 
               $isSuperuser = 0;
               if(isset($_POST['isSuperuser']))
@@ -41,7 +45,7 @@
 
               $statement = $dbConn->prepare("INSERT INTO users(username,password,superuser) VALUES (?,?,?)");
 
-              if(!$statement->execute([$_POST['username'],$pHash,$isSuperuser])){
+              if(!$statement->execute([$username,$pHash,$isSuperuser])){
                 if($statement->errorCode() == 23000){
                   echo "Account already exists";
                 }

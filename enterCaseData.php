@@ -2,9 +2,11 @@
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 require_once 'PHP/CaseData.php';
 require_once 'PHP/displayCase.php';
+require_once 'PHP/checkUserPermissions.php';
 session_start();
 
-if(isset($_SESSION['username'])){
+checkUserPermissions('username');
+
 $deleteOption = false;
 $newModify = false;
 $caseDoesExist = false;
@@ -202,4 +204,3 @@ else if(isset($_GET['updateCase']) && isset($_GET['prefix']) && isset($_GET['cas
 <div class="UIButton buttonMedium" id="submissionButton" onclick="document.enterComplaintButton.submit.click();"><?php echo $submissionButtonName ?></div>
 </body>
 </html>
-<?php } ?>
