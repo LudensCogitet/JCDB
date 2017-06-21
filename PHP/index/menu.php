@@ -1,7 +1,7 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 
-function indexMenu(){
+function menu(){
   $menu = "<div class='menu noPrint'>";
 
   $superUserOptions = "";
@@ -45,6 +45,6 @@ function indexMenu(){
 
   $menu = $menu.$loginOptions.$printOptions.$complaintOptions.$updateButton."</div>";
 
-  echo $menu;
+  return $menu;
 }
 ?>

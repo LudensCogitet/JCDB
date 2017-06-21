@@ -103,3 +103,7 @@
 .moveRight{
 	float: right;
 }
+
+.forceStack{
+	clear: both;
+}

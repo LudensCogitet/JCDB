@@ -67,8 +67,11 @@ class CaseData{
 		return json_encode($this->data);
 	}
 
-	public function getData($field, $as = "string/single"){
-		if(!array_key_exists($field, $this->data)){
+	public function getData($field = 'all', $as = "string/single"){
+		if($field === 'all'){
+			return $this->data;
+		}
+		else if(!array_key_exists($field, $this->data)){
 				return false;
 		}
 		else{
@@ -331,7 +334,7 @@ class CaseData{
 
 				$statement = null;
 				$dbConn = null;
-				
+
 				return "Case number ".$this->getData("prefix")."-".$this->getData("caseNumber")." updated.";
 			}
 		}
@@ -348,13 +351,8 @@ class CaseData{
 		}
 
 		foreach(self::$multiFields as $field){
-		  $num = 1;
-			$array = [];
-			while(isset($_POST[$field.'-'.$num])){
-				$array[] = $_POST[$field.'-'.$num];
-				$num++;
-		  }
-			$this->addData($field,$array);
+			if(isset($_POST[$field]))
+				$this->addData($field,$_POST[$field]);
 		}
 
 		$this->addData('whatHappened',$_POST['whatHappened']);

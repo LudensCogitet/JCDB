@@ -1,8 +1,11 @@
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 require_once 'PHP/CaseData.php';
-require_once 'PHP/displayCase.php';
+require_once 'PHP/caseDataFunctions.php';
+require_once 'PHP/checkUserPermissions.php';
 session_start();
+
+checkUserPermissions('username');
 
 function convertToText($key, $value){
   $newKey = preg_replace('/(?<!\ )[A-Z]/', ' $0', $key);
@@ -11,12 +14,11 @@ function convertToText($key, $value){
   return $newKey."\n".$newVal."\n\n";
 }
 
-if(isset($_SESSION['username'])){
-  if(isset($_POST['prefix']) && isset($_POST['caseNumber'])){
-    $prefix = $_POST['prefix'];
-    $caseNumber = $_POST['caseNumber'];
+  if(isset($_GET['prefix']) && isset($_GET['caseNumber'])){
+    $prefix = $_GET['prefix'];
+    $caseNumber = $_GET['caseNumber'];
 
-    $complaint = grabCase($prefix,$caseNumber)[0];
+    $complaint = grabCase($prefix,$caseNumber);
     $caseNotes = grabCaseNotes($prefix,$caseNumber);
 
     $content = "";
@@ -46,5 +48,4 @@ if(isset($_SESSION['username'])){
     }
     echo "<textarea style='width: 100%; height: 100%;'>".$content."</textarea>";
   }
-}
 ?>

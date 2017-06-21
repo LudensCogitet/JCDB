@@ -26,3 +26,43 @@ function checkInputFormat(key,value){
 		return true;
 	}
 }
+
+function reproduceField(event) {
+	if (event == "down" || event.keyCode == 40 || event.keyCode == 13 && $(this).data("repro") == false) {
+			event.preventDefault();
+			$(this).data("repro", true);
+
+			var name = $(this).attr("name");
+			var newField = $("<input type='text' name='" + name + "' data-repro='false' required>");
+
+			$(this).parent().append(newField);
+			$(newField).keydown(reproduceField);
+			$(newField).blur(formatCheck);
+			$(newField).focus();
+			return newField;
+		}
+		else if (event == "up" || event.keyCode == 38 || (event.keyCode == 8 && $(this).val() == "")) {
+		if($(this).attr('readonly') != 'readonly'){
+			event.preventDefault();
+			var lastObj = $(this).prev("input");
+			if(lastObj.length == 0){
+				return;
+			}
+			else{
+				var nextObjs = $(this).nextAll("input");
+				if (nextObjs.length == 0) {
+					lastObj.data("repro", false);
+				}
+			}
+			lastObj.focus();
+			$(this).remove();
+			return lastObj;
+		}
+	}
+}
+
+function formatCheck(event){
+	if(!checkInputFormat($(this).parent().attr('id'),$(this).val())){
+		$(this).val("");
+	}
+}

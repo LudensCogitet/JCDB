@@ -5,26 +5,19 @@
 <link rel="stylesheet" type="text/css" href="CSS/UI.css">
 <script src="JS/jquery-3.1.1.min.js"></script>
 <script src="JS/jquery.cookie.js"></script>
-<script src="JS/ComplaintForm.js"></script>
+<script src="JS/complaintForm.js"></script>
 <?php
 require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 require_once 'PHP/CaseData.php';
+require_once 'PHP/checkUserPermissions.php';
+require_once 'PHP/caseForm.php';
 
 session_start();
-if(isset($_SESSION['username'])){
+checkUserPermissions('username');
 
-	if(!isset($_SESSION['complaint'])){
-		$_SESSION['complaint'] = new CaseData();
-		setcookie('CaseData',$_SESSION['complaint']->encodeData(),time()+2);
-		setcookie('formScan',$_SESSION['complaint']->getData('formScan'),time()+2);
+if(!isset($_REQUEST['confirm'])){
+$_SESSION['complaint'] = new CaseData();
 ?>
-<script>
-$(document).ready(function(){
-	complaintForm('#tableTarget',$.cookie('CaseData'),true,false);
-
-	$("#tableTarget").before($("<img id='formScan' src='"+$.cookie('formScan')+"'>"));
-});
-</script>
 </head>
 <body>
 <h1 style='border-bottom: 2px solid black'> Review Case Entry</h1>
@@ -32,9 +25,9 @@ $(document).ready(function(){
 if($_SESSION['complaint']->setToDelete() == true){
 	echo "<h4 style='color: red'>This case and all related entries will be deleted!</h4>";
 }
-?>
-<div id="tableTarget"></div>
-<?php
+
+echo '<div id="tableTarget">'.caseForm("cached",false).'</div>';
+
 $note = $_SESSION['complaint']->getData('caseNote');
 $contempt = $_SESSION['complaint']->getData('contempt');
 if($note !== false){
@@ -77,16 +70,12 @@ if($contempt !== false){
 <body>
 <div class='centerBox'>
 <div class='noteBox'><?php echo $_SESSION['complaint']->submitToDatabase(); ?></div><br>
-
-<?php
-		unset($_SESSION['complaint']);
-?>
 <div class='UIButton buttonMedium sideBySide' onclick="location.href='enterCaseData.php?newComplaint=true';">Submit A New Complaint</div><br>
 <div class='UIButton buttonMedium sideBySide' onclick="location.href='index.php';">Return To Database</div>
 </div>
 </body>
 </html>
 <?php
+unset($_SESSION['complaint']);
 		}
-	}
 ?>

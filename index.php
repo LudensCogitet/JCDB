@@ -5,7 +5,7 @@
 			require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
 			session_start();
 
-			require_once 'PHP/index/indexMenu.php';
+			require_once 'PHP/index/menu.php';
 			require_once 'PHP/index/updateCaseButton.php';
 			require_once 'PHP/index/checkLogout.php';
 
@@ -16,7 +16,7 @@
 		<link rel="stylesheet" type="text/css" href="CSS/UI.css">
 		<script src="JS/jquery-3.1.1.min.js"></script>
 		<script src="JS/formatting.js"></script>
-		<script src="JS/ComplaintForm.js"></script>
+		<script src="JS/complaintForm.js"></script>
 		<script src="JS/ContextMenu.js"></script>
 		<script src="JS/DatabaseRow.js"></script>
 		<script src="JS/tableFunctions.js"></script>
@@ -32,7 +32,7 @@
 			<?php updateCaseButton(); ?>
 			</div>
 		</div>
-		<?php indexMenu(); ?>
+		<?php echo menu(); ?>
 		<div id="currentFilters" class="filtersBox noPrint"></div>
 		<div id="tableContainer">
 			<table id="mainTable">

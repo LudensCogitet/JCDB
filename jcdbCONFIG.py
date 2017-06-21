@@ -70,6 +70,6 @@ print("Setting config path environment variable...")
 with open(input("location of Apache server httpd.conf: ")+"/httpd.conf",'a') as f:
 	f.write("\nSetEnv JCDB_CONFIG_PATH \""+getPath()+"/JCDB_configs/\"")
 	f.close()
-
+    
 print("Setup complete. Please use username 'temp' with password: '"+tempPass+"' to add a new superuser right away.")
 input("Press Enter to quit...")
