@@ -32,6 +32,7 @@
 				if($_SESSION['complaint']->getData('caseNumber') != -1){
 					$prefix = $_SESSION['complaint']->getData('prefix');
 					$caseNumber = $_SESSION['complaint']->getData('caseNumber');
+					$newCaseNote = newCaseNote();
 				}
 			$caseForm = caseForm('cached', false);
 			$submissionButtonName = 'Resubmit';
@@ -42,6 +43,7 @@
 
 			$caseForm = caseForm('existing',false,$prefix,$caseNumber);
 			$submissionButtonName = 'Update';
+			$newCaseNote = newCaseNote();
 		}
 
 		$contempts = listContempts($prefix,$caseNumber);
@@ -51,7 +53,6 @@
 		$printCaseNotes = $caseNotes === false ? false : true;
 
 		$menu = menu($caseNotes !== false, $contempts !== false, $prefix, $caseNumber);
-		$newCaseNote = newCaseNote();
 	}
 ?>
 <html>

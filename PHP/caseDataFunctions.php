@@ -83,6 +83,6 @@
 
 		$dbConn = false;
 		$statement = false;
-		return $contempts;
+		return count($contempts) > 0 ? $contempts : false;
 	}
 ?>

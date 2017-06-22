@@ -8,7 +8,7 @@ function listContempts($prefix = -1, $caseNumber = -1){
     $caseContempts = grabContempts($prefix,$caseNumber);
     $contemptStatus = grabContemptStatus($prefix,$caseNumber);
 
-    if(count($caseContempts) > 0){
+    if($caseContempts){
       $returnString = '<div style="display: none;" id="contemptTarget">';
         for($i = 0; $i < count($caseContempts); $i++){
           $returnString .= "<div class='stackable'>";
