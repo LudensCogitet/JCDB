@@ -19,41 +19,51 @@
 
 	$prefix = -1;
 	$caseNumber = -1;
+
+	$newCase = true;
 	$contempts = false;
 	$caseNotes = false;
+
+	$scanUpload = scanUpload();
+
 	$newCaseNote = false;
+
+	if(isset($_SESSION['complaint'])){
+			if($_SESSION['complaint']->getData('caseNumber') !== -1){
+				$prefix = $_SESSION['complaint']->getData('prefix');
+				$caseNumber = $_SESSION['complaint']->getData('caseNumber');
+				$newCase = false;
+		}
+	}
 
 	if(isset($_GET['newComplaint'])){
 		$caseForm = caseForm('new');
 		$submissionButtonName = 'Submit';
 	}
-	else{
-		if(isset($_GET['modifyComplaint'])){
-				if($_SESSION['complaint']->getData('caseNumber') != -1){
-					$prefix = $_SESSION['complaint']->getData('prefix');
-					$caseNumber = $_SESSION['complaint']->getData('caseNumber');
-					$newCaseNote = newCaseNote();
-				}
-			$caseForm = caseForm('cached', false);
-			$submissionButtonName = 'Resubmit';
-		}
-		else if(isset($_GET['updateCase'])){
-			$prefix = $_GET['prefix'];
-			$caseNumber = $_GET['caseNumber'];
+	else if(isset($_GET['modifyComplaint'])){
+		$caseForm = caseForm('cached', false);
+		$submissionButtonName = 'Resubmit';
+	}
+	else if(isset($_GET['updateCase'])){
+		$prefix = $_GET['prefix'];
+		$caseNumber = $_GET['caseNumber'];
+		$newCase = false;
 
-			$caseForm = caseForm('existing',false,$prefix,$caseNumber);
-			$submissionButtonName = 'Update';
-			$newCaseNote = newCaseNote();
-		}
+		$caseForm = caseForm('existing',false,$prefix,$caseNumber);
+		$submissionButtonName = 'Update';
+	}
 
+	if($newCase === false){
 		$contempts = listContempts($prefix,$caseNumber);
 		$caseNotes = listCaseNotes($prefix,$caseNumber);
 
 		$printContempt = $contempts === false ? false : true;
 		$printCaseNotes = $caseNotes === false ? false : true;
 
+		$newCaseNote = newCaseNote();
 		$menu = menu($caseNotes !== false, $contempts !== false, $prefix, $caseNumber);
 	}
+	unset($_SESSION['complaint']);
 ?>
 <html>
 <head>
@@ -66,7 +76,7 @@
 <form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
 	<?php
 		echo $menu;
-		echo scanUpload();
+		echo $scanUpload;
 	?>
 	<div id="complaintTarget"><?php echo $caseForm ?></div>
 		<div id="newContemptTarget"></div>

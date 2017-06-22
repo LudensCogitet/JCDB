@@ -10,7 +10,6 @@
 	require_once 'PHP/manageUsers/getUserList.php';
 
 	$dbConn = databaseConnect('write');
-	checkRequests($dbConn);
 ?>
 <html>
 	<head>
@@ -20,9 +19,12 @@
 	<body>
 		<div class="centerBox" style="width:300px;">
 			<form name="newUserButton" method="POST">
-				<div style="float: right;">Admin<input style="vertical-align: -2px;" type="checkbox" name="isSuperuser"></input></div>
-				<div style="clear:both">Username</div>
-				<div><input type="text" name="username" required='required'></input></div>
+				<?php checkRequests($dbConn); ?>
+				<div >Username</div>
+				<div style='position: relative;'>
+					<div style="position: absolute; right: 0; top: -1em; margin-right: -5px;">Admin<input style="vertical-align: -2px;" type="checkbox" name="isSuperuser"></input></div>
+					<input type="text" name="username" required='required'></input>
+				</div>
 				<div>Password</div>
 				<div><input type="password" name="password" required='required'></input></div>
 				<div>Confirm Password</div>
@@ -38,3 +40,4 @@
 		</div>
 	</body>
 </html>
+<?php $dbConn = null; ?>

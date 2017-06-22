@@ -32,7 +32,10 @@
 				echo "<h4 style='color: red'>This case and all related entries will be deleted!</h4>";
 			}
 
-			echo '<div id="tableTarget">'.caseForm("cached",false).'</div>';
+			echo '<div id="tableTarget">';
+				echo '<img id="formScan" src='.$_SESSION['complaint']->getData('formScan').'>';
+				echo caseForm("cached",false);
+			echo '</div>';
 			echo listCaseNote();
 			echo listContempt();
 		?>
