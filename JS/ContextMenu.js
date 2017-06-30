@@ -96,26 +96,15 @@ function toggleTextField(target,type,action){
 					}
 }
 
-var multiChoiceFields = 	{"status":					["pndg","apld","hldg","clsd","(blank)"],
-													 "verdict":					["ng", "g", "ni", "md", "wd", "(blank)"],
-													 "sentenceStatus":	["impsd", "cmpl", "mrgd", "(blank)"]};
-
 function fillMultiChoiceMenu(options,key,funcs){
 	if(!Array.isArray(funcs)){
-		for(let i = 0; i < multiChoiceFields[key].length; i++){
-			options.push([multiChoiceFields[key][i],funcs]);
+		for(let i = 0; i < ChargeTable.multiChoiceFields[key].length; i++){
+			options.push([ChargeTable.multiChoiceFields[key][i],funcs]);
 		}
 	}
 	else{
-		for(let i = 0; i < multiChoiceFields[key].length; i++){
-			options.push([multiChoiceFields[key][i],funcs[i]]);
+		for(let i = 0; i < ChargeTable.multiChoiceFields[key].length; i++){
+			options.push([ChargeTable.multiChoiceFields[key][i],funcs[i]]);
 		}
 	}
 }
-
-var hearingFields = 	{"status": 				true,
-												"verdict": 				true,
-												"sentenceStatus":	true,
-												"hearingDate": 		true,
-												"sentence": 			true,
-												"notes":					true};

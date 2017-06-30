@@ -54,7 +54,7 @@
 		<script src="JS/complaintForm.js"></script>
 		<script src="JS/ContextMenu.js"></script>
 		<script src="JS/DatabaseRow.js"></script>
-		<script src="JS/tableFunctions.js"></script>
+		<script src="JS/ChargeTable.js"></script>
 		<script src="JS/index.js"></script>
 	</body>
 </html>
