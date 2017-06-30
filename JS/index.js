@@ -11,7 +11,7 @@ var downArrow = $("<span class='arrow down noPrint'>&#x25BC;</span>");
 
 function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
     DatabaseRow.autoFillDoNotAsk = [];
-    var returnPromise = new Promise(function(resolve,reject){
+    return new Promise(function(resolve,reject){
     var check = false;
     if(typeof criteria == "object"){
       if(Object.keys(criteria).length == 0)
@@ -52,8 +52,6 @@ function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
         resolve("Yay");
     }});
   });
-
-  return returnPromise;
 }
 
 var mainTable;
