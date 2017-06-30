@@ -14,13 +14,6 @@
 		<link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
 		<link rel="stylesheet" type="text/css" href="CSS/databaseDisplay.css">
 		<link rel="stylesheet" type="text/css" href="CSS/UI.css">
-		<script src="JS/jquery-3.1.1.min.js"></script>
-		<script src="JS/formatting.js"></script>
-		<script src="JS/complaintForm.js"></script>
-		<script src="JS/ContextMenu.js"></script>
-		<script src="JS/DatabaseRow.js"></script>
-		<script src="JS/tableFunctions.js"></script>
-		<script src="JS/index.js"></script>
 	</head>
 	<body>
 		<div id="pendingListHeading" style="display: none;">Judicial Committee<br>Hearing List<br><span class="useDate"></span></div>
@@ -56,5 +49,12 @@
 			</table>
 			<div class="UIButton buttonSmall noPrint" id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');">Load More...</div>
 		</div>
+		<script src="JS/jquery-3.1.1.min.js"></script>
+		<script src="JS/formatting.js"></script>
+		<script src="JS/complaintForm.js"></script>
+		<script src="JS/ContextMenu.js"></script>
+		<script src="JS/DatabaseRow.js"></script>
+		<script src="JS/tableFunctions.js"></script>
+		<script src="JS/index.js"></script>
 	</body>
 </html>
