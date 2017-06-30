@@ -46,6 +46,40 @@ function ChargeTable(tableDiv){
   headingMenuSetup("sentenceStatus");
   headingMenuSetup("notes");
 
+  this.getDBInfo = getDBInfo;
+  this.dressUpColumnName = dressUpColumnName;
+  this.autoFillAsk = autoFillAsk;
+  this.makeFilter = makeFilter;
+
+  this.columnIndex = function(key){
+      return columnIndex[key];
+  }
+
+  this.sendChanges = function(){
+    for(let i = 0; i < rowObjects["array"].length; i++){
+      rowObjects["array"][i].sendChanges();
+    }
+  }
+
+  this.cellChanged = function(){
+    var updateButton = $("#updateDBButton");
+    numCellsChanged++;
+
+    if(!updateButton.is(":visible")){
+      updateButton.css('display','inline-block');
+    }
+  }
+
+  this.cellChangedBack = function(){
+    numCellsChanged--;
+    if(numCellsChanged == 0)
+      $("#updateDBButton").hide();
+  }
+
+  this.cellChangedReset = function(){
+    numCellsChanged = 0;
+  }
+
   function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
       autoFillDoNotAsk = [];
       return new Promise(function(resolve,reject){
@@ -65,7 +99,7 @@ function ChargeTable(tableDiv){
               "limits": JSON.stringify(limits)},
         success: function(result){
           if(result.search(/^error/i) != -1){
-            console.log(result);
+            console.error(result);
           }
           result = JSON.parse(result);
           if(result[0] == true){
@@ -90,18 +124,6 @@ function ChargeTable(tableDiv){
     });
   }
 
-  this.getDBInfo = getDBInfo;
-
-  this.columnIndex = function(key){
-      return columnIndex[key];
-  }
-
-  this.sendChanges = function(){
-    for(let i = 0; i < rowObjects["array"].length; i++){
-      rowObjects["array"][i].sendChanges();
-    }
-  }
-
   function dressUpColumnName(name){
   	var returnString;
   	if(name == "prefixAndCaseNumber"){
@@ -118,7 +140,6 @@ function ChargeTable(tableDiv){
   	}
   	return returnString;
   }
-  this.dressUpColumnName = dressUpColumnName;
 
   function autoFillAsk(key,row){
     var caseNumber = row.getCellValue("prefixAndCaseNumber").toString();
@@ -192,7 +213,6 @@ function ChargeTable(tableDiv){
       contextMenu(null,newMenu,options);
     }
   }
-  this.autoFillAsk = autoFillAsk;
 
   function makeReport(kind){
   	var heading;
@@ -321,7 +341,6 @@ function ChargeTable(tableDiv){
 
   	$("#currentFilters").append(filter);
   }
-  this.makeFilter = makeFilter;
 
   function sortRows(column = null, dir = null, column2 = "default"){
 
@@ -501,25 +520,6 @@ function ChargeTable(tableDiv){
 
   		contextMenu(mainTable.rows[0].cells[columnIndex[column]],"#contextMenu",options);
   	}
-
-  this.cellChanged = function(){
-    var updateButton = $("#updateDBButton");
-    numCellsChanged++;
-
-    if(!updateButton.is(":visible")){
-      updateButton.css('display','inline-block');
-    }
-  }
-
-  this.cellChangedBack = function(){
-    numCellsChanged--;
-    if(numCellsChanged == 0)
-      $("#updateDBButton").hide();
-  }
-
-  this.cellChangedReset = function(){
-    numCellsChanged = 0;
-  }
 }
 
 ChargeTable.multiChoiceFields = {"status":					["pndg","apld","hldg","clsd","(blank)"],

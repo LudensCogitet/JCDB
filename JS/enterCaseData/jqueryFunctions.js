@@ -66,7 +66,6 @@ $(document).ready(function(){
     );
 
     $(".cancelContempt").click(function(){
-      console.log("got here");
       $(this).parent().parent().parent().parent().remove();
       $("#addContempt").show();
     });

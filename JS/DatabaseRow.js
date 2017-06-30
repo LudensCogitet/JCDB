@@ -46,6 +46,54 @@ function DatabaseRow(rawData,myTable){
 	for(let i = 0; i < myCells.length; i++)
 		myRow.append(myCells[i]);
 
+	this.returnRow = function(){
+		return myRow;
+	}
+
+	this.getCellValue = function(cell){
+		if(cell == "prefixAndCaseNumber"){
+			return data["prefix"]+data["caseNumber"];
+		}
+		else{
+			return data[cell];
+		}
+	}
+
+	this.setCellValue = function(cell, value){
+		if(data.hasOwnProperty(cell) && cell != "rowID"){
+			updateKey(cell,value);
+			myCells[myTable.columnIndex(cell)].text(value);
+		}
+	}
+
+	this.getIdentity = function(){
+		return [data["prefix"],data["caseNumber"],data["rowID"]];
+	}
+
+	this.sendChanges = function(){
+		var sendData = {};
+		console.dir(sendData);
+
+			Object.keys(entriesChanged).forEach(function(key){
+			if(entriesChanged[key]){
+					sendData[key] = initialData[key] = data[key];
+					entriesChanged[key] = false;
+					myTable.cellChangedBack();
+			}
+		});
+
+		if(Object.keys(sendData).length != 0){
+			//console.log("HERE!", sendData);
+			$.ajax({url:"PHP/updateDB.php",
+							method: "POST",
+							data: {prefix: data["prefix"],
+										 rowID: data["rowID"],
+										 changes: JSON.stringify(sendData)},
+							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);}
+			});
+		}
+	}
+
 	function fillCells(){
 		myCells[0].append(data["prefix"]+"-"+data["caseNumber"]);
 		myCells[0].click(function(){
@@ -150,7 +198,6 @@ function DatabaseRow(rawData,myTable){
 
 	function addHighlightOptions(cell,columnName){
 		var cell = $(cell);
-		console.log(myTable);
 		cell.attr("title",myTable.dressUpColumnName(columnName));
 
 		cell.click(function(){
@@ -169,7 +216,7 @@ function DatabaseRow(rawData,myTable){
 		});
 	}
 
-function updateKey(key,value){
+	function updateKey(key,value){
 		data[key] = value;
 		if(!entriesChanged[key]){
 			if(initialData[key] != data[key]){
@@ -182,54 +229,6 @@ function updateKey(key,value){
 				entriesChanged[key] = false;
 				myTable.cellChangedBack();
 			}
-		}
-	}
-
-	this.returnRow = function(){
-		return myRow;
-	}
-
-	this.getCellValue = function(cell){
-		if(cell == "prefixAndCaseNumber"){
-			return data["prefix"]+data["caseNumber"];
-		}
-		else{
-			return data[cell];
-		}
-	}
-
-	this.setCellValue = function(cell, value){
-		if(data.hasOwnProperty(cell) && cell != "rowID"){
-			updateKey(cell,value);
-			myCells[myTable.columnIndex(cell)].text(value);
-		}
-	}
-
-	this.getIdentity = function(){
-		return [data["prefix"],data["caseNumber"],data["rowID"]];
-	}
-
-	this.sendChanges = function(){
-		var sendData = {};
-		console.dir(sendData);
-
-			Object.keys(entriesChanged).forEach(function(key){
-			if(entriesChanged[key]){
-					sendData[key] = initialData[key] = data[key];
-					entriesChanged[key] = false;
-					myTable.cellChangedBack();
-			}
-		});
-
-		if(Object.keys(sendData).length != 0){
-			//console.log("HERE!", sendData);
-			$.ajax({url:"PHP/updateDB.php",
-							method: "POST",
-							data: {prefix: data["prefix"],
-										 rowID: data["rowID"],
-										 changes: JSON.stringify(sendData)},
-							error: function(jqXHR,stat,er){alert("Huston, we have a problem. DB update failed:\n"+er);}
-			});
 		}
 	}
 }
