@@ -83,16 +83,19 @@ function ChargeTable(tableDiv){
 
   this.loadMore = function(){
     limits['offset'] += limits['count'];
-    getDBInfo(dbSearchCriteria,'add');
+    getDBInfo('current','add');
   }
 
   function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
       autoFillDoNotAsk = [];
       return new Promise(function(resolve,reject){
       var check = false;
-      if(typeof criteria == "object"){
-        if(Object.keys(criteria).length == 0)
+      if(criteria == "current"){
+        if($.isEmptyObject(dbSearchCriteria))
           criteria = "all"
+        else{
+          criteria = dbSearchCriteria;
+        }
       }
 
       if(type == "overwrite"){
@@ -300,7 +303,7 @@ function ChargeTable(tableDiv){
   			if(kind == "pendingList")
   				$(".pndgInvis").addClass("noPrint");
   			window.print();
-  			getDBInfo(dbSearchCriteria);
+  			getDBInfo('current');
   			$(heading).removeClass("printHeading");
   			$(heading).css("display","none");
   			$(".pndgInvis").removeClass("noPrint");
@@ -334,7 +337,7 @@ function ChargeTable(tableDiv){
   		else
   			delete dbSearchCriteria[key];
 
-  		getDBInfo(dbSearchCriteria);
+  		getDBInfo('current');
   		$(this).parent().remove();
   	});
 
@@ -487,7 +490,7 @@ function ChargeTable(tableDiv){
   			function(value){
   				cMenuDiv.hide();
   				makeFilter(column,value);
-  				getDBInfo(dbSearchCriteria);
+  				getDBInfo('current');
   			});
   		}
   	}
@@ -499,7 +502,7 @@ function ChargeTable(tableDiv){
   			var options = [];
   			fillMultiChoiceMenu(options,column,function(cMenuDiv,clickable,optionVal){
   				makeFilter(column,optionVal);
-  				getDBInfo(dbSearchCriteria);
+  				getDBInfo('current');
   				$("#contextMenu").hide();
   				cMenuDiv.remove();
   			});

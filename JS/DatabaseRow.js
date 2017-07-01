@@ -144,7 +144,7 @@ function DatabaseRow(rawData,myTable){
 		var options = [["Filter By",function(cMenuDiv,clickable,optionVal){
 										 cMenuDiv.hide();
 										 myTable.makeFilter(key,data[key]);
-										 myTable.getDBInfo(dbSearchCriteria);
+										 myTable.getDBInfo('current');
 									 }],
 									 ["mark as:"]];
 
@@ -189,7 +189,7 @@ function DatabaseRow(rawData,myTable){
 										//console.log("FILTER BY"+data[key]);
 										 cMenuDiv.hide();
 										 myTable.makeFilter(key,data[key]);
-										 myTable.getDBInfo(dbSearchCriteria);
+										 myTable.getDBInfo('current');
 									 }]];
 
 			contextMenu(cell,"#contextMenu",options);
