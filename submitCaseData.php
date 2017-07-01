@@ -16,8 +16,8 @@
 		<link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
 		<link rel="stylesheet" type="text/css" href="CSS/UI.css">
 		<script src="JS/jquery-3.1.1.min.js"></script>
-		<script src="JS/jquery.cookie.js"></script>
 		<script src="JS/complaintForm.js"></script>
+		<script src="JS/formatting.js"></script>
 	</head>
 	<body>
 		<?php

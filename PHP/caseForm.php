@@ -22,6 +22,7 @@
 
     switch($type){
       case 'cached':
+      case 'cachedWithCaseNote':
         if(isset($_SESSION['complaint']))
           $data = $_SESSION['complaint']->getData();
       break;
@@ -36,7 +37,7 @@
     $returnString = '<table class="complaintTable" id="mainComplaint">';
 
     $whatHappened = '';
-    if($type == 'existing' || $type == 'cached'){
+    if($type == 'existing' || $type == 'cached' || $type == 'cachedWithCaseNote'){
         $whatHappened = $data["whatHappened"];
         $returnString .= '<input type="hidden" value="'.$data["formScan"].'" name="formScan"></input>';
         if($data['prefix'] !== -1 && $data['caseNumber'] !== -1){
@@ -89,6 +90,14 @@
         '$("#mainComplaint").find("input").keydown(reproduceField);'.
         '$("#mainComplaint").find("input").blur(formatCheck);'.
       '</script>';
+
+    if($type === 'cachedWithCaseNote'){
+      $caseNoteText = '';
+      if($data['caseNote'] !== false){
+        $caseNoteText = str_replace("<br />", "",$data['caseNote']['note']);
+      }
+      return [$returnString,$caseNoteText];
+    }
 
     return $returnString;
   }

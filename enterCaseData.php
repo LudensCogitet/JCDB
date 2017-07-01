@@ -36,12 +36,15 @@
 		}
 	}
 
+	$caseNoteText = '';
 	if(isset($_GET['newComplaint'])){
 		$caseForm = caseForm('new');
 		$submissionButtonName = 'Submit';
 	}
 	else if(isset($_GET['modifyComplaint'])){
-		$caseForm = caseForm('cached', false);
+		$formData = caseForm('cachedWithCaseNote', false);
+		$caseForm = $formData[0];
+		$caseNoteText = $formData[1];
 		$submissionButtonName = 'Resubmit';
 	}
 	else if(isset($_GET['updateCase'])){
@@ -60,7 +63,7 @@
 		$printContempt = $contempts === false ? false : true;
 		$printCaseNotes = $caseNotes === false ? false : true;
 
-		$newCaseNote = newCaseNote();
+		$newCaseNote = newCaseNote($caseNoteText);
 		$menu = menu($caseNotes !== false, $contempts !== false, $prefix, $caseNumber);
 	}
 	unset($_SESSION['complaint']);
@@ -69,23 +72,23 @@
 <head>
 	<link rel="stylesheet" type="text/css" href="CSS/UI.css">
   <link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
-  <script src="JS/formatting.js"></script>
 	<script src="JS/jquery-3.1.1.min.js"></script>
+	<script src="JS/formatting.js"></script>
 </head>
 <body>
-<form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
-	<?php
-		echo $menu;
-		echo $scanUpload;
-	?>
-	<div id="complaintTarget"><?php echo $caseForm ?></div>
-		<div id="newContemptTarget"></div>
-			<?php
-				echo $contempts;
-		 		echo $caseNotes;
-				echo $newCaseNote;
-			?>
-	<button class="UIButton buttonMedium" id="submissionButton" name="<?php $submissionButtonName ?>" type="submit"><?php echo $submissionButtonName; ?> Case</button>
-</form>
+	<form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
+		<?php
+			echo $menu;
+			echo $scanUpload;
+		?>
+		<div id="complaintTarget"><?php echo $caseForm ?></div>
+			<div id="newContemptTarget"></div>
+				<?php
+					echo $contempts;
+			 		echo $caseNotes;
+					echo $newCaseNote;
+				?>
+		<button class="UIButton buttonMedium" id="submissionButton" name="<?php $submissionButtonName ?>" type="submit"><?php echo $submissionButtonName; ?> Case</button>
+	</form>
 </body>
 </html>
