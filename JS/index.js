@@ -15,6 +15,10 @@ $(document).ready(function(){
 
   $("#caseInfoClose").click(windowClose);
 
+  $("#loadMore").click(function(){
+    mainTable.loadMore();
+  });
+
   $("html").click(function(){
     $("#contextMenu").hide();
     $(".contextMenuStyle").not("#contextMenu").remove();

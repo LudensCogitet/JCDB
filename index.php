@@ -47,7 +47,7 @@
 				<tbody>
 				</tbody>
 			</table>
-			<div class="UIButton buttonSmall noPrint" id="loadMore" onclick="limits['offset'] += limits['count']; getDBInfo(dbSearchCriteria,'add');">Load More...</div>
+			<div class="UIButton buttonSmall noPrint" id="loadMore">Load More...</div>
 		</div>
 		<script src="JS/jquery-3.1.1.min.js"></script>
 		<script src="JS/formatting.js"></script>

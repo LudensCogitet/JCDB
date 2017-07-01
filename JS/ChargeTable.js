@@ -80,6 +80,11 @@ function ChargeTable(tableDiv){
     numCellsChanged = 0;
   }
 
+  this.loadMore = function(){
+    limits['offset'] += limits['count'];
+    getDBInfo(dbSearchCriteria,'add');
+  }
+
   function getDBInfo(criteria = "all", type = "overwrite", myLimits = limits){
       autoFillDoNotAsk = [];
       return new Promise(function(resolve,reject){
