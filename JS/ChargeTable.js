@@ -50,6 +50,7 @@ function ChargeTable(tableDiv){
   this.dressUpColumnName = dressUpColumnName;
   this.autoFillAsk = autoFillAsk;
   this.makeFilter = makeFilter;
+  this.makeReport = makeReport;
 
   this.columnIndex = function(key){
       return columnIndex[key];

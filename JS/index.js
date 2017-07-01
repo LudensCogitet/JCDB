@@ -1,26 +1,28 @@
-$(document).ready(function(){
-  var mainTable = new ChargeTable(document.getElementById("mainTable"));
-  $("#updateDBButton").click(function(){
-    if(confirm('Are you sure?')){
-      mainTable.sendChanges();
-      $(this).hide();
-    }
-  });
-
-  function windowClose(){
-    $(this).parent().hide();
-    $(this).siblings().children(":not(#updateCasebutton)").remove();
-    localStorage.removeItem('lastFormData');
+var mainTable = new ChargeTable(document.getElementById("mainTable"));
+$("#updateDBButton").click(function(){
+  if(confirm('Are you sure?')){
+    mainTable.sendChanges();
+    $(this).hide();
   }
+});
 
-  $("#caseInfoClose").click(windowClose);
+function windowClose(){
+  $(this).parent().hide();
+  $(this).siblings().children(":not(#updateCasebutton)").remove();
+  localStorage.removeItem('lastFormData');
+}
 
-  $("#loadMore").click(function(){
-    mainTable.loadMore();
-  });
+$("#caseInfoClose").click(windowClose);
 
-  $("html").click(function(){
-    $("#contextMenu").hide();
-    $(".contextMenuStyle").not("#contextMenu").remove();
-  });
+$("#loadMore").click(function(){
+  mainTable.loadMore();
+});
+
+function makeReport(type){
+  mainTable.makeReport(type);
+}
+
+$("html").click(function(){
+  $("#contextMenu").hide();
+  $(".contextMenuStyle").not("#contextMenu").remove();
 });
