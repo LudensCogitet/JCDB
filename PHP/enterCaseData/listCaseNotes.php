@@ -19,7 +19,7 @@ function listCaseNotes($prefix, $caseNumber){
         $returnString .= "</th>";
         $returnString .= "</thead><tbody>";
         $returnString .= "<tr><td>Date</td><td><b>".$note['timeEntered']."</b></td></tr>";
-        $returnString .= "<tr><td colspan=2 style='font-family: arial; min-width: 300px; padding: 5px;'>".$note['note']."</td></tr>";
+        $returnString .= "<tr><td colspan=2 style='font-family: arial; min-width: 300px; padding: 10px 5px 10px 5px;'>".$note['note']."</td></tr>";
         $returnString .= "<tr><td>Taken by</td><td><b>".$note['author']."</b></td></tr>";
         $returnString .= "</tbody>";
         $returnString .= "</table>";
