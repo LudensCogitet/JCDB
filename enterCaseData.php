@@ -68,27 +68,32 @@
 	}
 	unset($_SESSION['complaint']);
 ?>
-<html>
-<head>
-	<link rel="stylesheet" type="text/css" href="CSS/UI.css">
-  <link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
-	<script src="JS/jquery-3.1.1.min.js"></script>
-	<script src="JS/formatting.js"></script>
-</head>
-<body>
-	<form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
-		<?php
-			echo $menu;
-			echo $scanUpload;
-		?>
-		<div id="complaintTarget"><?php echo $caseForm ?></div>
-			<div id="newContemptTarget"></div>
-				<?php
-					echo $contempts;
-			 		echo $caseNotes;
-					echo $newCaseNote;
-				?>
-		<button class="UIButton buttonMedium" id="submissionButton" name="<?php $submissionButtonName ?>" type="submit"><?php echo $submissionButtonName; ?> Case</button>
-	</form>
-</body>
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+ 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ 		<meta name="viewport" content="width=device-width, initial-scale=1">
+ 		<title>Enter case data</title>
+		<link rel="stylesheet" type="text/css" href="CSS/UI.css">
+	  <link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
+		<script src="JS/jquery-3.1.1.min.js"></script>
+		<script src="JS/formatting.js"></script>
+	</head>
+	<body>
+		<form id="complaintEntryForm" name="enterComplaintButton" action="submitCaseData.php" method="POST" enctype="multipart/form-data">
+			<?php
+				echo $menu;
+				echo $scanUpload;
+			?>
+			<div id="complaintTarget"><?php echo $caseForm ?></div>
+				<div id="newContemptTarget"></div>
+					<?php
+						echo $contempts;
+				 		echo $caseNotes;
+						echo $newCaseNote;
+					?>
+			<button class="UIButton buttonMedium" id="submissionButton" name="<?php $submissionButtonName ?>" type="submit"><?php echo $submissionButtonName; ?> Case</button>
+		</form>
+	</body>
 </html>

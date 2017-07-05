@@ -1,16 +1,20 @@
+<?php
+	require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
+	session_start();
+
+	require_once 'PHP/index/menu.php';
+	require_once 'PHP/index/updateCaseButton.php';
+	require_once 'PHP/index/checkLogout.php';
+
+	checkLogout();
+?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<?php
-			require_once $_SERVER['DOCUMENT_ROOT'].'/config.php';
-			session_start();
-
-			require_once 'PHP/index/menu.php';
-			require_once 'PHP/index/updateCaseButton.php';
-			require_once 'PHP/index/checkLogout.php';
-
-			checkLogout();
-		?>
+		<meta charset="utf-8">
+	 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	 	<title>JC Database</title>
 		<link rel="stylesheet" type="text/css" href="CSS/ComplaintForm.css">
 		<link rel="stylesheet" type="text/css" href="CSS/databaseDisplay.css">
 		<link rel="stylesheet" type="text/css" href="CSS/UI.css">
