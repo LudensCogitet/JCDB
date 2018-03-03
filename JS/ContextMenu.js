@@ -5,7 +5,7 @@ function contextMenu(target,targetDiv,options, center = false){
 	targetDiv = $(targetDiv);
 	//console.log("THIS HERE",options);
 
-  function theBusiness(){
+  function theBusiness(event){
 		targetDiv.empty();
 
 		for(let i = 0; i < options.length; i++){
@@ -29,7 +29,7 @@ function contextMenu(target,targetDiv,options, center = false){
 
 	var offsetX;
 	var offsetY;
-	if(event.pageX !== undefined && event.pageY !== undefined && center == false){
+	if(event && event.pageX && event.pageY && !center){
 		//console.log("CENTER", center);
 		offsetX = event.pageX;
 		offsetY = event.pageY;
@@ -50,7 +50,7 @@ function contextMenu(target,targetDiv,options, center = false){
 			if(_highlightKeyDown == false){
 				event.stopPropagation();
 				$(".contextMenuStyle").not("#contextMenu").remove();
-				theBusiness();
+				theBusiness(event);
 			}
 		});
 	}
